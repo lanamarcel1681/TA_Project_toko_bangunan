@@ -20,8 +20,8 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Alamat Utama:</p>
-                                    <p className="mt-1">Jl. Raya Bangunan No. 123</p>
-                                    <p>Jakarta Pusat, DKI Jakarta 10110</p>
+                                    <p className="mt-1">Jl. Sampaan - Berbah</p>
+                                    <p>Berbah, Tegaltirto, Berbah, Sleman Regency, Special Region of Yogyakarta 55573</p>
                                 </div>
                             </div>
 
@@ -33,7 +33,7 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Telepon:</p>
-                                    <p className="mt-1">+62 21 5555 8888</p>
+                                    <p className="mt-1">+62 812-2777-1234</p>
                                 </div>
                             </div>
 
@@ -45,7 +45,7 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Email:</p>
-                                    <p className="mt-1">info@bangunanjaya.com</p>
+                                    <p className="mt-1">Lumbungjaya@gmail.com</p>
                                 </div>
                             </div>
 
@@ -58,7 +58,7 @@ export default function ContactInfo() {
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Jam Operasional:</p>
                                     <p className="mt-1">Senin - Jumat: 08:00 - 17:00</p>
-                                    <p>Sabtu: 08:00 - 15:00</p>
+                                    <p>Sabtu: 08:00 - 17:00</p>
                                     <p>Minggu: Tutup</p>
                                 </div>
                             </div>
@@ -67,7 +67,7 @@ export default function ContactInfo() {
 
                     <div className="h-full min-h-[400px] bg-gray-200 rounded-xl overflow-hidden shadow-lg border border-gray-200">
                         <iframe
-                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d126907.08587373898!2d106.7891829!3d-6.2293867!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f3e945e34b9d%3A0x5371bf0fdad786a2!2sJakarta%2C%20Special%20Capital%20Region%20of%20Jakarta!5e0!3m2!1sen!2sid!4v1647844002621!5m2!1sen!2sid"
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d279.25987001076265!2d110.44369137836289!3d-7.806622687968951!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a511f4dd9aa15%3A0x1df13600bdbab3ff!2sTB.%20Lumbung%20Jaya!5e1!3m2!1sen!2sid!4v1773321881992!5m2!1sen!2sid"
                             width="100%"
                             height="100%"
                             style={{ border: 0, minHeight: '400px' }}

@@ -19,29 +19,19 @@ export default function LoginPage() {
         const email = (form.elements.namedItem('email') as HTMLInputElement).value;
         const password = (form.elements.namedItem('password') as HTMLInputElement).value;
 
-        try {
-            const res = await fetch('/api/auth/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password }),
-            });
-
-            const data = await res.json();
-
-            if (!res.ok) {
-                setError(data.error || 'Terjadi kesalahan');
-                setLoading(false);
-                return;
-            }
-
-            // Redirect based on role
-            if (data.role === 'owner') {
-                router.push('/dashboard/owner');
-            } else {
-                router.push('/dashboard/karyawan');
-            }
-        } catch {
-            setError('Gagal terhubung ke server');
+        // Dummy frontend login logic
+        if (email === 'pemilik@bangunan.com' && password === 'pemilik123') {
+            document.cookie = `session=${JSON.stringify({ email, role: 'owner' })}; path=/`;
+            window.location.href = '/dashboard/owner';
+        } else if (email === 'karyawan@bangunan.com' && password === 'karyawan123') {
+            document.cookie = `session=${JSON.stringify({ email, role: 'karyawan' })}; path=/`;
+            window.location.href = '/dashboard/karyawan';
+        } else if (email === 'pengguna@bangunan.com' && password === 'pengguna123') {
+            // New user role
+            document.cookie = `session=${JSON.stringify({ email, role: 'pembeli' })}; path=/`;
+            window.location.href = '/';
+        } else {
+            setError('Email atau password salah');
             setLoading(false);
         }
     }
@@ -77,6 +67,7 @@ export default function LoginPage() {
                             <p className="font-bold text-white/90 mb-2">Akun Demo:</p>
                             <p><span className="text-white/70">Pemilik:</span> pemilik@bangunan.com / pemilik123</p>
                             <p><span className="text-white/70">Karyawan:</span> karyawan@bangunan.com / karyawan123</p>
+                            <p><span className="text-white/70">Pengguna/Pelanggan:</span> pengguna@bangunan.com / pengguna123</p>
                         </div>
                     </div>
                 </div>

@@ -12,11 +12,11 @@
   --foreground: #171717;
 }
 
-@theme inline {
+/* @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: "Poppins", sans-serif;
-}
+} */
 
 @media (prefers-color-scheme: dark) {
   :root {

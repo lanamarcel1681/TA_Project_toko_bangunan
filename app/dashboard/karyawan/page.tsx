@@ -1,4 +1,9 @@
-import { cookies } from 'next/headers';
+'use client';
+import React, { useState, useEffect } from 'react';
+import { 
+    Package, AlertTriangle, TrendingUp, Clock, 
+    ArrowUpRight, ArrowDownRight, Box, LayoutGrid 
+} from 'lucide-react';
 
 const stockItems = [
     { name: 'Semen Portland Tiga Roda 40kg', category: 'Semen', stock: 320, unit: 'sak', status: 'ok' },
@@ -17,99 +22,145 @@ const todayActivity = [
     { type: 'keluar', item: 'Genteng Keramik KIA', qty: 200, unit: 'buah', time: '14:20' },
 ];
 
-export default async function KaryawanDashboard() {
-    const cookieStore = await cookies();
-    const session = cookieStore.get('session');
-    const user = session ? JSON.parse(session.value) : { name: 'Karyawan' };
-
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
+export default function KaryawanDashboard() {
     const lowStock = stockItems.filter(i => i.status === 'low').length;
     const totalItems = stockItems.length;
 
     return (
-        <>
-
-
-            <div className="px-8 py-8 pb-16">
-                {/* Stat Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-                    <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg shadow-emerald-500/30 relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div className="flex items-start justify-between mb-4">
-                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-                                </svg>
-                            </div>
-                        </div>
-                        <p className="text-white/80 text-sm font-medium mb-1">Total Jenis Barang</p>
-                        <h3 className="text-3xl font-bold tracking-tight mb-2">{totalItems}</h3>
-                        <p className="text-white/70 text-[11px]">Barang terdaftar</p>
+        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+            {/* Header Section */}
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                <div>
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Ringkasan Operasional</h1>
+                    <p className="text-gray-500 font-medium">Selamat datang kembali! Berikut status inventaris dan aktivitas gudang hari ini.</p>
+                </div>
+                <div className="flex bg-white px-6 py-4 rounded-3xl border border-gray-100 shadow-sm items-center gap-4">
+                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                        <Clock className="w-5 h-5" />
                     </div>
+                    <div>
+                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">Waktu Sistem</p>
+                        <p className="text-sm font-black text-gray-800 leading-tight mt-0.5">
+                            {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
+                        </p>
+                    </div>
+                </div>
+            </div>
 
-                    <div className="bg-gradient-to-br from-red-500 to-rose-600 rounded-2xl p-6 text-white shadow-lg shadow-red-500/30 relative overflow-hidden group">
-                        <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        <div className="flex items-start justify-between mb-4">
-                            <div className="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center">
-                                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                </svg>
-                            </div>
+            {/* Stat Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <div className="bg-blue-600 rounded-[40px] p-10 text-white shadow-2xl shadow-blue-600/30 relative overflow-hidden group">
+                    <div className="absolute -right-4 -bottom-4 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="flex items-start justify-between mb-8">
+                        <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-[20px] flex items-center justify-center shadow-lg border border-white/20">
+                            <Box className="w-8 h-8 text-white" />
                         </div>
-                        <p className="text-white/80 text-sm font-medium mb-1">Stok Menipis</p>
-                        <h3 className="text-3xl font-bold tracking-tight mb-2">{lowStock}</h3>
-                        <p className="text-white/70 text-[11px]">Perlu restock segera</p>
+                        <div className="px-4 py-1.5 bg-white/20 rounded-full text-[10px] font-black uppercase tracking-widest border border-white/20">
+                            Inventaris Aktif
+                        </div>
+                    </div>
+                    <div>
+                        <p className="text-blue-100 text-sm font-black uppercase tracking-widest mb-1">Total Jenis Barang</p>
+                        <div className="flex items-end gap-3">
+                            <h3 className="text-6xl font-black tracking-tighter">{totalItems}</h3>
+                            <p className="text-blue-100 font-black text-sm mb-2">SKU TERDAFTAR</p>
+                        </div>
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    {/* Stok Barang Table */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h4 className="font-bold text-sm text-gray-800 mb-5">Status Stok Barang</h4>
-                        <div className="space-y-3">
+                <div className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative overflow-hidden group">
+                    <div className="absolute -right-4 -bottom-4 w-40 h-40 bg-red-50 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="flex items-start justify-between mb-8">
+                        <div className="w-16 h-16 bg-red-50 text-red-600 rounded-[20px] flex items-center justify-center shadow-sm border border-red-100">
+                            <AlertTriangle className="w-8 h-8" />
+                        </div>
+                        <div className="px-4 py-1.5 bg-red-50 text-red-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-red-100">
+                            Status Kritis
+                        </div>
+                    </div>
+                    <div>
+                        <p className="text-gray-400 text-sm font-black uppercase tracking-widest mb-1">Stok Menipis / Habis</p>
+                        <div className="flex items-end gap-3">
+                            <h3 className="text-6xl font-black tracking-tighter text-gray-900">{lowStock}</h3>
+                            <p className="text-red-500 font-black text-sm mb-2">PERLU RESTOCK SEGERA</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+                {/* Stok Barang Table */}
+                <div className="lg:col-span-3 bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden">
+                    <div className="px-10 py-8 border-b border-gray-50 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center">
+                                <LayoutGrid className="w-5 h-5" />
+                            </div>
+                            <h4 className="font-black text-gray-900 tracking-tight">Status Stok Inventaris</h4>
+                        </div>
+                        <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 px-4 py-2 rounded-full transition-all">
+                            Lihat Semua &rarr;
+                        </button>
+                    </div>
+                    <div className="p-4">
+                        <div className="space-y-2">
                             {stockItems.map((item, i) => (
-                                <div key={i} className="flex items-center justify-between p-3 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                                    <div className="flex-1 min-w-0">
-                                        <p className="text-sm font-medium text-gray-800 truncate">{item.name}</p>
-                                        <p className="text-[11px] text-gray-400">{item.category}</p>
+                                <div key={i} className="flex items-center justify-between p-5 rounded-[24px] bg-gray-50/50 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group">
+                                    <div className="flex items-center gap-4 flex-1 min-w-0">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
+                                            item.status === 'low' ? 'bg-red-50 border-red-100 text-red-600' : 'bg-blue-50 border-blue-100 text-blue-600'
+                                        }`}>
+                                            <Package className="w-6 h-6" />
+                                        </div>
+                                        <div className="truncate">
+                                            <p className="text-sm font-black text-gray-800 leading-tight mb-0.5">{item.name}</p>
+                                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">{item.category}</p>
+                                        </div>
                                     </div>
-                                    <div className="ml-4 text-right flex-shrink-0">
-                                        <p className="text-sm font-bold text-gray-700">{item.stock.toLocaleString('id-ID')} {item.unit}</p>
-                                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${item.status === 'low' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'
-                                            }`}>
-                                            {item.status === 'low' ? 'Stok Menipis' : 'Normal'}
+                                    <div className="ml-6 text-right flex-shrink-0">
+                                        <p className="text-sm font-black text-gray-900 mb-1">{item.stock.toLocaleString('id-ID')} <span className="text-gray-400 text-[10px] uppercase">{item.unit}</span></p>
+                                        <span className={`text-[9px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg border ${
+                                            item.status === 'low' ? 'bg-red-50 text-red-600 border-red-100' : 'bg-green-50 text-green-600 border-green-100'
+                                        }`}>
+                                            {item.status === 'low' ? 'Low Stock' : 'Optimized'}
                                         </span>
                                     </div>
                                 </div>
                             ))}
                         </div>
                     </div>
+                </div>
 
-                    {/* Aktivitas Hari Ini */}
-                    <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
-                        <h4 className="font-bold text-sm text-gray-800 mb-5">Aktivitas Barang Hari Ini</h4>
-                        <div className="space-y-3">
+                {/* Aktivitas Hari Ini */}
+                <div className="lg:col-span-2 bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden text-left">
+                    <div className="px-10 py-8 border-b border-gray-50">
+                        <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 bg-gray-50 text-gray-400 rounded-2xl flex items-center justify-center">
+                                <TrendingUp className="w-5 h-5" />
+                            </div>
+                            <h4 className="font-black text-gray-900 tracking-tight">Log Aktivitas Barang</h4>
+                        </div>
+                    </div>
+                    <div className="p-8">
+                        <div className="relative space-y-8 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-100">
                             {todayActivity.map((act, i) => (
-                                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-gray-50">
-                                    <div className={`mt-0.5 flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center ${act.type === 'masuk' ? 'bg-green-100' : 'bg-orange-100'
-                                        }`}>
-                                        <svg className={`w-3.5 h-3.5 ${act.type === 'masuk' ? 'text-green-600' : 'text-orange-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            {act.type === 'masuk'
-                                                ? <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                                : <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                                            }
-                                        </svg>
+                                <div key={i} className="relative flex items-start gap-6 group">
+                                    <div className={`mt-0.5 relative z-10 flex-shrink-0 w-10 h-10 rounded-2xl border-4 border-white shadow-sm flex items-center justify-center transition-all group-hover:scale-110 ${
+                                        act.type === 'masuk' ? 'bg-green-500 text-white' : 'bg-orange-500 text-white'
+                                    }`}>
+                                        {act.type === 'masuk' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                                     </div>
                                     <div className="flex-1 min-w-0">
-                                        <p className="text-[13px] font-medium text-gray-800">
-                                            <span className={`font-bold ${act.type === 'masuk' ? 'text-green-600' : 'text-orange-600'}`}>
-                                                {act.type === 'masuk' ? 'Masuk' : 'Keluar'}
-                                            </span>{' '}
-                                            {act.item}
-                                        </p>
-                                        <p className="text-[11px] text-gray-400">{act.qty} {act.unit} · {act.time} WIB</p>
+                                        <div className="flex items-center justify-between gap-4 mb-1">
+                                            <p className={`text-[10px] font-black uppercase tracking-widest ${
+                                                act.type === 'masuk' ? 'text-green-600' : 'text-orange-600'
+                                            }`}>
+                                                {act.type === 'masuk' ? 'Barang Masuk' : 'Barang Keluar'}
+                                            </p>
+                                            <span className="text-[10px] font-black text-gray-300 font-mono tracking-tighter">{act.time} WIB</span>
+                                        </div>
+                                        <p className="text-sm font-black text-gray-800 leading-tight mb-1">{act.item}</p>
+                                        <p className="text-[11px] font-bold text-gray-400">{act.qty} {act.unit} telah diolah sistem</p>
                                     </div>
                                 </div>
                             ))}
@@ -117,6 +168,7 @@ export default async function KaryawanDashboard() {
                     </div>
                 </div>
             </div>
-        </>
+        </div>
     );
 }
+

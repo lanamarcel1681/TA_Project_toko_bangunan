@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SidebarFilter from '../components/SidebarFilter';
@@ -10,75 +11,57 @@ const allProducts: Product[] = [
     {
         id: 1, name: "Semen Portland Tiga Roda 40kg", brand: "Tiga Roda", price: 65000, originalPrice: 75000,
         rating: 4.8, reviewCount: 4360, location: "Jakarta Timur", sold: "1rb+",
-        image: "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=400&q=80",
+        image: "https://www.tokotigaroda.com/images-data/product/4/pcc-bag-50kg.jpg",
         category: "Semen", badge: "Hot"
     },
     {
         id: 2, name: "Besi Beton Ulir 12mm (6m)", brand: "Krakatau Steel", price: 132500,
         rating: 4.5, reviewCount: 4923, location: "Jakarta Pusat", sold: "2rb+",
-        image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80",
+        image: "https://jualbesi.com/wp-content/uploads/2021/04/besi-beton-ulir-U_.jpg",
         category: "Besi"
     },
     {
         id: 3, name: "Cat Tembok Eksterior Dulux Warna 5kg", brand: "Dulux", price: 185000, originalPrice: 210000,
         rating: 4.7, reviewCount: 1874, location: "Jakarta Barat", sold: "900+",
-        image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?w=400&q=80",
+        image: "https://msp.images.akzonobel.com/prd/dh/aiddlx/packshots/80/7f/99/e5/packshot_medium.png",
         category: "Cat", badge: "Sale"
     },
     {
         id: 4, name: "Bata Merah Press", brand: "Bata Merah Lokal", price: 900,
         rating: 4.3, reviewCount: 4928, location: "Bekasi", sold: "5rb+",
-        image: "https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?w=400&q=80",
+        image: "https://www.udsinarsejahtera.com/images/produk_gambar/gambar-4-93.jpeg",
         category: "Bata"
     },
     {
         id: 5, name: "Triplek 12mm", brand: "Kayu Jati Indah", price: 105000, originalPrice: 125000,
         rating: 4.6, reviewCount: 3899, location: "Jakarta Utara", sold: "1rb+",
-        image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?w=400&q=80",
+        image: "https://image1ws.indotrading.com/s3/productimages/webp/co194168/p769083/w600-h600/0f7bdca4-751c-4329-ba7c-55b0b75053df.jpg",
         category: "Kayu", badge: "Promo"
     },
     {
         id: 6, name: "Genteng Keramik", brand: "KIA Keramik", price: 8500,
         rating: 4.1, reviewCount: 4748, location: "Jakarta Selatan", sold: "800+",
-        image: "https://images.unsplash.com/photo-1531248793994-a498cd4f0ae9?w=400&q=80",
+        image: "https://image-apac.archify.com/blog/l/zys4t6qw.jpg",
         category: "Genteng"
     },
     {
         id: 7, name: "Pipa PVC 3\"", brand: "Wavin", price: 39000, originalPrice: 46000,
         rating: 4.7, reviewCount: 7384, location: "Tangerang", sold: "3rb+",
-        image: "https://images.unsplash.com/photo-1614732414444-096e5f1122d3?w=400&q=80",
+        image: "https://storage.googleapis.com/eezee-product-images/pipa-pvc-aw-rucika-jis-3-wr0l_600.png",
         category: "Pipa", badge: "Hot"
     },
     {
         id: 8, name: "Pasir Beton", brand: "Material Tama", price: 250000, originalPrice: 300000,
         rating: 4.4, reviewCount: 4480, location: "Depok", sold: "700+",
-        image: "https://images.unsplash.com/photo-1558618047-3d37b5b01a6f?w=400&q=80",
+        image: "https://readymix.co.id/wp-content/uploads/2020/07/mengenal-jenis-dan-ciri-pasir-yang-bermutu.jpg",
         category: "Pasir", badge: "Sale"
     },
     {
         id: 9, name: "Keramik Lantai 40x40", brand: "Roman Ceramic", price: 45000,
         rating: 4.6, reviewCount: 2067, location: "Bogor", sold: "2rb+",
-        image: "https://images.unsplash.com/photo-1585553612405-c52e8f82c5a2?w=400&q=80",
+        image: "https://smb-padiumkm-images-public-prod.oss-ap-southeast-5.aliyuncs.com/product/image/20032024/631a5d63aa3096cbda2614ce/65f30e2ac6360da5e98b621a/f6f8d58320f60814313bdf7fb70a47.jpg?x-oss-process=image/resize,m_pad,w_432,h_432/quality,Q_70",
         category: "Keramik"
-    },
-    {
-        id: 10, name: "Semen Gresik OPC 50kg", brand: "Semen Gresik", price: 78000, originalPrice: 88000,
-        rating: 4.9, reviewCount: 5100, location: "Surabaya", sold: "4rb+",
-        image: "https://images.unsplash.com/photo-1590674899484-d5640e854abe?w=400&q=80",
-        category: "Semen"
-    },
-    {
-        id: 11, name: "Cat Kayu Avian 1kg", brand: "Avian", price: 45000,
-        rating: 4.5, reviewCount: 980, location: "Bandung", sold: "600+",
-        image: "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=400&q=80",
-        category: "Cat"
-    },
-    {
-        id: 12, name: "Pipa Galvanis 1/2\" (6m)", brand: "Spindo", price: 95000,
-        rating: 4.3, reviewCount: 712, location: "Jakarta Timur", sold: "500+",
-        image: "https://images.unsplash.com/photo-1563770660941-20978e870e26?w=400&q=80",
-        category: "Pipa"
-    },
+    }
 ];
 
 const sortOptions = [
@@ -90,10 +73,18 @@ const sortOptions = [
 ];
 
 export default function ProdukPage() {
+    const searchParams = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('recommended');
+
+    useEffect(() => {
+        const categoryParam = searchParams.get('category');
+        if (categoryParam) {
+            setSelectedCategory(categoryParam);
+        }
+    }, [searchParams]);
 
     const filtered = useMemo(() => {
         let result = [...allProducts];

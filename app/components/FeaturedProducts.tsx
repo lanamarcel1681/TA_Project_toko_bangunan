@@ -7,28 +7,28 @@ export default function FeaturedProducts() {
             name: "Bor Listrik Impact Drill",
             brand: "Bosch",
             price: "Rp 450.000",
-            image: "https://images.unsplash.com/photo-1595429035839-c99c298ffdde?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            image: "https://jendela360.com/info/wp-content/uploads/2023/05/makita-df-331.jpg"
         },
         {
             id: 2,
             name: "Cat Tembok Interior (25kg)",
             brand: "Dulux",
             price: "Rp 850.000",
-            image: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            image: "https://atlanticoceanpaint.com/wp-content/uploads/2019/03/Naturetone-Topcoat.jpg"
         },
         {
             id: 3,
             name: "Semen PCC (40kg)",
             brand: "Tiga Roda",
             price: "Rp 65.000",
-            image: "https://plus.unsplash.com/premium_photo-1664302152990-23919da60641?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60"
+            image: "https://www.tokotigaroda.com/images-data/product/4/pcc-bag-50kg.jpg"
         },
         {
             id: 4,
-            name: "Palu Kambing Baja",
+            name: "Palu Baja",
             brand: "Tekiro",
             price: "Rp 85.000",
-            image: "https://images.unsplash.com/photo-1504148455328-c376907d081c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80"
+            image: "https://superbangunan.co.id/wp-content/uploads/2025/06/CMART-CG0005-12-PALU-KAMBING-12-OZ.webp"
         }
     ];
 

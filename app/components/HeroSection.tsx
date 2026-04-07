@@ -24,11 +24,6 @@ export default function HeroSection() {
                                         Belanja Sekarang
                                     </Link>
                                 </div>
-                                <div className="mt-3 sm:mt-0 sm:ml-3">
-                                    <Link href="#kategori" className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-orange-700 bg-orange-100 hover:bg-orange-200 md:py-4 md:text-lg md:px-10">
-                                        Lihat Kategori
-                                    </Link>
-                                </div>
                             </div>
                         </div>
                     </main>

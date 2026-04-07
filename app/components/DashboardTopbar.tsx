@@ -30,9 +30,35 @@ export default function DashboardTopbar({ userName, role = "employee", isSidebar
 
     const getPageTitle = () => {
         if (pathname === '/dashboard/owner' || pathname === '/dashboard/karyawan') return 'Overview';
-        if (pathname.includes('/transaksi')) return 'Penjualan & Pembelian';
-        if (pathname.includes('/barang')) return 'Pencatatan Barang';
-        if (pathname.includes('/karyawan')) return 'Daftar Karyawan';
+
+        // --- Rute Owner ---
+        if (pathname.startsWith('/dashboard/owner')) {
+            if (pathname.includes('/laporan')) return 'Laporan & Statistik';
+            if (pathname.includes('/transaksi')) return 'Penjualan & Pembelian';
+            if (pathname.includes('/pembelian')) return 'Beli ke Supplier';
+            if (pathname.includes('/barang/persetujuan')) return 'Persetujuan Barang';
+            if (pathname.includes('/barang')) return 'Manajemen Barang';
+            if (pathname.includes('/stok')) return 'Manajemen Stok dan Opname';
+            if (pathname.includes('/karyawan')) return 'Daftar Karyawan';
+        }
+
+        // --- Rute Karyawan ---
+        if (pathname.startsWith('/dashboard/karyawan')) {
+            if (pathname.includes('/transaksi/penjualan')) return 'Transaksi Penjualan';
+            if (pathname.includes('/transaksi/verifikasi')) return 'Verifikasi Bayar';
+            if (pathname.includes('/transaksi/retur')) return 'Retur/Refund';
+            if (pathname.includes('/pembelian-supplier')) return 'Beli ke Supplier';
+            if (pathname.includes('/pengantaran')) return 'Pengantaran';
+            if (pathname.includes('/supplier')) return 'Data Supplier';
+            if (pathname.includes('/kategori')) return 'Kategori Barang';
+            if (pathname.includes('/barang/usulan')) return 'Usulan Barang';
+            if (pathname.includes('/barang')) return 'Data Barang';
+            if (pathname.includes('/stok')) return 'Stock Opname';
+            if (pathname.includes('/presensi')) return 'Presensi';
+        }
+
+        if (pathname.includes('/profil')) return 'Profil Saya';
+
         return 'Dashboard';
     };
 
@@ -106,9 +132,8 @@ export default function DashboardTopbar({ userName, role = "employee", isSidebar
                                 <p className="text-xs text-gray-500 capitalize mt-0.5">{role === 'owner' ? 'Pemilik Toko' : 'Karyawan'}</p>
                             </div>
 
-                            {/* Dropdown Links */}
                             <Link
-                                href="/dashboard/profil"
+                                href={role === 'owner' ? '/dashboard/owner/profil' : '/dashboard/karyawan/profil'}
                                 className="flex items-center gap-3 px-4 py-2 text-sm text-gray-600 hover:bg-orange-50 hover:text-orange-600 transition-colors w-full"
                                 onClick={() => setIsDropdownOpen(false)}
                             >
