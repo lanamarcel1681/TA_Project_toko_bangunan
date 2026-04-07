@@ -153,7 +153,7 @@ export default function AlamatPembeliPage() {
                     <div className="flex-1 bg-white rounded-2xl shadow-sm border border-gray-100 min-h-[500px] overflow-hidden p-8">
                         <div className="flex justify-between items-center mb-6 pb-4 border-b border-gray-100">
                             <h2 className="text-xl font-bold text-gray-800">Buku Alamat</h2>
-                            <button onClick={() => setIsAddModalOpen(true)} className="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold shadow-lg shadow-orange-500/30 transition-all text-sm">
+                            <button id="btn-tambah-alamat" onClick={() => setIsAddModalOpen(true)} className="bg-orange-600 hover:bg-orange-700 text-white px-5 py-2.5 rounded-xl flex items-center gap-2 font-semibold shadow-lg shadow-orange-500/30 transition-all text-sm">
                                 <Plus className="w-5 h-5" /> Tambah Alamat
                             </button>
                         </div>
@@ -238,8 +238,8 @@ export default function AlamatPembeliPage() {
                             </div>
                         </div>
                         <div className="p-5 border-t border-gray-100 flex justify-end gap-3 bg-gray-50/50">
-                            <button onClick={() => setIsAddModalOpen(false)} className="px-5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors">Batal</button>
-                            <button onClick={handleSave} className="px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold shadow-lg shadow-orange-500/30 transition-all">Simpan Alamat</button>
+                            <button id="btn-batal" type="button" onClick={() => setIsAddModalOpen(false)} className="px-5 py-2.5 rounded-xl border border-gray-300 text-sm font-semibold text-gray-700 hover:bg-gray-100 transition-colors">Batal</button>
+                            <button id="btn-simpan-alamat" type="button" onClick={handleSave} className="px-5 py-2.5 rounded-xl bg-orange-600 hover:bg-orange-700 text-white text-sm font-semibold shadow-lg shadow-orange-500/30 transition-all">Simpan Alamat</button>
                         </div>
                     </div>
                 </div>
