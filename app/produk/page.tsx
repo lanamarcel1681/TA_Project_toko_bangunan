@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from 'react';
+import { useState, useMemo, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
@@ -72,7 +72,7 @@ const sortOptions = [
     { value: 'sold', label: 'Terlaris' },
 ];
 
-export default function ProdukPage() {
+function ProdukContent() {
     const searchParams = useSearchParams();
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
@@ -174,5 +174,13 @@ export default function ProdukPage() {
             </main>
             <Footer />
         </div>
+    );
+}
+
+export default function ProdukPage() {
+    return (
+        <Suspense fallback={<div className="min-h-screen bg-gray-50 flex items-center justify-center">Merekam data...</div>}>
+            <ProdukContent />
+        </Suspense>
     );
 }
