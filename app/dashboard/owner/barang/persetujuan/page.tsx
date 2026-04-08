@@ -1,12 +1,44 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import {
     CheckCircle, XCircle, PackagePlus, User, Clock,
     ArrowRight, Check, X, Eye, FileSearch, Activity
 } from 'lucide-react';
 
 export default function PersetujuanBarangPage() {
-    const pendingItems = [1, 2, 3];
+    const [pendingItems, setPendingItems] = useState([
+        { id: 'REQ-091', name: 'Semen Gresik 40kg', requester: 'Budi (Gudang)', reason: 'Penambahan stok untuk kebutuhan proyek renovasi retail bulan depan.' },
+        { id: 'REQ-090', name: 'Cat Nippon Paint Vinilex 5kg', requester: 'Agus (Pembelian)', reason: 'Restock produk cat warna dasar karena stok menipis.' },
+        { id: 'REQ-089', name: 'Keramik Roman 40x40', requester: 'Siti (Gudang)', reason: 'Permintaan keramik lantai untuk kategori baru.' }
+    ]);
+
+    const [historyItems, setHistoryItems] = useState([
+        { id: 'REQ-088', name: 'Besi Beton 12mm SNI', requester: 'Siti (Gudang)', date: '30 Mar 2026', status: 'Approved' },
+        { id: 'REQ-087', name: 'Cat Dulux Gloss 5L', requester: 'Budi (Sales)', date: '29 Mar 2026', status: 'Rejected' },
+        { id: 'REQ-086', name: 'Paku Kayu 3 Inch', requester: 'Andi (Gudang)', date: '28 Mar 2026', status: 'Approved' },
+    ]);
+
+    const handleApprove = (item: any) => {
+        setPendingItems(prev => prev.filter(p => p.id !== item.id));
+        setHistoryItems(prev => [{
+            id: item.id,
+            name: item.name,
+            requester: item.requester,
+            date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+            status: 'Approved'
+        }, ...prev]);
+    };
+
+    const handleReject = (item: any) => {
+        setPendingItems(prev => prev.filter(p => p.id !== item.id));
+        setHistoryItems(prev => [{
+            id: item.id,
+            name: item.name,
+            requester: item.requester,
+            date: new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+            status: 'Rejected'
+        }, ...prev]);
+    };
 
     return (
         <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
@@ -38,7 +70,7 @@ export default function PersetujuanBarangPage() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {pendingItems.map(item => (
-                        <div key={item} className="bg-white rounded-[40px] border border-gray-100 shadow-xl hover:shadow-2xl hover:border-orange-100 transition-all duration-300 group p-10 relative overflow-hidden flex flex-col justify-between">
+                        <div key={item.id} className="bg-white rounded-[40px] border border-gray-100 shadow-xl hover:shadow-2xl hover:border-orange-100 transition-all duration-300 group p-10 relative overflow-hidden flex flex-col justify-between">
                             {/* Decorative Background Element */}
                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50/30 rounded-full blur-3xl -mr-16 -mt-16 opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
@@ -51,26 +83,38 @@ export default function PersetujuanBarangPage() {
                                         Status: Pending
                                     </span>
                                 </div>
-                                <h3 className="text-2xl font-black text-gray-900 tracking-tight mb-2 group-hover:text-orange-600 transition-colors">Semen Putih {item}0kg</h3>
+                                <div className="mb-2">
+                                    <h3 className="text-2xl font-black text-gray-900 tracking-tight group-hover:text-orange-600 transition-colors">{item.name}</h3>
+                                    <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest">#{item.id}</p>
+                                </div>
                                 <div className="flex items-center gap-2 mb-6">
                                     <div className="w-6 h-6 bg-gray-100 rounded-full flex items-center justify-center">
                                         <User className="w-3.5 h-3.5 text-gray-400" />
                                     </div>
-                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Diusulkan oleh: <span className="text-gray-900">Budi (Gudang)</span></p>
+                                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Diusulkan oleh: <span className="text-gray-900">{item.requester}</span></p>
                                 </div>
                                 <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 mb-2">
-                                    <p className="text-xs font-bold text-gray-500 italic leading-relaxed">"Penambahan stok untuk kebutuhan proyek renovasi retail bulan depan."</p>
+                                    <p className="text-xs font-bold text-gray-500 italic leading-relaxed">"{item.reason}"</p>
                                 </div>
                             </div>
 
                             <div className="relative z-10 flex items-center gap-3 pt-6 border-t border-gray-50">
-                                <button className="w-12 h-12 bg-white text-gray-400 hover:text-red-500 border border-gray-100 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:border-red-100 hover:shadow-sm group/btn">
+                                <button 
+                                    onClick={() => handleReject(item)}
+                                    className="w-12 h-12 bg-white text-gray-400 hover:text-red-500 border border-gray-100 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:border-red-100 hover:shadow-sm group/btn"
+                                >
                                     <X className="w-5 h-5 group-hover/btn:rotate-90 transition-transform" />
                                 </button>
-                                <button className="flex-1 h-12 bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-orange-50 hover:text-orange-600 border border-transparent rounded-xl flex items-center justify-center transition-all active:scale-[0.98]">
+                                <button 
+                                    onClick={() => alert(`Mereview spesifikasi untuk ${item.name}`)}
+                                    className="flex-1 h-12 bg-gray-50 text-[10px] font-black uppercase tracking-widest text-gray-400 hover:bg-orange-50 hover:text-orange-600 border border-transparent rounded-xl flex items-center justify-center transition-all active:scale-[0.98]"
+                                >
                                     Review Spek &rarr;
                                 </button>
-                                <button className="w-12 h-12 bg-white text-green-500 border border-gray-100 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-green-500 hover:text-white hover:border-green-500 shadow-sm group/btn">
+                                <button 
+                                    onClick={() => handleApprove(item)}
+                                    className="w-12 h-12 bg-white text-green-500 border border-gray-100 rounded-xl flex items-center justify-center transition-all active:scale-95 hover:bg-green-500 hover:text-white hover:border-green-500 shadow-sm group/btn"
+                                >
                                     <Check className="w-5 h-5 group-hover/btn:scale-125 transition-transform" />
                                 </button>
                             </div>
@@ -101,11 +145,7 @@ export default function PersetujuanBarangPage() {
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50">
-                                {[
-                                    { id: 'REQ-088', name: 'Besi Beton 12mm SNI', requester: 'Siti (Gudang)', date: '30 Mar 2026', status: 'Approved' },
-                                    { id: 'REQ-087', name: 'Cat Dulux Gloss 5L', requester: 'Budi (Sales)', date: '29 Mar 2026', status: 'Rejected' },
-                                    { id: 'REQ-086', name: 'Paku Kayu 3 Inch', requester: 'Andi (Gudang)', date: '28 Mar 2026', status: 'Approved' },
-                                ].map((row, i) => (
+                                {historyItems.map((row, i) => (
                                     <tr key={i} className="hover:bg-orange-50/30 transition-all duration-300 group/row">
                                         <td className="px-10 py-6">
                                             <p className="font-black text-gray-900 text-sm tracking-tight mb-1">{row.name}</p>
