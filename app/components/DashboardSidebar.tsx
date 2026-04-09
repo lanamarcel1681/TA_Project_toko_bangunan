@@ -47,7 +47,8 @@ export default function DashboardSidebar({ userName, role, isExpanded, setIsExpa
 
     async function handleLogout() {
         await fetch('/api/auth/logout', { method: 'POST' });
-        router.push('/login');
+        document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+        window.location.href = '/login';
     }
 
     return (
