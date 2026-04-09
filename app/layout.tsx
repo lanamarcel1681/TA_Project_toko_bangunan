@@ -45,7 +45,7 @@ export default function RootLayout({
                 if (v) s.setAttribute('nonce', v);
                 a.getElementsByTagName('head')[0].appendChild(s);
                 m.mazeUniversalSnippetApiKey = e;
-              })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', 'c5108e1a-fa08-4a0c-9025-984cf76b9cec');
+              })(window, document, 'https://snippet.maze.co/maze-universal-loader.js', 'beb006e6-9a91-4e39-a159-0b633160635e');
             `
           }}
         />
