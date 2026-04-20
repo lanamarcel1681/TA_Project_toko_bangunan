@@ -1,0 +1,337 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model PresensiPegawai {
+  id_presensi  Int       @id @default(autoincrement())
+  id_pegawai   Int
+  tanggal      DateTime  @db.Date
+  waktu_masuk  DateTime  @db.Time
+  waktu_keluar DateTime? @db.Time
+
+  pegawai      Pegawai   @relation(fields: [id_pegawai], references: [id_pegawai])
+
+  @@map("Presensi_Pegawai")
+}
+
+model PengajuanIzin {
+  id_izin         Int      @id @default(autoincrement())
+  id_pegawai      Int
+  tanggal_mulai   DateTime @db.Date
+  tanggal_selesai DateTime @db.Date
+  jenis_izin      String   @db.VarChar(50)
+  keterangan      String   @db.Text
+
+  status_izin     String   @default("Pending") @db.VarChar(50)
+
+  pegawai         Pegawai  @relation(fields: [id_pegawai], references: [id_pegawai])
+
+  @@map("Pengajuan_Izin")
+}
+
+model Jabatan {
+  id_jabatan   Int       @id @default(autoincrement())
+  nama_jabatan String    @db.VarChar(100)
+
+  pegawai      Pegawai[]
+
+  @@map("Jabatan")
+}
+
+model Pegawai {
+  id_pegawai       Int      @id @default(autoincrement())
+  id_jabatan       Int
+  nama_pegawai     String   @db.VarChar(100)
+  tanggal_lahir    String   @db.VarChar(20)
+  nomor_telepon    String   @db.VarChar(20)
+  email_pegawai    String   @db.VarChar(100) @unique
+  password_pegawai String   @db.VarChar(255)
+  foto_profil      String?  @db.VarChar(255)
+  status_pegawai   String   @default("Aktif") @db.VarChar(50)
+
+  jabatan          Jabatan  @relation(fields: [id_jabatan], references: [id_jabatan])
+  presensi         PresensiPegawai[]
+  pengajuan_izin   PengajuanIzin[]
+  transaksi_beli   TransaksiPembelianBarang[]
+  pengiriman       Pengiriman[]
+  transaksi_jual   TransaksiPenjualanBarang[]
+  usulan_barang    UsulanBarang[]
+  stok_opname      StokOpname[]
+
+  @@map("Pegawai")
+}
+
+model Supplier {
+  id_supplier              Int      @id @default(autoincrement())
+  nama_supplier            String   @db.VarChar(100)
+  nomor_telepon_supplier   String   @db.VarChar(20)
+  tanggal_lahir_supplier   String   @db.VarChar(20)
+  nama_perusahaan_supplier String   @db.VarChar(100)
+
+  transaksi_beli           TransaksiPembelianBarang[]
+  barang_supplier          BarangSupplier[]
+
+  @@map("Supplier")
+}
+
+model TransaksiPembelianBarang {
+  id_transaksipembelian Int      @id @default(autoincrement())
+  id_supplier           Int
+  id_pegawai            Int
+  total_biaya           Float
+  tanggal_pembelian     DateTime @db.DateTime(0)
+
+  supplier              Supplier @relation(fields: [id_supplier], references: [id_supplier])
+  pegawai               Pegawai  @relation(fields: [id_pegawai], references: [id_pegawai])
+  detail                DetailTransaksiPembelianBarang[]
+
+  @@map("TransaksiPembelian_Barang")
+}
+
+model DetailTransaksiPembelianBarang {
+  id_detailtransaksipembelian Int      @id @default(autoincrement())
+  id_transaksipembelian       Int
+  id_barang                   Int
+  jumlah_pembelian_barang     Float
+  harga_satuan_barang         Float
+
+  transaksi                   TransaksiPembelianBarang @relation(fields: [id_transaksipembelian], references: [id_transaksipembelian])
+  barang                      Barang                   @relation(fields: [id_barang], references: [id_barang])
+
+  @@map("DetailTransaksiPembelian_Barang")
+}
+
+model Pembayaran {
+  id_pembayaran          Int      @id @default(autoincrement())
+  id_transaksipenjualan  Int
+  tanggal_pembayaran     DateTime @db.DateTime(0)
+  foto_bukti_pembayaran  String   @db.VarChar(255)
+  status_pembayaran      String   @db.VarChar(50)
+
+  transaksi              TransaksiPenjualanBarang @relation(fields: [id_transaksipenjualan], references: [id_transaksipenjualan])
+
+  @@map("Pembayaran")
+}
+
+model Alamat {
+  id_alamat        Int      @id @default(autoincrement())
+  id_pembeli       Int
+  nama_jalan       String   @db.VarChar(255)
+  kode_pos         String   @db.VarChar(20)
+  kecamatan        String   @db.VarChar(100)
+  kelurahan        String   @db.VarChar(100)
+  status_default   String   @db.VarChar(10)
+  kabupaten        String   @db.VarChar(100)
+  deskripsi_alamat String   @db.VarChar(255)
+  label_alamat     String   @default("Rumah") @db.VarChar(50)
+
+  pembeli          Pembeli  @relation(fields: [id_pembeli], references: [id_pembeli])
+
+  @@map("Alamat")
+}
+
+model Pengiriman {
+  id_pengiriman          Int       @id @default(autoincrement())
+  id_transaksipenjualan  Int
+  id_pegawai             Int?
+  tanggal_berangkat      DateTime? @db.DateTime(0)
+  status_pengiriman      String    @db.VarChar(50)
+  tanggal_sampai         DateTime? @db.DateTime(0)
+  catatan_pengiriman     String?   @db.Text
+
+  transaksi              TransaksiPenjualanBarang @relation(fields: [id_transaksipenjualan], references: [id_transaksipenjualan])
+  pegawai                Pegawai?  @relation(fields: [id_pegawai], references: [id_pegawai])
+
+  @@map("Pengiriman")
+}
+
+model TransaksiPenjualanBarang {
+  id_transaksipenjualan  Int      @id @default(autoincrement())
+  id_pembeli             Int
+  id_pegawai             Int?
+  tanggal_penjualan      DateTime @db.DateTime(0)
+  ongkos_kirim           Float
+  status_penjualan       String   @db.VarChar(50)
+  metode_pengantaran     String   @db.VarChar(50)
+  alasan_retur           String?  @db.Text
+  foto_retur             String?  @db.VarChar(255)
+
+  pembeli                Pembeli  @relation(fields: [id_pembeli], references: [id_pembeli])
+  pegawai                Pegawai? @relation(fields: [id_pegawai], references: [id_pegawai])
+  pembayaran             Pembayaran[]
+  pengiriman             Pengiriman[]
+  detail                 DetailTransaksiPenjualanBarang[]
+
+  @@map("TransaksiPenjualan_Barang")
+}
+
+model DetailTransaksiPenjualanBarang {
+  id_detailtransaksipenjualan Int      @id @default(autoincrement())
+  id_transaksipenjualan       Int
+  id_barang                   Int
+  total_harga                 Float
+  jumlah_penjualan_barang     Int
+
+  transaksi                   TransaksiPenjualanBarang @relation(fields: [id_transaksipenjualan], references: [id_transaksipenjualan])
+  barang                      Barang                   @relation(fields: [id_barang], references: [id_barang])
+  ulasan                      UlasanBarang[]
+
+  @@map("DetailTransaksiPenjualan_Barang")
+}
+
+model UlasanBarang {
+  id_ulasan                   Int      @id @default(autoincrement())
+  id_detailtransaksipenjualan Int
+  id_pembeli                  Int
+  id_barang                   Int
+  rating                      Int
+  komentar                    String   @db.Text
+  tanggal_ulasan              DateTime @db.DateTime(0)
+
+  detail_transaksi            DetailTransaksiPenjualanBarang @relation(fields: [id_detailtransaksipenjualan], references: [id_detailtransaksipenjualan])
+  pembeli                     Pembeli  @relation(fields: [id_pembeli], references: [id_pembeli])
+  barang                      Barang   @relation(fields: [id_barang], references: [id_barang])
+
+  @@map("Ulasan_Barang")
+}
+
+model Pembeli {
+  id_pembeli             Int      @id @default(autoincrement())
+  nama_pembeli           String   @db.VarChar(100)
+  nomor_telepon_pembeli  String   @db.VarChar(20)
+  tanggal_lahir_pembeli  String   @db.VarChar(20)
+  email_pembeli          String   @db.VarChar(100) @unique
+  password_pembeli       String   @db.VarChar(255)
+  foto_profil            String?  @db.VarChar(255)
+
+  transaksi_jual         TransaksiPenjualanBarang[]
+  alamat                 Alamat[]
+  keranjang              Keranjang[]
+  ulasan                 UlasanBarang[]
+
+  @@map("Pembeli")
+}
+
+model Keranjang {
+  id_keranjang           Int      @id @default(autoincrement())
+  id_pembeli             Int
+  id_barang              Int
+  jumlah_barang          Int
+
+  pembeli                Pembeli  @relation(fields: [id_pembeli], references: [id_pembeli])
+  barang                 Barang   @relation(fields: [id_barang], references: [id_barang])
+
+  @@map("Keranjang")
+}
+
+model KategoriBarang {
+  id_kategori_barang     Int      @id @default(autoincrement())
+  nama_kategori          String   @db.VarChar(100)
+
+  barang                 Barang[]
+  usulan_barang          UsulanBarang[]
+
+  @@map("Kategori_Barang")
+}
+
+model SatuanBarang {
+  id_satuan_barang       Int      @id @default(autoincrement())
+  satuan_barang          String   @db.VarChar(50)
+
+  barang                 Barang[]
+
+  @@map("Satuan_Barang")
+}
+
+model Barang {
+  id_barang              Int      @id @default(autoincrement())
+  id_kategori_barang     Int
+  id_satuan_barang       Int
+  nama_barang            String   @db.VarChar(150)
+  harga_barang           Float
+  stok_barang            Int
+  deskripsi_barang       String   @db.Text
+  foto_barang            String?  @db.VarChar(255)
+  status_barang          String   @db.VarChar(50)
+  berat_barang           Float
+  minimum_barang         Float
+  dimensi_barang         String?  @db.VarChar(100)
+  merk_barang            String?  @db.VarChar(100)
+
+  kategori               KategoriBarang @relation(fields: [id_kategori_barang], references: [id_kategori_barang])
+  satuan                 SatuanBarang   @relation(fields: [id_satuan_barang], references: [id_satuan_barang])
+  detail_beli            DetailTransaksiPembelianBarang[]
+  detail_jual            DetailTransaksiPenjualanBarang[]
+  keranjang              Keranjang[]
+  ulasan                 UlasanBarang[]
+  detail_opname          DetailStokOpname[]
+  barang_supplier        BarangSupplier[]
+
+  @@map("Barang")
+}
+
+model UsulanBarang {
+  id_usulan_barang     Int      @id @default(autoincrement())
+  id_pegawai           Int
+  id_kategori_barang   Int
+  nama_barang_usulan   String   @db.VarChar(150)
+  deskripsi_usulan     String   @db.Text
+  tanggal_usulan       DateTime @db.DateTime(0)
+  status_usulan        String   @default("Pending") @db.VarChar(50)
+  harga_beli_perkiraan Float
+  harga_jual_perkiraan Float
+
+  pegawai            Pegawai        @relation(fields: [id_pegawai], references: [id_pegawai])
+  kategori           KategoriBarang @relation(fields: [id_kategori_barang], references: [id_kategori_barang])
+
+  @@map("Usulan_Barang")
+}
+
+model StokOpname {
+  id_opname          Int      @id @default(autoincrement())
+  id_pegawai         Int
+  tanggal_opname     DateTime @db.DateTime(0)
+  status_dokumen     String   @db.VarChar(50)
+  tanggal_sampai     DateTime? @db.DateTime(0)
+  catatan_pengiriman String?   @db.Text
+
+  pegawai            Pegawai  @relation(fields: [id_pegawai], references: [id_pegawai])
+  detail_opname      DetailStokOpname[]
+
+  @@map("Stok_Opname")
+}
+
+model DetailStokOpname {
+  id_detail_opname   Int      @id @default(autoincrement())
+  id_opname          Int
+  id_barang          Int
+  stok_fisik         Int
+  keterangan_temuan  String?  @db.Text
+  selisih            Int
+
+  stok_opname        StokOpname @relation(fields: [id_opname], references: [id_opname])
+  barang             Barang     @relation(fields: [id_barang], references: [id_barang])
+
+  @@map("Detail_Stok_Opname")
+}
+
+model BarangSupplier {
+  id_barang    Int
+  id_supplier  Int
+  barang       Barang   @relation(fields: [id_barang], references: [id_barang], onDelete: Cascade)
+  supplier     Supplier @relation(fields: [id_supplier], references: [id_supplier], onDelete: Cascade)
+
+  @@id([id_barang, id_supplier])
+  @@map("Barang_Supplier")
+}

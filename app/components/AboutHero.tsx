@@ -16,7 +16,7 @@ export default function AboutHero() {
                         <div className="space-y-6 text-lg text-gray-500">
                             <h3 className="text-2xl font-bold text-gray-900">Sejarah Kami</h3>
                             <p>
-                                Bangunan Jaya didirikan dengan visi sederhana: menyediakan bahan bangunan berkualitas tinggi yang mudah diakses oleh semua orang, mulai dari pemilik rumah yang ingin merenovasi hingga kontraktor besar yang membangun gedung pencakar langit.
+                                TB. Lumbung Jaya didirikan dengan visi sederhana: menyediakan bahan bangunan berkualitas tinggi yang mudah diakses oleh semua orang, mulai dari pemilik rumah yang ingin merenovasi hingga kontraktor besar yang membangun gedung pencakar langit.
                             </p>
                             <p>
                                 Kami percaya bahwa setiap proyek konstruksi dimulai dengan fondasi yang kuat, dan itu berarti menggunakan material terbaik. Tim kami berdedikasi untuk mengkurasi produk-produk unggulan yang tidak hanya tahan lama tetapi juga ramah lingkungan dan efisien.

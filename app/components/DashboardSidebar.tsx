@@ -21,7 +21,8 @@ const ownerNav = [
     { href: '/dashboard/owner/barang', label: 'Manajemen Barang', icon: PackageSearch },
     { href: '/dashboard/owner/barang/persetujuan', label: 'Persetujuan Barang', icon: PackageCheck },
     { href: '/dashboard/owner/stok', label: 'Manajemen Stok dan Opname', icon: PackageSearch },
-    { href: '/dashboard/owner/karyawan', label: 'Daftar Karyawan', icon: Users }
+    { href: '/dashboard/owner/karyawan', label: 'Daftar Karyawan', icon: Users },
+    { href: '/dashboard/owner/karyawan/presensi', label: 'Presensi & Izin', icon: CalendarCheck }
 ];
 
 const employeeNav = [

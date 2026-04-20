@@ -2,47 +2,68 @@
 import React, { useState, useEffect } from 'react';
 import { 
     Package, AlertTriangle, TrendingUp, Clock, 
-    ArrowUpRight, ArrowDownRight, Box, LayoutGrid 
+    ArrowUpRight, ArrowDownRight, Box, LayoutGrid, RefreshCw 
 } from 'lucide-react';
 
-const stockItems = [
-    { name: 'Semen Portland Tiga Roda 40kg', category: 'Semen', stock: 320, unit: 'sak', status: 'ok' },
-    { name: 'Besi Beton Ulir 10mm', category: 'Besi', stock: 150, unit: 'batang', status: 'ok' },
-    { name: 'Cat Tembok Dulux 5kg', category: 'Cat', stock: 45, unit: 'kaleng', status: 'low' },
-    { name: 'Genteng Keramik KIA', category: 'Genteng', stock: 50, unit: 'buah', status: 'low' },
-    { name: 'Pipa PVC Wavin 3"', category: 'Pipa', stock: 200, unit: 'batang', status: 'ok' },
-    { name: 'Bata Merah Lokal', category: 'Bata', stock: 5000, unit: 'buah', status: 'ok' },
-];
-
-const todayActivity = [
-    { type: 'masuk', item: 'Semen Portland 40kg', qty: 100, unit: 'sak', time: '08:15' },
-    { type: 'keluar', item: 'Cat Tembok Dulux 5kg', qty: 10, unit: 'kaleng', time: '09:30' },
-    { type: 'keluar', item: 'Besi Beton Ulir 10mm', qty: 30, unit: 'batang', time: '11:00' },
-    { type: 'masuk', item: 'Pipa PVC Wavin 3"', qty: 50, unit: 'batang', time: '13:45' },
-    { type: 'keluar', item: 'Genteng Keramik KIA', qty: 200, unit: 'buah', time: '14:20' },
-];
-
 export default function KaryawanDashboard() {
-    const lowStock = stockItems.filter(i => i.status === 'low').length;
-    const totalItems = stockItems.length;
+    const [data, setData] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/dashboard/stats');
+            const result = await res.json();
+            setData(result.karyawan);
+        } catch (error) {
+            console.error('Fetch error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    if (loading && !data) {
+        return (
+            <div className="p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
+                <RefreshCw className="w-10 h-10 text-blue-600 animate-spin" />
+            </div>
+        );
+    }
+
+    const lowStock = data?.lowStockCount || 0;
+    const totalItems = data?.totalItems || 0;
+    const stockItems = data?.stockItems || [];
+    const todayActivity = data?.todayActivity || [];
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in duration-700">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Ringkasan Operasional</h1>
                     <p className="text-gray-500 font-medium">Selamat datang kembali! Berikut status inventaris dan aktivitas gudang hari ini.</p>
                 </div>
-                <div className="flex bg-white px-6 py-4 rounded-3xl border border-gray-100 shadow-sm items-center gap-4">
-                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
-                        <Clock className="w-5 h-5" />
-                    </div>
-                    <div>
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">Waktu Sistem</p>
-                        <p className="text-sm font-black text-gray-800 leading-tight mt-0.5">
-                            {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
-                        </p>
+                <div className="flex items-center gap-4">
+                    <button 
+                        onClick={fetchData}
+                        className="p-4 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-blue-600 transition-all shadow-sm active:scale-95"
+                    >
+                        <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
+                    </button>
+                    <div className="flex bg-white px-6 py-4 rounded-3xl border border-gray-100 shadow-sm items-center gap-4">
+                        <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                            <Clock className="w-5 h-5" />
+                        </div>
+                        <div>
+                            <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-tight">Waktu Sistem</p>
+                            <p className="text-sm font-black text-gray-800 leading-tight mt-0.5">
+                                {new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long' })}
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -98,13 +119,10 @@ export default function KaryawanDashboard() {
                             </div>
                             <h4 className="font-black text-gray-900 tracking-tight">Status Stok Inventaris</h4>
                         </div>
-                        <button className="text-[10px] font-black text-blue-600 uppercase tracking-widest hover:bg-blue-50 px-4 py-2 rounded-full transition-all">
-                            Lihat Semua &rarr;
-                        </button>
                     </div>
                     <div className="p-4">
                         <div className="space-y-2">
-                            {stockItems.map((item, i) => (
+                            {stockItems.map((item: any, i: number) => (
                                 <div key={i} className="flex items-center justify-between p-5 rounded-[24px] bg-gray-50/50 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group">
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
@@ -127,6 +145,11 @@ export default function KaryawanDashboard() {
                                     </div>
                                 </div>
                             ))}
+                            {!stockItems.length && (
+                                <div className="text-center py-10 text-gray-400 font-bold uppercase tracking-widest text-[10px]">
+                                    Belum ada data barang
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -143,7 +166,7 @@ export default function KaryawanDashboard() {
                     </div>
                     <div className="p-8">
                         <div className="relative space-y-8 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-100">
-                            {todayActivity.map((act, i) => (
+                            {todayActivity.map((act: any, i: number) => (
                                 <div key={i} className="relative flex items-start gap-6 group">
                                     <div className={`mt-0.5 relative z-10 flex-shrink-0 w-10 h-10 rounded-2xl border-4 border-white shadow-sm flex items-center justify-center transition-all group-hover:scale-110 ${
                                         act.type === 'masuk' ? 'bg-green-500 text-white' : 'bg-orange-500 text-white'
@@ -157,13 +180,18 @@ export default function KaryawanDashboard() {
                                             }`}>
                                                 {act.type === 'masuk' ? 'Barang Masuk' : 'Barang Keluar'}
                                             </p>
-                                            <span className="text-[10px] font-black text-gray-300 font-mono tracking-tighter">{act.time} WIB</span>
+                                            <span className="text-[10px] font-black text-gray-300 font-mono tracking-tighter">{act.time}</span>
                                         </div>
                                         <p className="text-sm font-black text-gray-800 leading-tight mb-1">{act.item}</p>
                                         <p className="text-[11px] font-bold text-gray-400">{act.qty} {act.unit} telah diolah sistem</p>
                                     </div>
                                 </div>
                             ))}
+                            {!todayActivity.length && (
+                                <div className="text-center py-10 text-gray-400 font-bold uppercase tracking-widest text-[10px]">
+                                    Belum ada aktivitas hari ini
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -171,4 +199,3 @@ export default function KaryawanDashboard() {
         </div>
     );
 }
-

@@ -2,7 +2,6 @@ import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import BrandMarquee from './components/BrandMarquee';
 import Features from './components/Features';
-import Categories from './components/Categories';
 import FeaturedProducts from './components/FeaturedProducts';
 import Footer from './components/Footer';
 
@@ -13,7 +12,6 @@ export default function Home() {
       <HeroSection />
       <BrandMarquee />
       <Features />
-      <Categories />
       <FeaturedProducts />
       <Footer />
     </div>

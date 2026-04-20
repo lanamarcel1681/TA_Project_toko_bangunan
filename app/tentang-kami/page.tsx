@@ -4,8 +4,8 @@ import AboutBrands from '../components/AboutBrands';
 import Footer from '../components/Footer';
 
 export const metadata = {
-    title: 'Tentang Kami - Toko Bangunan Jaya',
-    description: 'Sejarah dan komitmen Toko Bangunan Jaya.',
+    title: 'Tentang Kami - Toko TB. Lumbung Jaya',
+    description: 'Sejarah dan komitmen Toko TB. Lumbung Jaya.',
 };
 
 export default function TentangKami() {

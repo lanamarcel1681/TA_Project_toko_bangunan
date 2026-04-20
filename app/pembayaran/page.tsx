@@ -37,7 +37,7 @@ export default function PembayaranPage() {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
     const bankAccount = {
         number: '137-00-1111-2222',
-        owner: 'PT BANGUNAN JAYA MAKMUR',
+        owner: 'TB. Lumbung Jaya',
         bank: 'MANDIRI'
     };
 
@@ -174,7 +174,7 @@ export default function PembayaranPage() {
                                     </div>
                                     <div>
                                         <div className="flex items-center text-base font-bold text-gray-900 mb-1">
-                                            Toko Bangunan Jaya Makmur
+                                            Toko TB. Lumbung Jaya
                                         </div>
                                         <p className="text-gray-600 text-sm leading-relaxed pr-8 mb-3">
                                             Jl. Sampaan - Berbah, Berbah, Tegaltirto, Kec. Berbah, Kabupaten Sleman, Daerah Istimewa Yogyakarta 55573
@@ -200,7 +200,7 @@ export default function PembayaranPage() {
                                 <div className="w-5 h-5 bg-orange-600 rounded-full flex items-center justify-center mr-2">
                                     <span className="text-white text-xs font-bold">B</span>
                                 </div>
-                                <span className="font-bold text-gray-900 text-sm">Bangunan Jaya</span>
+                                <span className="font-bold text-gray-900 text-sm">TB. Lumbung Jaya</span>
                             </div>
 
                             {/* Daftar Produk */}
@@ -314,7 +314,7 @@ export default function PembayaranPage() {
                                     <div className="mt-3 p-4 bg-white rounded-2xl border border-orange-100 shadow-sm flex flex-col items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300">
                                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest mb-3 leading-none text-center">SCAN QR CODE DI BAWAH INI</p>
                                         <img src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg" alt="QRIS Code" className="w-40 h-40 object-contain mb-2" />
-                                        <p className="text-xs font-bold text-gray-700">PT BANGUNAN JAYA MAKMUR</p>
+                                        <p className="text-xs font-bold text-gray-700">TB. Lumbung Jaya</p>
                                     </div>
                                 )}
                             </label>
@@ -399,7 +399,7 @@ export default function PembayaranPage() {
                                             <div className="relative mx-auto rounded-lg overflow-hidden flex flex-col items-center">
                                                 <img src={previewUrl} alt="Preview Bukti" className="h-40 object-contain rounded-md border border-gray-200" />
                                                 <p className="mt-2 text-sm text-green-600 font-medium truncate w-full px-4">{buktiPembayaran?.name}</p>
-                                                <button 
+                                                <button
                                                     onClick={(e) => {
                                                         e.preventDefault();
                                                         setBuktiPembayaran(null);

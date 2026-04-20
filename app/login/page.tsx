@@ -19,19 +19,29 @@ export default function LoginPage() {
         const email = (form.elements.namedItem('email') as HTMLInputElement).value;
         const password = (form.elements.namedItem('password') as HTMLInputElement).value;
 
-        // Dummy frontend login logic
-        if (email === 'pemilik@bangunan.com' && password === 'pemilik123') {
-            document.cookie = `session=${JSON.stringify({ email, role: 'owner' })}; path=/`;
-            window.location.href = '/dashboard/owner';
-        } else if (email === 'karyawan@bangunan.com' && password === 'karyawan123') {
-            document.cookie = `session=${JSON.stringify({ email, role: 'karyawan' })}; path=/`;
-            window.location.href = '/dashboard/karyawan';
-        } else if (email === 'pengguna@bangunan.com' && password === 'pengguna123') {
-            // New user role
-            document.cookie = `session=${JSON.stringify({ email, role: 'pembeli' })}; path=/`;
-            window.location.href = '/';
-        } else {
-            setError('Email atau password salah');
+        try {
+            const res = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                if (data.role === 'owner') {
+                    router.push('/dashboard/owner');
+                } else if (data.role === 'karyawan') {
+                    router.push('/dashboard/karyawan');
+                } else {
+                    router.push('/');
+                }
+            } else {
+                setError(data.error || 'Email atau password salah');
+                setLoading(false);
+            }
+        } catch (err) {
+            setError('Terjadi kesalahan saat menghubungi server');
             setLoading(false);
         }
     }
@@ -50,24 +60,23 @@ export default function LoginPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                             </div>
-                            <span className="text-sm font-bold tracking-widest uppercase">Bangunan Jaya</span>
+                            <span className="text-sm font-bold tracking-widest uppercase">TB. Lumbung Jaya</span>
                         </div>
 
                         <h1 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">
                             Halaman Login<br />
-                            Toko Bangunan Jaya
+                            Toko TB. Lumbung Jaya
                         </h1>
 
                         <p className="text-orange-100 text-sm mb-6 max-w-sm leading-relaxed">
-                            Selamat datang di halaman login Toko Bangunan Jaya. Pastikan Anda memiliki kredensial yang valid untuk mengakses sistem.
+                            Selamat datang di halaman login Toko TB. Lumbung Jaya. Pastikan Anda memiliki kredensial yang valid untuk mengakses sistem.
                         </p>
 
                         {/* Hint credentials */}
                         <div className="bg-white/10 rounded-xl p-4 w-full text-left text-xs space-y-1">
-                            <p className="font-bold text-white/90 mb-2">Akun Demo:</p>
-                            <p><span className="text-white/70">Pemilik:</span> pemilik@bangunan.com / pemilik123</p>
-                            <p><span className="text-white/70">Karyawan:</span> karyawan@bangunan.com / karyawan123</p>
-                            <p><span className="text-white/70">Pengguna/Pelanggan:</span> pengguna@bangunan.com / pengguna123</p>
+                            <p className="font-bold text-white/90 mb-2">Akun Demo (DB):</p>
+                            <p><span className="text-white/70">Pemilik:</span> owner@toko.com / owner123</p>
+                            <p><span className="text-white/70">Karyawan:</span> karyawan@toko.com / karyawan123</p>
                         </div>
                     </div>
                 </div>
@@ -154,7 +163,7 @@ export default function LoginPage() {
 
                         <div className="mt-12 pt-6 border-t border-gray-100 text-center">
                             <p className="text-[11px] text-gray-400">
-                                &copy; 2026 Toko Bangunan Jaya<br />
+                                &copy; 2026 Toko TB. Lumbung Jaya<br />
                                 Sistem Manajemen v1.0.0
                             </p>
                         </div>

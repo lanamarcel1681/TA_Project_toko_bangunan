@@ -8,6 +8,7 @@ export default function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const router = useRouter();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -19,18 +20,31 @@ export default function RegisterPage() {
         const name = (form.elements.namedItem('name') as HTMLInputElement).value;
         const email = (form.elements.namedItem('email') as HTMLInputElement).value;
         const password = (form.elements.namedItem('password') as HTMLInputElement).value;
-        const terms = (form.elements.namedItem('terms') as HTMLInputElement).checked;
 
-        if (!terms) {
-            setError('Anda harus menyetujui Syarat & Ketentuan.');
+
+
+        try {
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password }),
+            });
+
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                setShowSuccessModal(true);
+                setTimeout(() => {
+                    router.push('/login');
+                }, 2000);
+            } else {
+                setError(data.error || 'Pendaftaran gagal');
+                setLoading(false);
+            }
+        } catch (err) {
+            setError('Gagal menghubungi server');
             setLoading(false);
-            return;
         }
-
-        // Dummy registration logic on frontend
-        // Set dummy cookie and log them in immediately as a normal user
-        document.cookie = `session=${JSON.stringify({ email: email || 'penggunaBaru@bangunan.com', role: 'user', name: name })}; path=/`;
-        router.push('/');
     }
 
     return (
@@ -49,7 +63,7 @@ export default function RegisterPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                 </svg>
                             </div>
-                            <span className="text-sm font-bold tracking-widest uppercase">Bangunan Jaya</span>
+                            <span className="text-sm font-bold tracking-widest uppercase">TB. Lumbung Jaya</span>
                         </div>
 
                         <h1 className="text-3xl lg:text-4xl font-bold mb-4 leading-tight">
@@ -140,13 +154,31 @@ export default function RegisterPage() {
                         {/* Footer */}
                         <div className="mt-8 pt-6 border-t border-gray-100 text-center">
                             <p className="text-[11px] text-gray-400">
-                                &copy; 2026 Toko Bangunan Jaya<br />
+                                &copy; 2026 Toko TB. Lumbung Jaya<br />
                                 Sistem Manajemen v1.0.0
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Modal Sukses Pendaftaran */}
+            {showSuccessModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                    <div className="bg-white rounded-2xl p-8 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in duration-300">
+                        <div className="w-16 h-16 bg-green-100 text-green-500 rounded-full flex items-center justify-center mb-4">
+                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">Pendaftaran Berhasil!</h3>
+                        <p className="text-gray-500 text-sm mb-6">
+                            Akun Anda berhasil dibuat. Anda akan dialihkan ke halaman login secara otomatis...
+                        </p>
+                        <div className="w-8 h-8 border-4 border-orange-500 border-t-transparent rounded-full animate-spin"></div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

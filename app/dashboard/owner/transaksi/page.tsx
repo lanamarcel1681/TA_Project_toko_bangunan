@@ -23,7 +23,7 @@ const transactions = [
         id: "INV-2025-002",
         date: "22 Jan 2025",
         type: "Penjualan",
-        client: "Toko Bangunan Jaya",
+        client: "Toko TB. Lumbung Jaya",
         description: "Cat Tembok (20 kaleng), Kuas (10 pcs)",
         total: "Rp 3.700.000",
         status: "Pending",

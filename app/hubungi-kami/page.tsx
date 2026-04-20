@@ -4,8 +4,8 @@ import FAQ from '../components/FAQ';
 import Footer from '../components/Footer';
 
 export const metadata = {
-    title: 'Hubungi Kami - Toko Bangunan Jaya',
-    description: 'Informasi kontak dan lokasi Toko Bangunan Jaya.',
+    title: 'Hubungi Kami - Toko TB. Lumbung Jaya',
+    description: 'Informasi kontak dan lokasi Toko TB. Lumbung Jaya.',
 };
 
 export default function HubungiKami() {

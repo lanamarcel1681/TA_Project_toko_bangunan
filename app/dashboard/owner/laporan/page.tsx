@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import { 
+import {
     BarChart3, PieChart, TrendingUp, Download, DollarSign, Package, ChevronRight, LayoutGrid, FileText, Activity, ArrowRight
 } from 'lucide-react';
 import OwnerCharts from '../../../components/OwnerCharts';
@@ -18,21 +18,21 @@ export default function LaporanOwnerPage() {
                         <span className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em]">Business Intelligence</span>
                     </div>
                     <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none">Laporan & Statistik</h1>
-                    <p className="text-gray-500 font-medium mt-3">Monitoring performa toko Bangunan Jaya dalam satu panel dashboard analitik.</p>
+                    <p className="text-gray-500 font-medium mt-3">Monitoring performa toko TB. Lumbung Jaya dalam satu panel dashboard analitik.</p>
                 </div>
                 <button className="inline-flex items-center justify-center px-10 py-5 bg-orange-600 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-orange-600/20 hover:bg-orange-700 hover:shadow-orange-600/40 transition-all active:scale-95 group">
-                    <Download className="w-4 h-4 mr-2 group-hover:-translate-y-1 transition-transform duration-300" /> 
+                    <Download className="w-4 h-4 mr-2 group-hover:-translate-y-1 transition-transform duration-300" />
                     Cetak Laporan Lengkap &rarr;
                 </button>
             </div>
-            
+
             {/* Report Access Section */}
             <div className="mb-16">
                 <div className="flex items-center gap-4 mb-8">
                     <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[.25em]">Akses Laporan Cetak</h2>
                     <div className="h-px bg-gray-100 flex-1"></div>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {/* Keuangan */}
                     <div className="bg-white rounded-[40px] p-10 border border-gray-100 shadow-xl hover:shadow-2xl hover:border-orange-100 transition-all duration-300 group cursor-pointer relative overflow-hidden flex flex-col justify-between">
@@ -122,7 +122,7 @@ export default function LaporanOwnerPage() {
                     <h2 className="text-[10px] font-black text-gray-400 uppercase tracking-[.25em]">Dashboard Analitik Visual</h2>
                     <div className="h-px bg-gray-100 flex-1"></div>
                 </div>
-                
+
                 <div className="bg-white rounded-[40px] p-12 border border-gray-100 shadow-2xl shadow-gray-200/50 relative overflow-hidden group/chart-container">
                     <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-orange-600 to-orange-400"></div>
                     <OwnerCharts />

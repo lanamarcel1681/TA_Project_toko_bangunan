@@ -10,7 +10,7 @@ export default function Footer() {
                             <svg className="h-8 w-8 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                             </svg>
-                            <span className="ml-2 text-xl font-bold text-gray-100">Bangunan<span className="text-orange-500">Jaya</span></span>
+                            <span className="ml-2 text-xl font-bold text-gray-100">TB. Lumbung <span className="text-orange-500">Jaya</span></span>
                         </Link>
                         <p className="text-gray-400 text-base">
                             Menyediakan material bangunan berkualitas tinggi untuk mewujudkan hunian impian Anda. Terpercaya sejak 2024.
@@ -66,7 +66,7 @@ export default function Footer() {
                     </div>
                 </div>
                 <div className="mt-12 border-t border-gray-700 pt-8">
-                    <p className="text-base text-gray-400 xl:text-center">&copy; 2024 Toko Bangunan Jaya. All rights reserved.</p>
+                    <p className="text-base text-gray-400 xl:text-center">&copy; {new Date().getFullYear()} Toko TB. Lumbung Jaya. All rights reserved.</p>
                 </div>
             </div>
         </footer>
