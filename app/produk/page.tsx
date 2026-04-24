@@ -20,6 +20,7 @@ function ProdukContent() {
     const [isLoading, setIsLoading] = useState(true);
     
     const [selectedCategory, setSelectedCategory] = useState('Semua');
+    const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('recommended');
     const [showAvailableOnly, setShowAvailableOnly] = useState(false);
@@ -66,6 +67,10 @@ function ProdukContent() {
         if (selectedCategory !== 'Semua') {
             result = result.filter(p => p.kategori?.nama_kategori === selectedCategory);
         }
+
+        if (selectedRating !== null) {
+            result = result.filter(p => (p.rating || 0) >= selectedRating);
+        }
         
         if (showAvailableOnly) {
             result = result.filter(p => p.stok_barang > 0);
@@ -83,7 +88,7 @@ function ProdukContent() {
         else if (sortBy === 'price-desc') result.sort((a, b) => b.harga_barang - a.harga_barang);
 
         return result;
-    }, [products, selectedCategory, searchQuery, sortBy, showAvailableOnly]);
+    }, [products, selectedCategory, selectedRating, searchQuery, sortBy, showAvailableOnly]);
 
     return (
         <div className="bg-gray-50 text-gray-800 antialiased font-sans flex flex-col min-h-screen">
@@ -97,8 +102,8 @@ function ProdukContent() {
                         categories={categories}
                         selectedCategory={selectedCategory}
                         onCategoryChange={setSelectedCategory}
-                        selectedRating={null}
-                        onRatingChange={() => {}}
+                        selectedRating={selectedRating}
+                        onRatingChange={setSelectedRating}
                         showAvailableOnly={showAvailableOnly}
                         onShowAvailableChange={setShowAvailableOnly}
                     />
@@ -160,7 +165,7 @@ function ProdukContent() {
                                 <p className="text-gray-500 text-lg font-medium">Produk tidak ditemukan</p>
                                 <p className="text-gray-400 text-sm mt-1">Coba gunakan kata kunci atau filter yang berbeda.</p>
                                 <button 
-                                    onClick={() => { setSelectedCategory('Semua'); setSearchQuery(''); setShowAvailableOnly(false); }}
+                                    onClick={() => { setSelectedCategory('Semua'); setSelectedRating(null); setSearchQuery(''); setShowAvailableOnly(false); }}
                                     className="mt-6 px-6 py-2 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors"
                                 >
                                     Reset Filter

@@ -18,6 +18,7 @@ export const metadata: Metadata = {
 };
 
 import { ToastProvider } from "./components/Toast";
+import WhatsAppFAB from "./components/WhatsAppFAB";
 
 export default function RootLayout({
   children,
@@ -29,6 +30,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ToastProvider>
           {children}
+          <WhatsAppFAB />
         </ToastProvider>
       </body>
     </html>

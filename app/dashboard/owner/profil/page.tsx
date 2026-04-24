@@ -81,6 +81,22 @@ export default function ProfilOwnerSayaPage() {
         }
     };
 
+    const handleResetPassword = async () => {
+        if (!confirm(`Apakah Anda yakin ingin mereset password ke tanggal lahir (${birthdate})?`)) return;
+
+        try {
+            const res = await fetch('/api/auth/reset-password-default', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert(data.error);
+            }
+        } catch (error) {
+            alert("Terjadi kesalahan saat mereset password");
+        }
+    };
+
     return (
         <div className="p-8 w-full max-w-5xl mx-auto pb-20 text-left">
             {/* Page Heading */}
@@ -222,19 +238,17 @@ export default function ProfilOwnerSayaPage() {
                                     <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest">
                                         <Calendar className="w-3.5 h-3.5 text-orange-600" /> Tanggal Lahir
                                     </label>
-                                    <span className="flex items-center gap-1 text-[8px] font-black text-orange-300 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100 shadow-sm opacity-0 group-hover/input:opacity-100 transition-opacity">
-                                        <Pencil className="w-2.5 h-2.5" /> Editable
+                                    <span className="flex items-center gap-1 text-[8px] font-black text-gray-300 uppercase tracking-widest bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100">
+                                        <Ban className="w-2.5 h-2.5" /> Read Only
                                     </span>
                                 </div>
-                                <div className="px-6 py-4 bg-gray-50/50 rounded-[24px] border border-gray-100 shadow-inner group/input focus-within:border-orange-200 focus-within:bg-white focus-within:shadow-orange-200/10 transition-all cursor-text relative">
+                                <div className="px-6 py-4 bg-gray-100/50 rounded-[24px] border border-gray-200 cursor-not-allowed opacity-70">
                                     <input
-                                        type="date"
+                                        type="text"
                                         value={birthdate}
-                                        readOnly={!isEditing}
-                                        onChange={(e) => setBirthdate(e.target.value)}
-                                        className={`w-full bg-transparent outline-none font-bold text-gray-900 text-sm tracking-tight pr-8 ${!isEditing ? 'cursor-default' : ''}`}
+                                        readOnly
+                                        className="w-full bg-transparent outline-none font-bold text-gray-400 text-sm tracking-tight cursor-not-allowed"
                                     />
-                                    <Pencil className="absolute right-6 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-gray-300 group-hover/input:text-orange-400 group-focus-within/input:text-orange-500 transition-colors pointer-events-none" />
                                 </div>
                             </div>
                         </div>
@@ -245,12 +259,20 @@ export default function ProfilOwnerSayaPage() {
                             )}
                             
                             {!isEditing ? (
-                                <button
-                                    onClick={() => setIsEditing(true)}
-                                    className="px-8 py-3.5 rounded-xl border-2 border-orange-100 text-orange-600 text-sm font-bold hover:bg-orange-50 hover:border-orange-200 transition-all flex items-center gap-2"
-                                >
-                                    <Pencil className="w-4 h-4" /> Edit Profil
-                                </button>
+                                <>
+                                    <button
+                                        onClick={handleResetPassword}
+                                        className="px-8 py-3.5 rounded-xl border-2 border-orange-50 text-orange-400 text-sm font-bold hover:bg-orange-50 hover:text-orange-600 transition-all flex items-center gap-2"
+                                    >
+                                        <ShieldCheck className="w-4 h-4" /> Reset Password Default
+                                    </button>
+                                    <button
+                                        onClick={() => setIsEditing(true)}
+                                        className="px-8 py-3.5 rounded-xl border-2 border-orange-100 text-orange-600 text-sm font-bold hover:bg-orange-50 hover:border-orange-200 transition-all flex items-center gap-2"
+                                    >
+                                        <Pencil className="w-4 h-4" /> Edit Profil
+                                    </button>
+                                </>
                             ) : null}
 
                             <button 

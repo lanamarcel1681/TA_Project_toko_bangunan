@@ -10,6 +10,8 @@ export async function GET() {
       include: {
         kategori: true,
         satuan: true,
+        ulasan: true,
+        detail_jual: true,
         barang_supplier: {
           include: { supplier: true }
         }
@@ -18,7 +20,23 @@ export async function GET() {
         id_barang: 'desc'
       }
     });
-    return NextResponse.json(barang);
+
+    // Transform and calculate averages/totals
+    const transformed = barang.map(b => {
+      const reviewCount = b.ulasan.length;
+      const totalRating = b.ulasan.reduce((acc, curr) => acc + curr.rating, 0);
+      const rating = reviewCount > 0 ? (totalRating / reviewCount).toFixed(1) : "0";
+      const soldCount = b.detail_jual.reduce((acc, curr) => acc + curr.jumlah_penjualan_barang, 0);
+
+      return {
+        ...b,
+        rating: parseFloat(rating),
+        reviewCount: reviewCount,
+        soldCount: soldCount
+      };
+    });
+
+    return NextResponse.json(transformed);
   } catch (error) {
     console.error("Error fetching barang:", error);
     return NextResponse.json({ error: "Gagal mengambil data barang" }, { status: 500 });

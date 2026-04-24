@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, ShoppingBag, ChevronRight, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '../components/Toast';
 
 export default function UserProfile() {
     const [formData, setFormData] = useState({ name: '', email: '', phone: '', birthdate: '', avatar: '' });
@@ -9,6 +10,7 @@ export default function UserProfile() {
     const [isEditing, setIsEditing] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const { showToast } = useToast();
 
     useEffect(() => {
         fetch('/api/user/profile')
@@ -35,12 +37,14 @@ export default function UserProfile() {
 
             const data = await res.json();
             if (res.ok) {
-                setMessage('Profil berhasil diperbarui!');
+                showToast('Profil berhasil diperbarui!', 'success');
                 setIsEditing(false);
             } else {
+                showToast(data.error || 'Gagal memperbarui profil', 'error');
                 setMessage('Gagal memperbarui profil: ' + data.error);
             }
         } catch (error) {
+            showToast('Terjadi kesalahan jaringan', 'error');
             setMessage('Terjadi kesalahan jaringan.');
         } finally {
             setIsSaving(false);
@@ -53,7 +57,7 @@ export default function UserProfile() {
         const file = e.target.files[0];
         
         if (file.size > 1 * 1024 * 1024) {
-            setMessage('Gagal: Ukuran gambar maksimal 1 MB');
+            showToast('Gagal: Ukuran gambar maksimal 1 MB', 'error');
             return;
         }
 
@@ -61,7 +65,7 @@ export default function UserProfile() {
         uploadData.append('file', file);
 
         try {
-            setMessage('Mengunggah gambar...');
+            showToast('Mengunggah gambar...', 'info');
             const res = await fetch('/api/upload', {
                 method: 'POST',
                 body: uploadData
@@ -70,12 +74,12 @@ export default function UserProfile() {
             const data = await res.json();
             if (res.ok && data.success) {
                 setFormData({ ...formData, avatar: data.url });
-                setMessage('Gambar berhasil diunggah! Jangan lupa klik Simpan Perubahan.');
+                showToast('Gambar berhasil diunggah! Klik Simpan untuk mempermanenkan.', 'success');
             } else {
-                setMessage('Gagal mengunggah gambar: ' + data.error);
+                showToast(data.error || 'Gagal mengunggah gambar', 'error');
             }
         } catch (error) {
-            setMessage('Terjadi kesalahan saat mengunggah gambar.');
+            showToast('Terjadi kesalahan saat mengunggah gambar', 'error');
         }
     };
 

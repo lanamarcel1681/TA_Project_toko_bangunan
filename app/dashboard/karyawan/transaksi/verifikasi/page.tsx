@@ -1,23 +1,80 @@
 'use client';
-import React, { useState } from 'react';
-import { Search, FileImage, CheckCircle, XCircle, Clock, User, DollarSign, History, ShieldCheck, ChevronRight } from 'lucide-react';
-
-const initialTransactions = [
-    { id: 1, inv: 'INV-2026-1001', customer: 'Budi Santoso', amount: 1250000, method: 'VA BCA', time: '14:30 WIB' },
-    { id: 2, inv: 'INV-2026-2002', customer: 'Siti Aminah', amount: 850000, method: 'QRIS Gopay', time: '15:10 WIB' },
-    { id: 3, inv: 'INV-2026-3003', customer: 'Andi Wijaya', amount: 3200000, method: 'Transfer Mandiri', time: '16:45 WIB' }
-];
+import React, { useState, useEffect } from 'react';
+import { Search, FileImage, CheckCircle, XCircle, Clock, User, DollarSign, History, ShieldCheck, ChevronRight, AlertTriangle, Loader2 } from 'lucide-react';
+import { useToast } from '@/app/components/Toast';
 
 export default function VerifikasiPembayaranPage() {
-    const [transactions, setTransactions] = useState(initialTransactions);
+    const { showToast } = useToast();
+    const [transactions, setTransactions] = useState<any[]>([]);
+    const [history, setHistory] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const handleApprove = (id: number, inv: string) => {
-        alert(`Verifikasi disetujui untuk ${inv}!`);
-        setTransactions(transactions.filter(t => t.id !== id));
+    // Confirmation Modal states
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmAction, setConfirmAction] = useState<'APPROVE' | 'REJECT' | null>(null);
+    const [confirmTarget, setConfirmTarget] = useState<any>(null);
+    const [isActionLoading, setIsActionLoading] = useState(false);
+
+    const fetchTransactions = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch('/api/karyawan/transaksi/verifikasi');
+            const data = await res.json();
+            if (data.success) {
+                setTransactions(data.pending || []);
+                setHistory(data.history || []);
+            }
+        } catch (error) {
+            console.error("Failed to fetch:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const handleReject = (id: number) => {
-        setTransactions(transactions.filter(t => t.id !== id));
+    useEffect(() => {
+        fetchTransactions();
+    }, []);
+
+    const handleApprove = (item: any) => {
+        setConfirmAction('APPROVE');
+        setConfirmTarget(item);
+        setShowConfirmModal(true);
+    };
+
+    const handleReject = (item: any) => {
+        setConfirmAction('REJECT');
+        setConfirmTarget(item);
+        setShowConfirmModal(true);
+    };
+
+    const executeAction = async () => {
+        if (!confirmAction || !confirmTarget) return;
+        setIsActionLoading(true);
+
+        try {
+            const res = await fetch('/api/karyawan/transaksi/verifikasi', {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: confirmTarget.id, action: confirmAction })
+            });
+            const data = await res.json();
+            if (data.success) {
+                showToast(
+                    confirmAction === 'APPROVE' 
+                        ? `Pembayaran ${confirmTarget.inv} berhasil disetujui!` 
+                        : `Pembayaran ${confirmTarget.inv} telah ditolak.`, 
+                    'success'
+                );
+                fetchTransactions();
+                setShowConfirmModal(false);
+            } else {
+                showToast(data.error || 'Gagal memproses verifikasi', 'error');
+            }
+        } catch (error) {
+            showToast('Terjadi kesalahan sistem perbankan', 'error');
+        } finally {
+            setIsActionLoading(false);
+        }
     };
     return (
         <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
@@ -27,9 +84,10 @@ export default function VerifikasiPembayaranPage() {
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {transactions.length === 0 ? (
-                    <div className="col-span-full py-12 text-center text-gray-400 font-bold">
-                        Semua transaksi telah diverifikasi!
+                {!transactions || transactions.length === 0 ? (
+                    <div className="col-span-full py-20 text-center text-gray-400 font-bold border-2 border-dashed border-gray-100 rounded-[40px] bg-white">
+                        <ShieldCheck className="w-12 h-12 text-gray-100 mx-auto mb-4" />
+                        <p className="uppercase tracking-[0.2em] text-[10px]">Semua transaksi telah diverifikasi!</p>
                     </div>
                 ) : (
                     transactions.map((item) => (
@@ -43,7 +101,11 @@ export default function VerifikasiPembayaranPage() {
                                     <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
                                         <DollarSign className="w-6 h-6" />
                                     </div>
-                                    <button className="w-11 h-11 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100 shadow-sm" title="Pratinjau Bukti Transfer">
+                                    <button 
+                                        onClick={() => item.proof ? window.open(item.proof, '_blank') : alert('Tidak ada bukti (Bayar di Toko)')}
+                                        className="w-11 h-11 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center hover:bg-blue-50 hover:text-blue-600 transition-all border border-transparent hover:border-blue-100 shadow-sm" 
+                                        title="Pratinjau Bukti Transfer"
+                                    >
                                         <FileImage className="w-5 h-5"/>
                                     </button>
                                 </div>
@@ -63,16 +125,16 @@ export default function VerifikasiPembayaranPage() {
                                     <Clock className="w-4 h-4 text-gray-400"/>
                                     <div>
                                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Uploaded At</p>
-                                        <p className="text-sm font-black text-gray-800 leading-none">Hari Ini, {item.time}</p>
+                                         <p className="text-sm font-black text-gray-800 leading-none">{item.date}, {item.time}</p>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="flex flex-col sm:flex-row gap-3 w-full">
-                                <button onClick={() => handleApprove(item.id, item.inv)} className="flex-[2] bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-full flex justify-center items-center gap-3 font-black text-[10px] uppercase tracking-[0.15em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all">
+                                <button onClick={() => handleApprove(item)} className="flex-[2] bg-blue-600 hover:bg-blue-700 text-white py-4 rounded-full flex justify-center items-center gap-3 font-black text-[10px] uppercase tracking-[0.15em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all">
                                     <CheckCircle className="w-4 h-4" /> Approve &rarr;
                                 </button>
-                                <button onClick={() => handleReject(item.id)} className="flex-1 bg-white hover:bg-red-50 text-red-500 border border-red-100 py-4 rounded-full flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.15em] active:scale-95 transition-all">
+                                <button onClick={() => handleReject(item)} className="flex-1 bg-white hover:bg-red-50 text-red-500 border border-red-100 py-4 rounded-full flex justify-center items-center gap-2 font-black text-[10px] uppercase tracking-[0.15em] active:scale-95 transition-all">
                                     Reject
                                 </button>
                             </div>
@@ -101,11 +163,81 @@ export default function VerifikasiPembayaranPage() {
                     </div>
                 </div>
 
-                <div className="mt-10 p-12 border-2 border-dashed border-gray-100 rounded-[30px] flex flex-col items-center justify-center text-center group-hover:bg-gray-50/30 transition-colors">
-                    <History className="w-12 h-12 text-gray-200 mb-4" />
-                    <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Belum Ada Data Verifikasi Tersedia Untuk Sesi Ini</p>
+                <div className="mt-10 overflow-hidden">
+                    {history.length === 0 ? (
+                        <div className="p-12 border-2 border-dashed border-gray-100 rounded-[30px] flex flex-col items-center justify-center text-center group-hover:bg-gray-50/30 transition-colors">
+                            <History className="w-12 h-12 text-gray-200 mb-4" />
+                            <p className="text-gray-400 font-black uppercase tracking-widest text-[10px]">Belum Ada Data Verifikasi Tersedia Untuk Sesi Ini</p>
+                        </div>
+                    ) : (
+                        <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            {history.map((item) => (
+                                <div key={item.id} className="flex items-center justify-between p-6 bg-gray-50/50 rounded-3xl border border-gray-100 hover:bg-white hover:shadow-md transition-all group/item">
+                                    <div className="flex items-center gap-5">
+                                        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${item.status_pembayaran === 'Ditolak' ? 'bg-red-50 text-red-500 border-red-100' : 'bg-green-50 text-green-600 border-green-100'}`}>
+                                            {item.status_pembayaran === 'Ditolak' ? <XCircle className="w-6 h-6" /> : <CheckCircle className="w-6 h-6" />}
+                                        </div>
+                                        <div>
+                                            <div className="flex items-center gap-3 mb-1">
+                                                <h4 className="font-black text-gray-900 tracking-tight leading-none">{item.inv}</h4>
+                                                <span className={`px-3 py-1 rounded-full text-[8px] font-black uppercase tracking-widest ${item.status_pembayaran === 'Ditolak' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                                                    {item.status_pembayaran === 'Ditolak' ? 'REJECTED' : 'VERIFIED'}
+                                                </span>
+                                            </div>
+                                            <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{item.customer} • Rp {item.amount.toLocaleString('id-ID')}</p>
+                                        </div>
+                                    </div>
+                                    <div className="text-right flex flex-col items-end">
+                                        <p className="text-[10px] font-black text-gray-900 mb-1">{item.date}</p>
+                                        <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest flex items-center gap-1">
+                                            <Clock className="w-3 h-3" /> {item.time}
+                                        </p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
                 </div>
             </div>
+
+            {/* Action Confirmation Modal */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmAction === 'APPROVE' ? 'bg-blue-50 text-blue-600' : 'bg-red-50 text-red-500'}`}>
+                            {confirmAction === 'APPROVE' ? <CheckCircle className="w-10 h-10" /> : <AlertTriangle className="w-10 h-10" />}
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                            {confirmAction === 'APPROVE' ? 'Setujui Pembayaran?' : 'Tolak Pembayaran?'}
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            {confirmAction === 'APPROVE' 
+                                ? `Konfirmasi validasi pembayaran untuk ${confirmTarget?.inv}. Pastikan nominal dan bukti transfer sesuai.` 
+                                : `Menolak pembayaran ${confirmTarget?.inv} akan mengembalikan stok barang ke database.`}
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={executeAction}
+                                disabled={isActionLoading}
+                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'APPROVE' ? 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700' : 'bg-red-600 shadow-red-600/20 hover:bg-red-700'}`}
+                            >
+                                {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (confirmAction === 'APPROVE' ? 'Ya, Setujui' : 'Ya, Tolak Pembayaran')}
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowConfirmModal(false);
+                                    setConfirmAction(null);
+                                    setConfirmTarget(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

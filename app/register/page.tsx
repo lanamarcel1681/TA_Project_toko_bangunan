@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '../components/Toast';
 
 export default function RegisterPage() {
     const [showPassword, setShowPassword] = useState(false);
@@ -10,6 +11,7 @@ export default function RegisterPage() {
     const [error, setError] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const router = useRouter();
+    const { showToast } = useToast();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -33,6 +35,7 @@ export default function RegisterPage() {
             const data = await res.json();
 
             if (res.ok && data.success) {
+                showToast('Pendaftaran Berhasil! Silakan login.', 'success');
                 setShowSuccessModal(true);
                 setTimeout(() => {
                     router.push('/login');

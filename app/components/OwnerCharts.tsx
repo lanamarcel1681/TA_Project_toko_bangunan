@@ -20,7 +20,7 @@ import {
     Area
 } from 'recharts';
 
-const salesData = [
+export const salesData = [
     { name: 'Jan', Pembelian: 9000000, Penjualan: 15000000 },
     { name: 'Feb', Pembelian: 11000000, Penjualan: 17000000 },
     { name: 'Mar', Pembelian: 9500000, Penjualan: 15500000 },
@@ -35,7 +35,7 @@ const salesData = [
     { name: 'Des', Pembelian: 19500000, Penjualan: 29000000 },
 ];
 
-const productData = [
+export const productData = [
     { name: 'Semen Portland', value: 90000000 },
     { name: 'Besi Beton 10mm', value: 75000000 },
     { name: 'Cat Tembok 5kg', value: 62000000 },
@@ -46,7 +46,7 @@ const productData = [
     { name: 'Pipa PVC 3"', value: 18000000 },
 ];
 
-const categoryData = [
+export const categoryData = [
     { name: 'Semen', value: 145 },
     { name: 'Besi', value: 92 },
     { name: 'Cat', value: 78 },
@@ -57,7 +57,7 @@ const categoryData = [
 ];
 const COLORS = ['#ea580c', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#06b6d4', '#f43f5e'];
 
-const stockData = [
+export const stockData = [
     { sku: 'SEM-001', name: 'Semen Portland Tiga Roda', category: 'Semen', stock: 500, unit: 'sak', status: 'Aman' },
     { sku: 'BES-001', name: 'Besi Beton Ulir 10mm', category: 'Besi', stock: 2000, unit: 'kg', status: 'Aman' },
     { sku: 'CAT-001', name: 'Cat Tembok Dulux 5kg', category: 'Cat', stock: 150, unit: 'kaleng', status: 'Aman' },
@@ -85,18 +85,48 @@ const formatCurrency = (value: number) => {
     }).format(value);
 };
 
-export default function OwnerCharts() {
-    const [period, setPeriod] = useState('6_bulan');
+interface OwnerChartsProps {
+    externalData?: {
+        salesData: any[];
+        productData: any[];
+        categoryData: any[];
+        stockData: any[];
+        dailyData: any[];
+    }
+}
 
-    // Dynamic mock data based on period
+export default function OwnerCharts({ externalData }: OwnerChartsProps) {
+    const [period, setPeriod] = useState('bulan_ini');
+
+    // Dynamic data based on period or external source
     const getSalesData = () => {
+        if (externalData) {
+            const data = externalData.salesData;
+            const currentIdx = data.length - 1;
+
+            switch (period) {
+                case 'bulan_ini':
+                    // Current month in the middle of [Previous, Current, Next]
+                    return [
+                        data[currentIdx - 1],
+                        data[currentIdx],
+                        { name: 'Mendatang', Pembelian: null, Penjualan: null, isFuture: true }
+                    ].filter(Boolean);
+                case '3_bulan':
+                    // Last 3 months ending now
+                    return data.slice(-3);
+                case 'tahun_ini':
+                    return data;
+                default: // 6_bulan
+                    return data.slice(-6);
+            }
+        }
         switch (period) {
             case 'bulan_ini':
                 return [
-                    { name: 'Minggu 1', Pembelian: 2000000, Penjualan: 4000000 },
-                    { name: 'Minggu 2', Pembelian: 3000000, Penjualan: 5500000 },
-                    { name: 'Minggu 3', Pembelian: 2500000, Penjualan: 4500000 },
-                    { name: 'Minggu 4', Pembelian: 4500000, Penjualan: 7000000 },
+                    { name: 'Bulan Lalu', Pembelian: 11000000, Penjualan: 17000000 },
+                    { name: 'Bulan Ini', Pembelian: 12500000, Penjualan: 18500000 },
+                    { name: 'Mendatang', Pembelian: null, Penjualan: null, isFuture: true },
                 ];
             case '3_bulan':
                 return salesData.slice(-3);
@@ -108,32 +138,48 @@ export default function OwnerCharts() {
     };
 
     const getProductData = () => {
-        // Multiplier just to simulate different values for different periods
+        if (externalData) return externalData.productData.slice(0, 5);
         const multiplier = period === 'bulan_ini' ? 0.2 : period === '3_bulan' ? 0.6 : period === 'tahun_ini' ? 2.5 : 1;
         return productData.slice(0, 5).map(item => ({ ...item, value: item.value * multiplier }));
     };
 
     const getCategoryData = () => {
+        if (externalData) return externalData.categoryData.slice(0, 6);
         const multiplier = period === 'bulan_ini' ? 0.2 : period === '3_bulan' ? 0.6 : period === 'tahun_ini' ? 2.5 : 1;
         return categoryData.slice(0, 6).map(item => ({ ...item, value: Math.round(item.value * multiplier) }));
+    };
+
+    const getDailyData = () => {
+        if (externalData && externalData.dailyData) return externalData.dailyData;
+        return dailyData;
     };
 
     const currentSalesData = getSalesData();
     const currentProductData = getProductData();
     const currentCategoryData = getCategoryData();
+    const currentDailyData = getDailyData();
 
-    // Summary Calculations
-    const totalPenjualan = currentSalesData.reduce((acc, curr) => acc + curr.Penjualan, 0);
-    const totalPembelian = currentSalesData.reduce((acc, curr) => acc + curr.Pembelian, 0);
+    // Summary Calculations (Decoupled from chart view range)
+    const latestActualData = externalData ? externalData.salesData[externalData.salesData.length - 1] : salesData[salesData.length - 1];
+    
+    const totalPenjualan = period === 'bulan_ini' 
+        ? latestActualData.Penjualan 
+        : currentSalesData.reduce((acc, curr) => acc + (curr.Penjualan || 0), 0);
+        
+    const totalPembelian = period === 'bulan_ini' 
+        ? latestActualData.Pembelian 
+        : currentSalesData.reduce((acc, curr) => acc + (curr.Pembelian || 0), 0);
+        
     const totalProfit = totalPenjualan - totalPembelian;
-    const grossMargin = (totalProfit / totalPenjualan) * 100;
+    const estimatedOperational = totalPenjualan * 0.1; // Placeholder 10% for salaries, electricity, etc.
+    const netProfit = totalProfit - estimatedOperational;
 
     return (
         <div className="space-y-6 mb-8">
             {/* Filter & Badge */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-2">
                 <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-gray-400">Terakhir diperbarui: Baru saja</span>
+                    <span className="text-[10px] text-gray-400">Terakhir diperbarui: {externalData ? 'Real-time Database' : 'Baru saja'}</span>
                 </div>
                 <select
                     value={period}
@@ -143,12 +189,12 @@ export default function OwnerCharts() {
                     <option value="bulan_ini">Bulan Ini</option>
                     <option value="3_bulan">3 Bulan Terakhir</option>
                     <option value="6_bulan">6 Bulan Terakhir</option>
-                    <option value="tahun_ini">Tahun 2024 (Full)</option>
+                    <option value="tahun_ini">Tahun ini (Full)</option>
                 </select>
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:border-orange-200 transition-colors">
                     <div>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Penjualan</p>
@@ -184,7 +230,20 @@ export default function OwnerCharts() {
                         <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Target: Tercapai
+                        Gross: Terpantau
+                    </div>
+                </div>
+
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:border-purple-200 transition-colors">
+                    <div>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Estimasi Laba Bersih</p>
+                        <h3 className="text-2xl font-black text-purple-600">{formatCurrency(netProfit)}</h3>
+                    </div>
+                    <div className="mt-4 flex items-center text-[11px] font-bold text-purple-600 bg-purple-50 px-2 py-1 rounded-md w-fit">
+                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Net: -10% Op.
                     </div>
                 </div>
             </div>
@@ -294,7 +353,7 @@ export default function OwnerCharts() {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 lg:col-span-1">
                     <h4 className="font-bold text-sm text-gray-800 mb-2">Kategori Populer</h4>
-                    <p className="text-[11px] text-gray-500 mb-6">Distribusi produk bulan ini</p>
+                    <p className="text-[11px] text-gray-500 mb-6">Distribusi produk {externalData ? 'berdasarkan database' : 'bulan ini'}</p>
                     <div className="relative h-64 w-full flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
                             <PieChart>
@@ -353,7 +412,7 @@ export default function OwnerCharts() {
 
                     <div className="p-8 pt-10 h-full min-h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={dailyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                            <AreaChart data={currentDailyData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#2563eb" stopOpacity={0.1} />

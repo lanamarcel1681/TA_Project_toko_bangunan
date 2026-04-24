@@ -4,8 +4,9 @@ import {
     Truck, Plus, Search, Edit2, Trash2, Eye, 
     X, User, Phone, MapPin, Building2, 
     ChevronRight, AlertCircle, CheckCircle2, Calendar,
-    Loader2
+    Loader2, AlertTriangle
 } from 'lucide-react';
+import { useToast } from '@/app/components/Toast';
 
 interface Supplier {
     id_supplier: number;
@@ -16,6 +17,7 @@ interface Supplier {
 }
 
 export default function ManajemenSupplierKaryawanPage() {
+    const { showToast } = useToast();
     const [suppliers, setSuppliers] = useState<Supplier[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -23,16 +25,8 @@ export default function ManajemenSupplierKaryawanPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [editingId, setEditingId] = useState<number | null>(null);
 
-    const [showToast, setShowToast] = useState(false);
-    const [toastMsg, setToastMsg] = useState('');
-    const [toastType, setToastType] = useState<'success' | 'error'>('success');
-
-    const handleToast = (msg: string, type: 'success' | 'error' = 'success') => {
-        setToastMsg(msg);
-        setToastType(type);
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 5000);
-    };
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
     const [formData, setFormData] = useState({
         nama_supplier: '',
@@ -49,7 +43,7 @@ export default function ManajemenSupplierKaryawanPage() {
             setSuppliers(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error('Error fetching suppliers:', error);
-            handleToast('Gagal mengambil data dari database', 'error');
+            showToast('Gagal mengambil data dari database', 'error');
         } finally {
             setIsLoading(false);
         }
@@ -76,7 +70,7 @@ export default function ManajemenSupplierKaryawanPage() {
             });
 
             if (res.ok) {
-                handleToast(editingId ? 'Data Supplier Berhasil Diperbarui!' : 'Supplier Berhasil Ditambahkan ke Database!');
+                showToast(editingId ? 'Data Supplier Berhasil Diperbarui!' : 'Supplier Berhasil Ditambahkan!');
                 setIsModalOpen(false);
                 setFormData({
                     nama_supplier: '',
@@ -88,10 +82,10 @@ export default function ManajemenSupplierKaryawanPage() {
                 fetchSuppliers();
             } else {
                 const err = await res.json();
-                handleToast(`Error: ${err.error}`, 'error');
+                showToast(`Error: ${err.error}`, 'error');
             }
         } catch (error) {
-            handleToast('Terjadi kesalahan pada validasi server', 'error');
+            showToast('Terjadi kesalahan pada server', 'error');
         } finally {
             setIsSubmitting(false);
         }
@@ -109,40 +103,60 @@ export default function ManajemenSupplierKaryawanPage() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Apakah Anda yakin ingin menghapus data supplier ini secara permanen?')) return;
+        setItemToDelete(id);
+        setShowDeleteConfirm(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
-            const res = await fetch(`/api/supplier/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/supplier/${itemToDelete}`, { method: 'DELETE' });
             if (res.ok) {
-                handleToast('Supplier Berhasil Dihapus!');
+                showToast('Supplier Berhasil Dihapus!', 'success');
                 fetchSuppliers();
             } else {
                 const err = await res.json();
-                handleToast(`Gagal menghapus: ${err.error}`, 'error');
+                showToast(`Gagal menghapus: ${err.error}`, 'error');
             }
         } catch (error) {
-            handleToast('Kesalahan jaringan saat mencoba menghapus data', 'error');
+            showToast('Kesalahan jaringan saat menghapus data', 'error');
+        } finally {
+            setShowDeleteConfirm(false);
+            setItemToDelete(null);
         }
     };
 
     return (
         <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
-            {/* Custom Premium Toast */}
-            {showToast && (
-                <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
-                    <div className={`backdrop-blur-xl border border-white/10 px-8 py-5 rounded-[28px] shadow-2xl flex items-center gap-5 text-white ${toastType === 'success' ? 'bg-gray-900/90' : 'bg-red-900/90'}`}>
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${toastType === 'success' ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400'}`}>
-                            {toastType === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
+                    <div className="bg-white rounded-[40px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <AlertTriangle className="w-10 h-10" />
                         </div>
-                        <div>
-                            <p className={`text-[10px] font-black uppercase tracking-[0.2em] mb-1 ${toastType === 'success' ? 'text-blue-400' : 'text-red-400'}`}>
-                                {toastType === 'success' ? 'Selesai' : 'Perhatian'}
-                            </p>
-                            <p className="text-sm font-bold text-gray-100">{toastMsg}</p>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Hapus Supplier?</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            Data supplier dan riwayat kemitraan akan dihapus secara permanen dari sistem.
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmDelete}
+                                className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95"
+                            >
+                                Ya, Hapus Permanen
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowDeleteConfirm(false);
+                                    setItemToDelete(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
+                            </button>
                         </div>
-                        <button onClick={() => setShowToast(false)} className="ml-6 p-2.5 hover:bg-white/5 rounded-2xl transition-all active:scale-90">
-                            <X className="w-4 h-4 text-gray-400" />
-                        </button>
                     </div>
                 </div>
             )}

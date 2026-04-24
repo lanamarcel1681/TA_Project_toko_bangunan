@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { ShoppingCart, Plus, Minus, Check } from 'lucide-react';
+import { useToast } from './Toast';
 
 interface ProductPurchaseActionsProps {
     productId: number;
@@ -21,6 +22,8 @@ export default function ProductPurchaseActions({ productId, stock }: ProductPurc
         if (quantity > 1) setQuantity(prev => prev - 1);
     };
 
+    const { showToast } = useToast();
+
     const addToCart = async () => {
         setLoading(true);
         setSuccess(false);
@@ -34,16 +37,17 @@ export default function ProductPurchaseActions({ productId, stock }: ProductPurc
             const data = await res.json();
 
             if (res.ok) {
+                showToast(`Berhasil menambahkan ${quantity} barang ke keranjang!`, 'success');
                 setSuccess(true);
                 // Dispatch event to update Navbar count
                 window.dispatchEvent(new Event('cart-updated'));
                 setTimeout(() => setSuccess(false), 3000);
             } else {
-                alert(data.error || "Gagal menambah ke keranjang");
+                showToast(data.error || "Gagal menambah ke keranjang", "error");
             }
         } catch (error) {
             console.error("Add to cart error:", error);
-            alert("Terjadi kesalahan sistem saat menghubungi server");
+            showToast("Terjadi kesalahan sistem saat menghubungi server", "error");
         } finally {
             setLoading(false);
         }

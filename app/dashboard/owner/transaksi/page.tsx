@@ -2,76 +2,145 @@ import { cookies } from 'next/headers';
 import TransactionTableClient from './TransactionTableClient';
 import { ShoppingCart, Search, Filter, Calendar, TrendingUp, ArrowUpRight, ArrowDownRight, CreditCard, Wallet, Activity } from 'lucide-react';
 
-const summaryData = {
-    totalPenjualan: "Rp 52.2 Jt",
-    totalPembelian: "Rp 53.0 Jt",
-    labaKotor: "Rp 15.8 Jt"
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
+    }).format(value);
 };
 
-const transactions = [
-    {
-        id: "INV-2025-001",
-        date: "22 Jan 2025",
-        type: "Penjualan",
-        client: "PT Karya Konstruksi",
-        description: "Semen Portland (50 sak), Besi Beton (500 kg)",
-        total: "Rp 38.750.000",
-        status: "Lunas",
-        statusColor: "green"
-    },
-    {
-        id: "INV-2025-002",
-        date: "22 Jan 2025",
-        type: "Penjualan",
-        client: "Toko TB. Lumbung Jaya",
-        description: "Cat Tembok (20 kaleng), Kuas (10 pcs)",
-        total: "Rp 3.700.000",
-        status: "Pending",
-        statusColor: "yellow"
-    },
-    {
-        id: "PO-2025-001",
-        date: "21 Jan 2025",
-        type: "Pembelian",
-        client: "PT Semen Indonesia",
-        description: "Semen Portland (500 sak)",
-        total: "Rp 30.000.000",
-        status: "Lunas",
-        statusColor: "green"
-    },
-    {
-        id: "INV-2025-003",
-        date: "21 Jan 2025",
-        type: "Penjualan",
-        client: "Bapak Ahmad",
-        description: "Bata Merah (5000 buah), Pasir (2 m³)",
-        total: "Rp 5.250.000",
-        status: "Lunas",
-        statusColor: "green"
-    },
-    {
-        id: "PO-2025-002",
-        date: "20 Jan 2025",
-        type: "Pembelian",
-        client: "PT Baja Indonesia",
-        description: "Besi Beton 10mm (2000 kg)",
-        total: "Rp 23.000.000",
-        status: "Pending",
-        statusColor: "yellow"
-    },
-    {
-        id: "INV-2025-004",
-        date: "20 Jan 2025",
-        type: "Penjualan",
-        client: "CV Bangun Sejahtera",
-        description: "Genteng Keramik (500 buah), Paku (20 kg)",
-        total: "Rp 4.500.000",
-        status: "Lunas",
-        statusColor: "green"
+const formatCompactCurrency = (value: number) => {
+    if (Math.abs(value) >= 1000000) {
+        return `Rp ${(value / 1000000).toFixed(1)} Jt`;
     }
-];
+    return formatCurrency(value);
+};
 
-export default async function TransaksiPage() {
+import TransactionFilter from './TransactionFilter';
+
+export default async function TransaksiPage({ 
+    searchParams 
+}: { 
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+    const resolvedParams = await searchParams;
+    const q = typeof resolvedParams.q === 'string' ? resolvedParams.q : undefined;
+    const start = typeof resolvedParams.start === 'string' ? resolvedParams.start : undefined;
+    const end = typeof resolvedParams.end === 'string' ? resolvedParams.end : undefined;
+    const statusFilter = typeof resolvedParams.status === 'string' ? resolvedParams.status : undefined;
+
+    // Construct Date Filter
+    const dateFilter = {
+        gte: start ? new Date(`${start}T00:00:00`) : undefined,
+        lte: end ? new Date(`${end}T23:59:59`) : undefined,
+    };
+
+    // 1. Fetch Sales (Penjualan)
+    const sales = await prisma.transaksiPenjualanBarang.findMany({
+        where: {
+            tanggal_penjualan: (start || end) ? dateFilter : undefined,
+            status_penjualan: statusFilter || undefined,
+            OR: q ? [
+                { no_transaksi: { contains: q } },
+                { pembeli: { nama_pembeli: { contains: q } } },
+                { detail: { some: { barang: { nama_barang: { contains: q } } } } }
+            ] : undefined
+        },
+        include: {
+            pembeli: true,
+            detail: {
+                include: { barang: true }
+            },
+            pembayaran: true
+        },
+        orderBy: { tanggal_penjualan: 'desc' }
+    });
+
+    // 2. Fetch Purchases (Pembelian)
+    const purchases = await prisma.transaksiPembelianBarang.findMany({
+        where: {
+            tanggal_pembelian: (start || end) ? dateFilter : undefined,
+            // Purchases don't have status yet, so we only filter by search query
+            OR: q ? [
+                { supplier: { nama_supplier: { contains: q } } },
+                { detail: { some: { barang: { nama_barang: { contains: q } } } } }
+            ] : undefined
+        },
+        include: {
+            supplier: true,
+            detail: {
+                include: { barang: true }
+            }
+        },
+        orderBy: { tanggal_pembelian: 'desc' }
+    });
+
+    // 3. Map to Transaction format
+    const transactions = [
+        ...sales.map(s => {
+            const total = s.detail.reduce((sum, d) => sum + d.total_harga, 0);
+            const status = s.status_penjualan;
+            
+            let displayStatus = 'Pending';
+            let color = 'yellow';
+
+            if (status === 'Selesai') {
+                displayStatus = 'Lunas';
+                color = 'green';
+            } else if (status === 'Dibatalkan (Refund Selesai)') {
+                displayStatus = 'Refund';
+                color = 'red';
+            } else if (status === 'Retur Selesai') {
+                displayStatus = 'Retur';
+                color = 'orange';
+            }
+
+            return {
+                id: s.no_transaksi,
+                date: new Date(s.tanggal_penjualan).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+                type: "Penjualan",
+                client: s.pembeli.nama_pembeli,
+                description: s.detail.map(d => `${d.barang.nama_barang} (${d.jumlah_penjualan_barang} qty)`).join(", "),
+                total: formatCurrency(total),
+                numericTotal: total,
+                status: displayStatus,
+                statusColor: color,
+                timestamp: new Date(s.tanggal_penjualan).getTime()
+            };
+        }),
+        ...purchases.map(p => {
+            return {
+                id: `PO-${p.id_transaksipembelian.toString().padStart(3, '0')}`,
+                date: new Date(p.tanggal_pembelian).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }),
+                type: "Pembelian",
+                client: p.supplier.nama_supplier,
+                description: p.detail.map(d => `${d.barang.nama_barang} (${d.jumlah_pembelian_barang} qty)`).join(", "),
+                total: formatCurrency(p.total_biaya),
+                numericTotal: p.total_biaya,
+                status: "Lunas",
+                statusColor: "green",
+                timestamp: new Date(p.tanggal_pembelian).getTime()
+            };
+        })
+    ].sort((a, b) => b.timestamp - a.timestamp);
+
+    // 4. Calculate Summaries
+    const totalPenjualanVal = sales.reduce((acc, s) => acc + s.detail.reduce((sum, d) => sum + d.total_harga, 0), 0);
+    const totalPembelianVal = purchases.reduce((acc, p) => acc + p.total_biaya, 0);
+    const labaKotorVal = totalPenjualanVal - totalPembelianVal;
+
+    const summaryData = {
+        totalPenjualan: formatCompactCurrency(totalPenjualanVal),
+        totalPembelian: formatCompactCurrency(totalPembelianVal),
+        labaKotor: formatCompactCurrency(labaKotorVal)
+    };
+
     return (
         <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
 
@@ -105,7 +174,7 @@ export default async function TransaksiPage() {
                             <div className="w-14 h-14 bg-green-50 text-green-600 rounded-2xl flex items-center justify-center">
                                 <ArrowUpRight className="w-7 h-7" />
                             </div>
-                            <span className="text-[10px] font-black text-green-600 bg-green-100 px-3 py-1 rounded-lg uppercase tracking-widest">+12.5%</span>
+                            <span className="text-[10px] font-black text-green-600 bg-green-100 px-3 py-1 rounded-lg uppercase tracking-widest">+ Live</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Total Penjualan</p>
                         <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPenjualan}</h3>
@@ -121,7 +190,7 @@ export default async function TransaksiPage() {
                             <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
                                 <ArrowDownRight className="w-7 h-7" />
                             </div>
-                            <span className="text-[10px] font-black text-blue-600 bg-blue-100 px-3 py-1 rounded-lg uppercase tracking-widest">-2.4%</span>
+                            <span className="text-[10px] font-black text-blue-600 bg-blue-100 px-3 py-1 rounded-lg uppercase tracking-widest">Database</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Total Pembelian</p>
                         <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPembelian}</h3>
@@ -137,7 +206,7 @@ export default async function TransaksiPage() {
                             <div className="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center">
                                 <Activity className="w-7 h-7" />
                             </div>
-                            <span className="text-[10px] font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-lg uppercase tracking-widest">Target 90%</span>
+                            <span className="text-[10px] font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-lg uppercase tracking-widest">Kalkulasi</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Laba Kotor Estimasi</p>
                         <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.labaKotor}</h3>
@@ -147,36 +216,7 @@ export default async function TransaksiPage() {
             </div>
 
             {/* Filters Section */}
-            <div className="flex flex-col lg:flex-row gap-6 mb-10 items-center justify-between">
-                <div className="relative w-full lg:max-w-md group/search">
-                    <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 group-focus-within/search:text-orange-500 transition-colors" />
-                    <input
-                        type="text"
-                        placeholder="Cari ID Invoice, Pelanggan, atau Produk..."
-                        className="w-full pl-14 pr-6 py-5 rounded-full border border-gray-100 focus:border-orange-500 focus:ring-4 focus:ring-orange-500/5 outline-none text-sm font-medium transition-all shadow-lg shadow-gray-200/40 bg-white"
-                    />
-                </div>
-
-                <div className="flex flex-wrap items-center gap-4 w-full lg:w-auto">
-                    <div className="flex items-center gap-2 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-md">
-                        <Filter className="w-4 h-4 text-gray-400" />
-                        <select className="bg-transparent border-none text-[11px] font-black uppercase tracking-widest text-gray-700 focus:ring-0 outline-none cursor-pointer">
-                            <option>Semua Status</option>
-                            <option>Lunas Terverifikasi</option>
-                            <option>Pending Otorisasi</option>
-                        </select>
-                    </div>
-
-                    <div className="flex items-center gap-3 bg-white px-6 py-3 rounded-full border border-gray-100 shadow-md">
-                        <Calendar className="w-4 h-4 text-gray-400" />
-                        <div className="flex items-center gap-2">
-                            <input type="date" className="bg-transparent border-none text-[11px] font-black text-gray-700 focus:ring-0 outline-none" />
-                            <span className="text-gray-300">/</span>
-                            <input type="date" className="bg-transparent border-none text-[11px] font-black text-gray-700 focus:ring-0 outline-none" />
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <TransactionFilter />
 
             <TransactionTableClient transactions={transactions} />
 

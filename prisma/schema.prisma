@@ -149,6 +149,7 @@ model Pengiriman {
   status_pengiriman      String    @db.VarChar(50)
   tanggal_sampai         DateTime? @db.DateTime(0)
   catatan_pengiriman     String?   @db.Text
+  alamat_tujuan          String?   @db.Text
 
   transaksi              TransaksiPenjualanBarang @relation(fields: [id_transaksipenjualan], references: [id_transaksipenjualan])
   pegawai                Pegawai?  @relation(fields: [id_pegawai], references: [id_pegawai])
@@ -158,22 +159,57 @@ model Pengiriman {
 
 model TransaksiPenjualanBarang {
   id_transaksipenjualan  Int      @id @default(autoincrement())
+  no_transaksi           String   @unique @db.VarChar(50)
   id_pembeli             Int
   id_pegawai             Int?
   tanggal_penjualan      DateTime @db.DateTime(0)
   ongkos_kirim           Float
   status_penjualan       String   @db.VarChar(50)
   metode_pengantaran     String   @db.VarChar(50)
-  alasan_retur           String?  @db.Text
-  foto_retur             String?  @db.VarChar(255)
 
   pembeli                Pembeli  @relation(fields: [id_pembeli], references: [id_pembeli])
   pegawai                Pegawai? @relation(fields: [id_pegawai], references: [id_pegawai])
   pembayaran             Pembayaran[]
   pengiriman             Pengiriman[]
   detail                 DetailTransaksiPenjualanBarang[]
+  pembatalan             PembatalanTransaksi?
+  retur                  ReturTransaksi?
 
   @@map("TransaksiPenjualan_Barang")
+}
+
+model PembatalanTransaksi {
+  id_pembatalan          Int      @id @default(autoincrement())
+  id_transaksipenjualan  Int      @unique
+  alasan_pembatalan      String   @db.Text
+  tanggal_pembatalan     DateTime @default(now()) @db.DateTime(0)
+  
+  // Refund Details
+  nominal_refund         Float
+  status_refund          String   @default("Pending") @db.VarChar(50)
+  bukti_refund           String?  @db.VarChar(255)
+
+  transaksi              TransaksiPenjualanBarang @relation(fields: [id_transaksipenjualan], references: [id_transaksipenjualan])
+
+  @@map("Pembatalan_Transaksi")
+}
+
+model ReturTransaksi {
+  id_retur               Int      @id @default(autoincrement())
+  id_transaksipenjualan  Int      @unique
+  alasan_retur           String   @db.Text
+  foto_barang_retur      String   @db.VarChar(255)
+  data_rekening          String   @db.VarChar(255) // Bank/E-Wallet & No Rekening
+  tanggal_pengajuan      DateTime @default(now()) @db.DateTime(0)
+  status_retur           String   @default("Diajukan") @db.VarChar(50) // Diajukan, Disetujui, Ditolak, Selesai
+
+  // Refund Details
+  nominal_refund         Float?
+  bukti_refund           String?  @db.VarChar(255)
+
+  transaksi              TransaksiPenjualanBarang @relation(fields: [id_transaksipenjualan], references: [id_transaksipenjualan])
+
+  @@map("Retur_Transaksi")
 }
 
 model DetailTransaksiPenjualanBarang {
@@ -197,6 +233,7 @@ model UlasanBarang {
   id_barang                   Int
   rating                      Int
   komentar                    String   @db.Text
+  foto_ulasan                 String?  @db.VarChar(255)
   tanggal_ulasan              DateTime @db.DateTime(0)
 
   detail_transaksi            DetailTransaksiPenjualanBarang @relation(fields: [id_detailtransaksipenjualan], references: [id_detailtransaksipenjualan])

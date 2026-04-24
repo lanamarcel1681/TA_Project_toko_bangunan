@@ -3,12 +3,14 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '../components/Toast';
 
 export default function LoginPage() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { showToast } = useToast();
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -30,10 +32,13 @@ export default function LoginPage() {
 
             if (res.ok && data.success) {
                 if (data.role === 'owner') {
+                    showToast('Selamat datang kembali, Owner!', 'success');
                     router.push('/dashboard/owner');
                 } else if (data.role === 'karyawan') {
+                    showToast('Selamat bekerja!', 'success');
                     router.push('/dashboard/karyawan');
                 } else {
+                    showToast('Login Berhasil! Selamat berbelanja.', 'success');
                     router.push('/');
                 }
             } else {
@@ -158,6 +163,14 @@ export default function LoginPage() {
                                 >
                                     {loading ? 'Memproses...' : 'Masuk Sekarang'}
                                 </button>
+                            </div>
+                            <div className="flex justify-between items-center text-sm pt-2">
+                                <Link href="/register" className="text-orange-600 font-semibold hover:text-orange-800 hover:underline transition-colors">
+                                    Belum punya akun? Daftar
+                                </Link>
+                                <Link href="/lupa-password" className="text-gray-500 font-medium hover:text-orange-600 transition-colors">
+                                    Lupa Password?
+                                </Link>
                             </div>
                         </form>
 

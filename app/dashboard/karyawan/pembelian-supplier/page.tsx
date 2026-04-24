@@ -4,10 +4,11 @@ import {
     Phone, Building2, RefreshCw, Pencil, ArrowRight, Save, LayoutGrid, List,
     MessageCircle, FilePlus2, Printer, Truck, Package, DollarSign, Calendar, User, X,
     CheckCircle2, AlertCircle, Search, Plus, Trash2, Edit2, Eye, Wrench, Clock, ShoppingCart,
-    Store, FileText, ChevronDown, ChevronRight
+    Store, FileText, ChevronDown, ChevronRight, AlertTriangle
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useToast } from '@/app/components/Toast';
 
 const WhatsAppLogo = ({ className }: { className?: string }) => (
     <svg
@@ -67,6 +68,10 @@ export default function TransaksiPembelianSupplierPage() {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedTransaksi, setSelectedTransaksi] = useState<Transaksi | null>(null);
     const [editMode, setEditMode] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+    const { showToast } = useToast();
 
     // Form state
     const [items, setItems] = useState<POItem[]>([{ id: '1', id_barang: null, namaBarang: '', jumlah: 1, harga_satuan: 0 }]);
@@ -182,32 +187,43 @@ export default function TransaksiPembelianSupplierPage() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini? Stok barang akan dikembalikan (dikurangi).')) return;
+        setItemToDelete(id);
+        setShowDeleteConfirm(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         setLoading(true);
         try {
-            const res = await fetch(`/api/pembelian/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/pembelian/${itemToDelete}`, { method: 'DELETE' });
             if (res.ok) {
-                alert('Transaksi berhasil dihapus');
+                showToast('Transaksi berhasil dihapus', 'success');
                 fetchData();
             } else {
                 const err = await res.json();
-                alert(err.error || 'Gagal menghapus transaksi');
+                showToast(err.error || 'Gagal menghapus transaksi', 'error');
             }
         } catch (err) {
             console.error(err);
-            alert('Kesalahan jaringan');
+            showToast('Kesalahan jaringan', 'error');
         } finally {
             setLoading(false);
+            setShowDeleteConfirm(false);
+            setItemToDelete(null);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedSupplierId) return alert('Pilih perusahaan supplier terlebih dahulu!');
-        if (items.some(item => !item.id_barang)) return alert('Semua item harus dipilih barangnya!');
+        if (!selectedSupplierId) return showToast('Pilih perusahaan supplier terlebih dahulu!', 'error');
+        if (items.some(item => !item.id_barang)) return showToast('Semua item harus dipilih barangnya!', 'error');
 
+        setShowConfirmModal(true);
+    };
+
+    const confirmSubmit = async () => {
         setSubmitting(true);
+        setShowConfirmModal(false);
         try {
             const pegawaiId = getPegawaiId();
             const url = editMode ? `/api/pembelian/${selectedTransaksi?.id_transaksipembelian}` : '/api/pembelian';
@@ -230,17 +246,17 @@ export default function TransaksiPembelianSupplierPage() {
 
             if (!res.ok) {
                 const err = await res.json();
-                alert(err.error || `Gagal ${editMode ? 'memperbarui' : 'membuat'} PO`);
+                showToast(err.error || `Gagal ${editMode ? 'memperbarui' : 'membuat'} PO`, 'error');
                 return;
             }
 
-            alert(`Purchase Order berhasil ${editMode ? 'diperbarui' : 'dibuat'}!`);
+            showToast(`Purchase Order berhasil ${editMode ? 'diperbarui' : 'dibuat'}!`, 'success');
             setIsModalOpen(false);
             resetForm();
             fetchData();
         } catch (err) {
             console.error(err);
-            alert('Terjadi kesalahan jaringan');
+            showToast('Terjadi kesalahan jaringan', 'error');
         } finally {
             setSubmitting(false);
         }
@@ -466,7 +482,7 @@ export default function TransaksiPembelianSupplierPage() {
                                                 <div className="font-black text-gray-900 text-lg tracking-tighter">{formatRp(trx.total_biaya)}</div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className="px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black border border-blue-100 uppercase tracking-widest">
+                                                <span className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black border border-blue-100 uppercase tracking-widest whitespace-nowrap">
                                                     {trx.detail.length} item
                                                 </span>
                                             </td>
@@ -893,6 +909,70 @@ export default function TransaksiPembelianSupplierPage() {
                                     </button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Custom Confirm Modal PO */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <ShoppingCart className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">{editMode ? 'Simpan Perubahan?' : 'Konfirmasi PO?'}</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            {editMode 
+                                ? 'Apakah Anda yakin ingin menyimpan perubahan pada Purchase Order ini?' 
+                                : 'Apakah data pesanan sudah benar? Tindakan ini akan menambah stok barang secara otomatis.'}
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmSubmit}
+                                className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-95"
+                            >
+                                Ya, Eksekusi Sekarang
+                            </button>
+                            <button 
+                                onClick={() => setShowConfirmModal(false)}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Periksa Kembali
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <AlertTriangle className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Hapus Transaksi?</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            Tindakan ini akan menghapus riwayat transaksi dan mengembalikan (mengurangi) stok barang.
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmDelete}
+                                className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95"
+                            >
+                                Ya, Hapus Permanen
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowDeleteConfirm(false);
+                                    setItemToDelete(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
+                            </button>
                         </div>
                     </div>
                 </div>

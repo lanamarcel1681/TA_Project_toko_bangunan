@@ -4,15 +4,19 @@ import { useState, useRef } from 'react';
 import Link from 'next/link';
 import { Package, ShieldCheck, AlertTriangle, Eye, Edit3, Trash2, LayoutGrid, Save, X, Plus, Tag, Layers, DollarSign, Archive, Weight, Ruler, Camera, Upload, Building2, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/app/components/Toast';
 
 export default function OwnerBarangTable({ initialProducts, categories = [], units = [], suppliers = [] }: { initialProducts: any[], categories?: any[], units?: any[], suppliers?: any[] }) {
     const router = useRouter();
+    const { showToast } = useToast();
     const [products, setProducts] = useState(initialProducts);
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [viewingProduct, setViewingProduct] = useState<any>(null);
     const [editingProduct, setEditingProduct] = useState<any>(null);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
     // Photo upload
     const [photoFile, setPhotoFile] = useState<File | null>(null);
@@ -56,26 +60,33 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
     });
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Yakin ingin menghapus produk ini?")) return;
+        setItemToDelete(id);
+        setShowDeleteConfirm(true);
+    };
 
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
             setIsDeleting(true);
-            const res = await fetch(`/api/barang/${id}`, {
+            const res = await fetch(`/api/barang/${itemToDelete}`, {
                 method: 'DELETE'
             });
 
             if (res.ok) {
-                setProducts(products.filter(p => p.id_barang !== id));
+                showToast('Produk berhasil dihapus!', 'success');
+                setProducts(products.filter(p => p.id_barang !== itemToDelete));
                 router.refresh();
             } else {
                 const data = await res.json();
-                alert(data.error || "Gagal menghapus produk");
+                showToast(data.error || "Gagal menghapus produk", 'error');
             }
         } catch (error) {
             console.error(error);
-            alert("Terjadi kesalahan saat menghapus");
+            showToast("Terjadi kesalahan saat menghapus", 'error');
         } finally {
             setIsDeleting(false);
+            setShowDeleteConfirm(false);
+            setItemToDelete(null);
         }
     };
 
@@ -118,16 +129,17 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
 
             if (res.ok) {
                 const updated = await res.json();
+                showToast('Perubahan produk berhasil disimpan!', 'success');
                 setProducts(products.map(p => p.id_barang === updated.id_barang ? updated : p));
                 setIsEditOpen(false);
                 router.refresh();
             } else {
                 const data = await res.json();
-                alert(data.error || "Gagal memperbarui produk");
+                showToast(data.error || "Gagal memperbarui produk", 'error');
             }
         } catch (error) {
             console.error(error);
-            alert("Terjadi kesalahan sistem");
+            showToast("Terjadi kesalahan sistem", 'error');
         }
     };
 
@@ -503,6 +515,40 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                         <div className="px-10 py-8 border-t border-gray-100 bg-gray-50/50 flex justify-end">
                             <button onClick={() => setIsDetailOpen(false)} className="px-12 py-4 bg-orange-600 text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-full shadow-lg shadow-orange-600/20 hover:bg-orange-700 hover:shadow-orange-600/40 transition-all active:scale-95 flex items-center justify-center gap-2 group">
                                 Tutup Panel <X className="w-4 h-4 group-hover:rotate-90 transition-transform" />
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <AlertTriangle className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Hapus Produk?</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            Tindakan ini tidak dapat dibatalkan. Seluruh data produk dan keterkaitannya akan dihapus permanen.
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmDelete}
+                                disabled={isDeleting}
+                                className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95 disabled:opacity-50"
+                            >
+                                {isDeleting ? 'Menghapus...' : 'Ya, Hapus Permanen'}
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowDeleteConfirm(false);
+                                    setItemToDelete(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
                             </button>
                         </div>
                     </div>

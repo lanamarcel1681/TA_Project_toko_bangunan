@@ -4,15 +4,17 @@ import { UserCog, Mail, Phone, ShieldCheck, Camera, Bell, Lock, LogOut, ChevronR
 
 interface ProfileClientProps {
     userData: {
+        id: number;
         name: string;
         role: 'owner' | 'employee';
     },
     userEmail: string;
     userPhone: string;
     joinDate: string;
+    birthDate: string;
 }
 
-export default function ProfileClient({ userData, userEmail, userPhone, joinDate }: ProfileClientProps) {
+export default function ProfileClient({ userData, userEmail, userPhone, joinDate, birthDate }: ProfileClientProps) {
     const isOwner = userData.role === 'owner';
     const themeColor = isOwner ? 'text-orange-600' : 'text-blue-600';
     const themeBg = isOwner ? 'bg-orange-50' : 'bg-blue-50';
@@ -22,6 +24,26 @@ export default function ProfileClient({ userData, userEmail, userPhone, joinDate
     
     const [name, setName] = useState(userData.name);
     const [phone, setPhone] = useState(userPhone);
+    const [reseting, setReseting] = useState(false);
+
+    const handleResetPassword = async () => {
+        if (!confirm(`Apakah Anda yakin ingin mereset password ke tanggal lahir (${birthDate})?`)) return;
+
+        setReseting(true);
+        try {
+            const res = await fetch('/api/auth/reset-password-default', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert(data.error);
+            }
+        } catch (error) {
+            alert("Terjadi kesalahan saat mereset password");
+        } finally {
+            setReseting(false);
+        }
+    };
 
     return (
         <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in zoom-in-95 duration-500">
@@ -176,9 +198,14 @@ export default function ProfileClient({ userData, userEmail, userPhone, joinDate
                             </div>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row justify-end items-center gap-8 pt-12 border-t border-gray-50">
-                            <button className="text-[10px] font-black text-gray-400 uppercase tracking-widest hover:text-gray-900 transition-colors">
-                                Reset Pengaturan Akun
+                        <div className="flex flex-col sm:flex-row justify-end items-center gap-4 pt-12 border-t border-gray-50">
+                            <button 
+                                onClick={handleResetPassword}
+                                disabled={reseting}
+                                className="inline-flex items-center justify-center px-8 py-5 bg-gray-100 hover:bg-orange-50 text-gray-500 hover:text-orange-600 border border-transparent hover:border-orange-100 rounded-full font-black text-[11px] uppercase tracking-[0.25em] transition-all active:scale-95 group"
+                            >
+                                <Lock className={`w-4 h-4 mr-2.5 ${reseting ? 'animate-spin' : ''}`} />
+                                {reseting ? 'Memproses...' : 'Reset ke Password Default'}
                             </button>
                             <button className={`inline-flex items-center justify-center px-12 py-5 ${isOwner ? 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700' : 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700'} text-white rounded-full font-black text-[11px] uppercase tracking-[0.25em] shadow-xl hover:scale-105 transition-all active:scale-95 group`}>
                                 <Save className="w-4 h-4 mr-2.5 group-hover:rotate-12 transition-transform" />

@@ -3,9 +3,11 @@
 import { useState, useRef } from 'react';
 import { Plus, X, Package, Tag, Layers, DollarSign, Archive, Save, ArrowRight, Weight, Ruler, Camera, Upload, Building2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/app/components/Toast';
 
 export default function AddProductClient({ categories = [], units = [], suppliers = [] }: { categories?: any[], units?: any[], suppliers?: any[] }) {
     const router = useRouter();
+    const { showToast } = useToast();
     const [isOpen, setIsOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -72,6 +74,7 @@ export default function AddProductClient({ categories = [], units = [], supplier
             });
 
             if (res.ok) {
+                showToast('Produk berhasil ditambahkan!', 'success');
                 setIsOpen(false);
                 setFormData({ nama_kategori: '', nama_barang: '', harga_barang: '', satuan_barang: '', stok_barang: '', deskripsi_barang: '', berat_barang: '', dimensi_barang: '', minimum_barang: '', merk_barang: '', id_suppliers: [] });
                 setPhotoFile(null);
@@ -79,7 +82,7 @@ export default function AddProductClient({ categories = [], units = [], supplier
                 router.refresh();
             } else {
                 const data = await res.json();
-                alert(data.error || "Gagal menyimpan produk");
+                showToast(data.error || "Gagal menyimpan produk", 'error');
             }
         } catch (error) {
             console.error(error);

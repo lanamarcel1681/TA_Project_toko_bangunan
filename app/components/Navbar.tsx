@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect, useRef } from 'react';
+import { useToast } from './Toast';
 
 export default function Navbar() {
     const pathname = usePathname();
@@ -10,6 +11,7 @@ export default function Navbar() {
     const [cartCount, setCartCount] = useState(0);
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const dropdownRef = useRef<HTMLDivElement>(null);
+    const { showToast } = useToast();
 
     const fetchCartCount = async () => {
         try {
@@ -64,9 +66,12 @@ export default function Navbar() {
     }, []);
 
     const handleLogout = async () => {
+        showToast('Berhasil logout. Sampai jumpa kembali!', 'success');
         await fetch('/api/auth/logout', { method: 'POST' });
         document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        window.location.reload();
+        setTimeout(() => {
+            window.location.reload();
+        }, 500);
     };
 
     return (

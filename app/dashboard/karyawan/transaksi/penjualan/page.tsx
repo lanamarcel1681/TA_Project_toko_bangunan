@@ -1,77 +1,272 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     ShoppingCart, Printer, CalendarClock, PackageCheck, AlertTriangle,
     X, Truck, User, Calendar, Clock, MapPin, CheckCircle2, ChevronRight,
-    Store, ClipboardCheck, Timer
+    Store, ClipboardCheck, Timer, History, Loader2
 } from 'lucide-react';
-
-const initialPendingDeliveries = [
-    {
-        id: "INV-DIANTAR-001",
-        customer: "Agung Wijaya",
-        date: "12 April 2026",
-        address: "Jl. Pahlawan No. 45, Kecamatan Suka Maju, Kota Cerdas.",
-        status: "Menunggu Pengantaran"
-    },
-    {
-        id: "INV-DIANTAR-003",
-        customer: "Hendri Pratama",
-        date: "13 April 2026",
-        address: "Perumahan Indah Permai Block C-12, Gading Serpong.",
-        status: "Menunggu Pengantaran"
-    }
-];
-
-const initialPickups = [
-    {
-        id: "INV-AMBIL-002",
-        customer: "Rina Suryani",
-        date: "12 April 2026",
-        area: "Area Pickup Gudang A"
-    }
-];
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
+import Link from 'next/link';
+import { useToast } from '@/app/components/Toast';
 
 export default function TransaksiPenjualanKaryawanPage() {
-    const [deliveries, setDeliveries] = useState(initialPendingDeliveries);
-    const [pickups, setPickups] = useState(initialPickups);
+    const { showToast } = useToast();
+    const [deliveries, setDeliveries] = useState<any[]>([]);
+    const [pickups, setPickups] = useState<any[]>([]);
+    const [employees, setEmployees] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedId, setSelectedId] = useState<string | null>(null);
 
-    // Modal Form State
+    // Confirmation Modal states
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmAction, setConfirmAction] = useState<'ASSIGN_DRIVER' | 'CONFIRM_PICKUP' | null>(null);
+    const [confirmTarget, setConfirmTarget] = useState<any>(null);
+    const [isActionLoading, setIsActionLoading] = useState(false);
+
     const [assignment, setAssignment] = useState({
-        driver: '',
-        vehicle: '',
+        driverId: '',
+        vehicle: 'Motor Toko / Pick Up', // Default or mocked
         date: '',
         time: '',
         note: ''
     });
 
+    const fetchEmployees = async () => {
+        try {
+            const res = await fetch('/api/pegawai');
+            const data = await res.json();
+            if (Array.isArray(data)) {
+                // Filter out Owner / Pemilik
+                const filtered = data.filter(p => {
+                    const role = p.jabatan?.nama_jabatan?.toLowerCase();
+                    return role !== 'owner' && role !== 'pemilik toko';
+                });
+                setEmployees(filtered);
+            }
+        } catch (error) {
+            console.error("Fetch Employees Error:", error);
+        }
+    };
+
+    const generateInvoicePDF = (order: any) => {
+        const doc = new jsPDF();
+
+        // Header Branding
+        doc.setFontSize(22);
+        doc.setTextColor(234, 88, 12); // Orange-600
+        doc.text("TB. LUMBUNG JAYA", 14, 22);
+
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text("Pusat Bahan Bangunan & Alat Teknik Terlengkap", 14, 28);
+        doc.line(14, 32, 196, 32);
+
+        // Transaction Info
+        doc.setFontSize(12);
+        doc.setTextColor(0);
+        doc.setFont("helvetica", "bold");
+        doc.text("SURAT JALAN / INVOICE", 14, 45);
+
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.text(`No. Invoice : ${order.id}`, 14, 52);
+        doc.text(`Tanggal     : ${order.date}`, 14, 57);
+        doc.text(`Kepada      : ${order.customer}`, 14, 62);
+
+        if (order.address) {
+            doc.text("Alamat      :", 14, 67);
+            const splitAddress = doc.splitTextToSize(order.address, 140);
+            doc.text(splitAddress, 35, 67);
+        }
+
+        // Table calculation (Total costs are in the raw data)
+        // Note: The 'order' object now has 'detail' from the updated API
+        const tableData = (order.rawDetail || []).map((item: any, index: number) => [
+            index + 1,
+            item.barang.nama_barang,
+            `${item.jumlah_penjualan_barang}`,
+            `Rp ${item.total_harga.toLocaleString('id-ID')}`
+        ]);
+
+        autoTable(doc, {
+            startY: 85,
+            head: [['No', 'Deskripsi Barang', 'Qty', 'Subtotal']],
+            body: tableData,
+            theme: 'grid',
+            headStyles: {
+                fillColor: [234, 88, 12],
+                textColor: 255,
+                lineWidth: 0.5,
+                lineColor: [255, 255, 255]
+            },
+            styles: {
+                fontSize: 9,
+                cellPadding: 5,
+                lineWidth: 0.3,
+                lineColor: [220, 220, 220]
+            },
+            columnStyles: {
+                0: { cellWidth: 15, halign: 'center' },
+                2: { cellWidth: 25, halign: 'center' },
+                3: { cellWidth: 45, halign: 'right' }
+            }
+        });
+
+        const finalY = (doc as any).lastAutoTable.finalY + 10;
+
+        // Footer & Signature
+        doc.setFontSize(9);
+        doc.setFont("helvetica", "italic");
+        doc.text("* Barang yang sudah dibeli tidak dapat ditukar atau dikembalikan.", 14, finalY);
+
+        doc.setFont("helvetica", "bold");
+        doc.text("Tanda Terima,", 165, finalY + 20, { align: 'center' });
+        doc.text(`( ${order.customer} )`, 165, finalY + 45, { align: 'center' });
+
+        doc.save(`${order.id}.pdf`);
+    };
+
+    const fetchMonitoringData = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch('/api/karyawan/transaksi/penjualan');
+            const data = await res.json();
+            if (data.success) {
+                setDeliveries(data.deliveries);
+                setPickups(data.pickups);
+            }
+        } catch (error) {
+            console.error("Fetch Error:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchMonitoringData();
+        fetchEmployees();
+    }, []);
+
     const openAssignmentModal = (id: string) => {
         setSelectedId(id);
+
+        // AUTO-FILL LOGIC
+        const now = new Date();
+        const currentHour = now.getHours();
+
+        let defaultDate = new Date();
+        let defaultTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+        // Jika sudah jam 4 sore (16:00) ke atas, arahkan ke BESOK jam 9 Pagi
+        if (currentHour >= 16) {
+            defaultDate.setDate(now.getDate() + 1);
+            defaultTime = "09:00";
+        }
+
+        const dateString = defaultDate.toISOString().split('T')[0];
+
+        setAssignment(prev => ({
+            ...prev,
+            date: dateString,
+            time: defaultTime
+        }));
+
         setIsModalOpen(true);
     };
 
     const handleAssign = (e: React.FormEvent) => {
         e.preventDefault();
-        alert(`Berhasil! Pesanan ${selectedId} telah ditugaskan ke ${assignment.driver} untuk pengiriman tanggal ${assignment.date}`);
-        setDeliveries(deliveries.filter(d => d.id !== selectedId));
-        setIsModalOpen(false);
-        setAssignment({ driver: '', vehicle: '', date: '', time: '', note: '' });
+
+        // CONSTRAINT: Tidak bisa kirim dihari yang sama kalau belum jam 4 sore
+        const today = new Date();
+        const selectedDate = new Date(assignment.date);
+        today.setHours(0, 0, 0, 0);
+        selectedDate.setHours(0, 0, 0, 0);
+
+        if (selectedDate.getTime() === today.getTime()) {
+            const currentHour = new Date().getHours();
+            if (currentHour < 16) {
+                showToast('Penugasan hari yang sama hanya diperbolehkan setelah pukul 16:00.', 'error');
+                return;
+            }
+        }
+
+        setConfirmAction('ASSIGN_DRIVER');
+        setConfirmTarget(selectedId);
+        setShowConfirmModal(true);
     };
 
     const handlePickup = (id: string) => {
-        alert(`Konfirmasi penyerahan untuk ${id} berhasil diselesaikan!`);
-        setPickups(pickups.filter(p => p.id !== id));
+        setConfirmAction('CONFIRM_PICKUP');
+        setConfirmTarget(id);
+        setShowConfirmModal(true);
+    };
+
+    const executeAction = async () => {
+        if (!confirmAction || !confirmTarget) return;
+        setIsActionLoading(true);
+
+        try {
+            if (confirmAction === 'ASSIGN_DRIVER') {
+                const res = await fetch('/api/karyawan/transaksi/penjualan', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        id: confirmTarget,
+                        action: 'ASSIGN_DRIVER',
+                        details: assignment
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Pesanan ${confirmTarget} berhasil ditugaskan!`, 'success');
+                    fetchMonitoringData();
+                    setIsModalOpen(false);
+                    setShowConfirmModal(false);
+                    setAssignment({ driverId: '', vehicle: 'Motor Toko / Pick Up', date: '', time: '', note: '' });
+                } else {
+                    showToast(data.error || 'Gagal menugaskan driver', 'error');
+                }
+            } else if (confirmAction === 'CONFIRM_PICKUP') {
+                const res = await fetch('/api/karyawan/transaksi/penjualan', {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: confirmTarget, action: 'CONFIRM_PICKUP' })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Penyerahan pesanan ${confirmTarget} berhasil dikonfirmasi!`, 'success');
+                    fetchMonitoringData();
+                    setShowConfirmModal(false);
+                } else {
+                    showToast(data.error || 'Gagal konfirmasi penyerahan', 'error');
+                }
+            }
+        } catch (error) {
+            showToast('Terjadi kesalahan sistem operasional', 'error');
+        } finally {
+            setIsActionLoading(false);
+        }
     };
 
     const selectedOrder = deliveries.find(d => d.id === selectedId);
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
-            <div className="mb-10">
-                <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Monitoring Penjualan</h1>
-                <p className="text-gray-500 font-medium">Monitoring pengiriman barang ke pelanggan dan verifikasi pengambilan pesanan di toko.</p>
+        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20">
+            {/* Header Section */}
+            <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                <div className="text-left">
+                    <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none mb-3">Monitoring Penjualan</h1>
+                    <p className="text-gray-500 font-medium tracking-tight">Kelola persiapan barang dan penugasan driver untuk pesanan pelanggan.</p>
+                </div>
+                <Link
+                    href="/dashboard/karyawan/transaksi/penjualan/riwayat"
+                    className="flex items-center gap-3 px-6 py-4 bg-white border border-gray-100 rounded-3xl text-gray-600 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50/50 transition-all font-black text-[10px] uppercase tracking-widest shadow-sm group"
+                >
+                    <History className="w-4 h-4 group-hover:rotate-[-20deg] transition-transform" /> Lihat Riwayat Penjualan
+                </Link>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
@@ -127,7 +322,10 @@ export default function TransaksiPenjualanKaryawanPage() {
                                             >
                                                 <CalendarClock className="w-4 h-4" /> Tugaskan Driver &rarr;
                                             </button>
-                                            <button onClick={() => alert('Mencetak surat jalan / resi...')} className="w-14 h-14 bg-white border border-gray-100 text-gray-400 rounded-2xl flex items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm active:scale-95">
+                                            <button
+                                                onClick={() => generateInvoicePDF(delivery)}
+                                                className="w-14 h-14 bg-white border border-gray-100 text-gray-400 rounded-2xl flex items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm active:scale-95"
+                                            >
                                                 <Printer className="w-5 h-5" />
                                             </button>
                                         </div>
@@ -180,13 +378,16 @@ export default function TransaksiPenjualanKaryawanPage() {
                                     </div>
 
                                     <div className="flex flex-col sm:flex-row gap-3 text-left">
-                                        <button 
-                                            onClick={() => handlePickup(pickup.id)} 
+                                        <button
+                                            onClick={() => handlePickup(pickup.id)}
                                             className="flex-1 bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.15em] flex justify-center items-center gap-3 shadow-lg shadow-green-600/20 active:scale-95 transition-all outline-none"
                                         >
                                             <CheckCircle2 className="w-4 h-4" /> Konfirmasi Penyerahan &rarr;
                                         </button>
-                                        <button onClick={() => alert('Mencetak struk serah terima...')} className="w-14 h-14 bg-white border border-gray-100 text-gray-400 rounded-2xl flex items-center justify-center hover:text-green-600 hover:bg-green-50 transition-all shadow-sm active:scale-95">
+                                        <button
+                                            onClick={() => generateInvoicePDF(pickup)}
+                                            className="w-14 h-14 bg-white border border-gray-100 text-gray-400 rounded-2xl flex items-center justify-center hover:text-green-600 hover:bg-green-50 transition-all shadow-sm active:scale-95"
+                                        >
                                             <Printer className="w-5 h-5" />
                                         </button>
                                     </div>
@@ -225,13 +426,22 @@ export default function TransaksiPenjualanKaryawanPage() {
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Personel Driver / Supir</label>
                                         <div className="relative group/input">
                                             <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-blue-600 transition-colors pointer-events-none"><User className="w-5 h-5" /></span>
-                                            <input
-                                                type="text" required
-                                                className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-blue-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner"
-                                                placeholder="Ketik Nama Supir Toko..."
-                                                value={assignment.driver}
-                                                onChange={e => setAssignment({ ...assignment, driver: e.target.value })}
-                                            />
+                                            <select
+                                                required
+                                                className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-blue-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner appearance-none"
+                                                value={assignment.driverId}
+                                                onChange={e => setAssignment({ ...assignment, driverId: e.target.value })}
+                                            >
+                                                <option value="">Pilih Personel Driver...</option>
+                                                {employees.map(emp => (
+                                                    <option key={emp.id_pegawai} value={emp.id_pegawai}>
+                                                        {emp.nama_pegawai} - {emp.jabatan?.nama_jabatan}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none">
+                                                <ChevronRight className="w-5 h-5 text-gray-300 rotate-90" />
+                                            </div>
                                         </div>
                                     </div>
                                     <div className="grid grid-cols-2 gap-8 text-left">
@@ -278,6 +488,44 @@ export default function TransaksiPenjualanKaryawanPage() {
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                    </div>
+                </div>
+            )}
+            {/* Action Confirmation Modal */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                            {confirmAction === 'ASSIGN_DRIVER' ? <Truck className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10" />}
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                            {confirmAction === 'ASSIGN_DRIVER' ? 'Konfirmasi Driver?' : 'Konfirmasi Ambil?'}
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            {confirmAction === 'ASSIGN_DRIVER' 
+                                ? `Yakin ingin menugaskan driver untuk pesanan ${confirmTarget}? Pastikan jadwal dan personel sudah benar.` 
+                                : `Konfirmasi bahwa barang untuk pesanan ${confirmTarget} sudah benar-benar diserahkan kepada pelanggan.`}
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={executeAction}
+                                disabled={isActionLoading}
+                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700' : 'bg-green-600 shadow-green-600/20 hover:bg-green-700'}`}
+                            >
+                                {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (confirmAction === 'ASSIGN_DRIVER' ? 'Ya, Tugaskan' : 'Ya, Konfirmasi Penyerahan')}
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowConfirmModal(false);
+                                    setConfirmAction(null);
+                                    setConfirmTarget(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
+                            </button>
                         </div>
                     </div>
                 </div>

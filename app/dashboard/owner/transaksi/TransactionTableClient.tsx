@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import { Eye, Download, X, Printer, CreditCard, User, Calendar, Tag, Package, ArrowRight, ShieldCheck, Activity } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 type Transaction = {
     id: string;
@@ -16,6 +18,70 @@ type Transaction = {
 
 export default function TransactionTableClient({ transactions }: { transactions: Transaction[] }) {
     const [selectedTx, setSelectedTx] = useState<Transaction | null>(null);
+
+    const handlePrintInvoice = (tx: Transaction) => {
+        const doc = new jsPDF();
+        
+        // Header
+        doc.setFontSize(22);
+        doc.setTextColor(249, 115, 22); // Orange-500
+        doc.text('TB. LUMBUNG JAYA', 105, 20, { align: 'center' });
+        
+        doc.setFontSize(10);
+        doc.setTextColor(100);
+        doc.text('Jl. Raya Material No. 123, Kabupaten/Kota', 105, 28, { align: 'center' });
+        doc.text('Telp: (021) 1234-5678 | Email: sales@lumbungjaya.com', 105, 33, { align: 'center' });
+        
+        // Horizontal Line
+        doc.setDrawColor(249, 115, 22);
+        doc.setLineWidth(1);
+        doc.line(15, 40, 195, 40);
+        
+        // Invoice Details
+        doc.setFontSize(14);
+        doc.setTextColor(40);
+        doc.text('INVOICE DIGITAL', 15, 55);
+        
+        doc.setFontSize(10);
+        doc.text(`ID Transaksi : ${tx.id}`, 15, 65);
+        doc.text(`Tanggal      : ${tx.date}`, 15, 70);
+        doc.text(`Tipe         : ${tx.type}`, 15, 75);
+        doc.text(`Klien        : ${tx.client}`, 15, 80);
+        
+        // Table Items
+        const items = tx.description.split(', ').map(item => {
+            const match = item.match(/(.+?)\s*\((\d+.*)\)/);
+            return [
+                match ? match[1] : item,
+                match ? match[2] : '-',
+            ];
+        });
+
+        autoTable(doc, {
+            startY: 90,
+            head: [['Nama Barang / Deskripsi', 'Jumlah / Keterangan']],
+            body: items,
+            headStyles: { fillColor: [249, 115, 22] },
+            styles: { fontSize: 9 },
+            margin: { left: 15, right: 15 }
+        });
+
+        // Total
+        const finalY = (doc as any).lastAutoTable.finalY + 15;
+        doc.setFontSize(12);
+        doc.text('Total Pembayaran:', 130, finalY);
+        doc.setFontSize(16);
+        doc.setTextColor(249, 115, 22);
+        doc.text(tx.total, 195, finalY, { align: 'right' });
+
+        // Footer
+        doc.setFontSize(8);
+        doc.setTextColor(150);
+        doc.text('Dokumen ini dihasilkan secara otomatis oleh sistem TB. Lumbung Jaya.', 105, 280, { align: 'center' });
+        doc.text('Terima kasih atas kerja sama Anda.', 105, 285, { align: 'center' });
+
+        doc.save(`Invoice_${tx.id}.pdf`);
+    };
 
     return (
         <>
@@ -81,7 +147,11 @@ export default function TransactionTableClient({ transactions }: { transactions:
                                             >
                                                 <Eye className="w-4.5 h-4.5" />
                                             </button>
-                                            <button className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:border-orange-200 active:scale-90 transition-all" title="Unduh Arsip Digital">
+                                            <button 
+                                                onClick={() => handlePrintInvoice(tx)}
+                                                className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:border-orange-200 active:scale-90 transition-all" 
+                                                title="Unduh Arsip Digital"
+                                            >
                                                 <Download className="w-4.5 h-4.5" />
                                             </button>
                                         </div>
@@ -201,7 +271,10 @@ export default function TransactionTableClient({ transactions }: { transactions:
                             >
                                 Tutup Panel Auditor
                             </button>
-                            <button className="w-full sm:w-auto px-10 py-4 bg-orange-600 rounded-full text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-xl shadow-orange-600/20 hover:bg-orange-700 hover:shadow-orange-600/40 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-3">
+                            <button 
+                                onClick={() => handlePrintInvoice(selectedTx)}
+                                className="w-full sm:w-auto px-10 py-4 bg-orange-600 rounded-full text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-xl shadow-orange-600/20 hover:bg-orange-700 hover:shadow-orange-600/40 hover:-translate-y-0.5 transition-all active:scale-95 flex items-center justify-center gap-3"
+                            >
                                 <Printer className="w-4 h-4" /> Cetak Salinan Invoice <ArrowRight className="w-4 h-4" />
                             </button>
                         </div>

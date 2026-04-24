@@ -1,11 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Tags, Plus, Search, Edit2, Trash2, X, ChevronRight, Save } from 'lucide-react';
+import { Tags, Plus, Search, Edit2, Trash2, X, ChevronRight, Save, AlertTriangle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/app/components/Toast';
 
 export default function KaryawanKategoriManager({ initialCategories }: { initialCategories: any[] }) {
     const router = useRouter();
+    const { showToast } = useToast();
     const [categories, setCategories] = useState(initialCategories);
     const [searchTerm, setSearchTerm] = useState('');
     
@@ -14,6 +16,8 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [editingCategory, setEditingCategory] = useState<any>(null);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
 
     // Form state
     const [namaKategori, setNamaKategori] = useState('');
@@ -27,18 +31,28 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm("Sangat krusial! Yakin ingin menghapus kategori ini? Pastikan tidak ada barang yang bernaung di bawah kategori ini terlebih dahulu.")) return;
+        setItemToDelete(id);
+        setShowDeleteConfirm(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
         try {
-            const res = await fetch(`/api/kategori/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/kategori/${itemToDelete}`, { method: 'DELETE' });
             if (res.ok) {
-                setCategories(categories.filter(c => c.id_kategori_barang !== id));
+                showToast('Kategori berhasil dihapus!', 'success');
+                setCategories(categories.filter(c => c.id_kategori_barang !== itemToDelete));
                 router.refresh();
             } else {
                 const data = await res.json();
-                alert(data.error || "Gagal menghapus kategori");
+                showToast(data.error || "Gagal menghapus kategori. Pastikan tidak ada barang di kategori ini.", 'error');
             }
         } catch (error) {
             console.error(error);
+            showToast("Terjadi kesalahan sistem", 'error');
+        } finally {
+            setShowDeleteConfirm(false);
+            setItemToDelete(null);
         }
     };
 
@@ -54,14 +68,14 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
 
             if (res.ok) {
                 const newKategori = await res.json();
-                // Add to start of array
+                showToast('Kategori baru berhasil ditambahkan!', 'success');
                 setCategories([newKategori, ...categories]);
                 setIsAddOpen(false);
                 resetForm();
                 router.refresh();
             } else {
                 const data = await res.json();
-                alert(data.error);
+                showToast(data.error || "Gagal menambah kategori", 'error');
             }
         } finally {
             setIsSubmitting(false);
@@ -86,12 +100,13 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
 
             if (res.ok) {
                 const updated = await res.json();
+                showToast('Kategori berhasil diperbarui!', 'success');
                 setCategories(categories.map(c => c.id_kategori_barang === updated.id_kategori_barang ? updated : c));
                 setIsEditOpen(false);
                 router.refresh();
             } else {
                 const data = await res.json();
-                alert(data.error);
+                showToast(data.error || "Gagal memperbarui kategori", 'error');
             }
         } finally {
             setIsSubmitting(false);
@@ -261,6 +276,39 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                                 className="px-10 py-3.5 bg-orange-500 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-orange-500/20 hover:bg-orange-600 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
                             >
                                 <Save className="w-4 h-4" /> Simpan Perubahan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <AlertTriangle className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Hapus Kategori?</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            Menghapus kategori akan berdampak pada pengelompokan barang. Pastikan kategori ini sudah kosong.
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmDelete}
+                                className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95"
+                            >
+                                Ya, Hapus Permanen
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowDeleteConfirm(false);
+                                    setItemToDelete(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
                             </button>
                         </div>
                     </div>

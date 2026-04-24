@@ -5,10 +5,12 @@ import {
     X, Plus, Trash2, Calendar, User, FileText, ShoppingCart,
     ChevronRight, CheckCircle2, AlertCircle, Package, Truck,
     ArrowRight, Save, DollarSign, Layers, ChevronDown,
-    Phone, Building2, RefreshCw, Pencil, LayoutGrid, List, MessageSquare
+    Phone, Building2, RefreshCw, Pencil, LayoutGrid, List, MessageSquare,
+    AlertTriangle
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { useToast } from '@/app/components/Toast';
 
 interface Supplier {
     id_supplier: number;
@@ -68,6 +70,10 @@ export default function PembelianSupplierOwnerPage() {
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [selectedTransaksi, setSelectedTransaksi] = useState<Transaksi | null>(null);
     const [editMode, setEditMode] = useState(false);
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+    const [itemToDelete, setItemToDelete] = useState<number | null>(null);
+    const { showToast } = useToast();
 
     // Form state
     const [items, setItems] = useState<POItem[]>([{ id: '1', id_barang: null, namaBarang: '', jumlah: 1, harga_satuan: 0 }]);
@@ -299,24 +305,42 @@ export default function PembelianSupplierOwnerPage() {
     };
 
     const handleDelete = async (id: number) => {
-        if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini? Stok barang akan dikembalikan (dikurangi).')) return;
+        setItemToDelete(id);
+        setShowDeleteConfirm(true);
+    };
 
-        const res = await fetch(`/api/pembelian/${id}`, { method: 'DELETE' });
-        if (res.ok) {
-            alert('Transaksi berhasil dihapus');
-            fetchData();
-        } else {
-            const err = await res.json();
-            alert(err.error || 'Gagal menghapus transaksi');
+    const confirmDelete = async () => {
+        if (!itemToDelete) return;
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/pembelian/${itemToDelete}`, { method: 'DELETE' });
+            if (res.ok) {
+                showToast('Transaksi berhasil dihapus', 'success');
+                fetchData();
+            } else {
+                const err = await res.json();
+                showToast(err.error || 'Gagal menghapus transaksi', 'error');
+            }
+        } catch (err) {
+            showToast('Terjadi kesalahan jaringan', 'error');
+        } finally {
+            setLoading(false);
+            setShowDeleteConfirm(false);
+            setItemToDelete(null);
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedSupplierId) return alert('Pilih perusahaan supplier terlebih dahulu!');
-        if (items.some(item => !item.id_barang)) return alert('Semua item harus dipilih barangnya!');
+        if (!selectedSupplierId) return showToast('Pilih perusahaan supplier terlebih dahulu!', 'error');
+        if (items.some(item => !item.id_barang)) return showToast('Semua item harus dipilih barangnya!', 'error');
+        
+        setShowConfirmModal(true);
+    };
 
+    const confirmSubmit = async () => {
         setSubmitting(true);
+        setShowConfirmModal(false);
         try {
             const pegawaiId = getPegawaiId();
             const url = editMode ? `/api/pembelian/${selectedTransaksi?.id_transaksipembelian}` : '/api/pembelian';
@@ -339,17 +363,17 @@ export default function PembelianSupplierOwnerPage() {
 
             if (!res.ok) {
                 const err = await res.json();
-                alert(err.error || `Gagal ${editMode ? 'memperbarui' : 'membuat'} PO`);
+                showToast(err.error || `Gagal ${editMode ? 'memperbarui' : 'membuat'} PO`, 'error');
                 return;
             }
 
-            alert(`Purchase Order berhasil ${editMode ? 'diperbarui' : 'dibuat'}!`);
+            showToast(`Purchase Order berhasil ${editMode ? 'diperbarui' : 'dibuat'}!`, 'success');
             setIsModalOpen(false);
             resetForm();
             fetchData();
         } catch (err) {
             console.error(err);
-            alert('Terjadi kesalahan jaringan');
+            showToast('Terjadi kesalahan jaringan', 'error');
         } finally {
             setSubmitting(false);
         }
@@ -465,7 +489,7 @@ export default function PembelianSupplierOwnerPage() {
                                                     <div className="font-black text-gray-900 text-lg tracking-tight">{formatRp(trx.total_biaya)}</div>
                                                 </td>
                                                 <td className="px-10 py-8">
-                                                    <span className="px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-orange-100">
+                                                    <span className="inline-flex items-center px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[9px] font-black uppercase tracking-widest border border-orange-100 whitespace-nowrap">
                                                         {trx.detail.length} ITEM
                                                     </span>
                                                 </td>
@@ -801,29 +825,93 @@ export default function PembelianSupplierOwnerPage() {
                                                     <Package className="w-6 h-6" />
                                                 </div>
                                                 <div>
-                                                    <p className="font-black text-gray-800">{d.barang.nama_barang}</p>
-                                                    <p className="text-xs text-gray-400 font-bold mt-1 uppercase tracking-tight">{d.jumlah_pembelian_barang} UNIT × {formatRp(d.harga_satuan_barang)}</p>
+                                                    <p className="font-black text-gray-800 text-sm">{d.barang.nama_barang}</p>
+                                                    <p className="text-[10px] font-bold text-gray-400">{d.jumlah_pembelian_barang} {d.barang.satuan?.satuan_barang || 'Unit'} @ {formatRp(d.harga_satuan_barang)}</p>
                                                 </div>
                                             </div>
-                                            <p className="font-black text-gray-900 text-lg">{formatRp(d.jumlah_pembelian_barang * d.harga_satuan_barang)}</p>
+                                            <p className="font-black text-gray-900">{formatRp(d.jumlah_pembelian_barang * d.harga_satuan_barang)}</p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
-                            <div className="p-10 bg-gray-900 rounded-[40px] text-white flex justify-between items-center shadow-2xl relative overflow-hidden group/final">
-                                <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600 rounded-full blur-3xl -mr-16 -mt-16 group-hover/final:scale-150 transition-transform duration-1000 opacity-50"></div>
-                                <div className="relative z-10">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-50 mb-2">Total Otorisasi Pembayaran</p>
-                                    <p className="text-4xl font-black tracking-tighter leading-none">{formatRp(selectedTransaksi.total_biaya)}</p>
-                                </div>
-                                <button
-                                    onClick={() => generateInvoicePDF(selectedTransaksi)}
-                                    className="relative z-10 px-8 py-4 bg-white/10 hover:bg-white/20 rounded-2xl flex items-center gap-3 transition-all active:scale-90 text-white border border-white/10"
-                                >
-                                    <Printer className="w-5 h-5" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Download PDF Invoice</span>
-                                </button>
+                        </div>
+                        <div className="p-10 border-t border-gray-100 bg-gray-50/30 flex justify-between items-center shrink-0">
+                            <div className="flex flex-col">
+                                <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Grand Total Pembelian</span>
+                                <span className="text-3xl font-black text-orange-600 tracking-tighter">{formatRp(selectedTransaksi.total_biaya)}</span>
                             </div>
+                            <button
+                                onClick={() => generateInvoicePDF(selectedTransaksi)}
+                                className="px-8 py-4 bg-orange-600 text-white rounded-2xl flex items-center gap-3 font-black text-[10px] uppercase tracking-widest hover:bg-orange-700 transition-all active:scale-95 shadow-lg shadow-orange-600/20"
+                            >
+                                <Printer className="w-5 h-5" />
+                                Download PDF Invoice
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Confirm Modal PO */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-orange-50 text-orange-600 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <ShoppingCart className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">{editMode ? 'Simpan Perubahan?' : 'Konfirmasi PO?'}</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            {editMode 
+                                ? 'Apakah Anda yakin ingin menyimpan perubahan pada Purchase Order ini?' 
+                                : 'Apakah data pesanan sudah benar? Tindakan ini akan menambah stok barang secara otomatis.'}
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmSubmit}
+                                className="w-full py-4 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-95"
+                            >
+                                Ya, Eksekusi Sekarang
+                            </button>
+                            <button 
+                                onClick={() => setShowConfirmModal(false)}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Periksa Kembali
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Custom Delete Confirmation Modal */}
+            {showDeleteConfirm && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+                        <div className="w-20 h-20 bg-red-50 text-red-500 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                            <AlertTriangle className="w-10 h-10" />
+                        </div>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">Hapus Transaksi?</h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            Tindakan ini akan menghapus riwayat transaksi dan mengembalikan (mengurangi) stok barang.
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={confirmDelete}
+                                className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95"
+                            >
+                                Ya, Hapus Permanen
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowDeleteConfirm(false);
+                                    setItemToDelete(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
+                            </button>
                         </div>
                     </div>
                 </div>

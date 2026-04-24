@@ -1,6 +1,9 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import ProfileClient from './ProfileClient';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 export default async function ProfilPage() {
     const cookieStore = await cookies();
@@ -10,24 +13,38 @@ export default async function ProfilPage() {
         redirect('/login');
     }
 
-    let user = { name: 'User', role: 'employee' as 'owner' | 'employee' };
+    let userSession;
     try {
-        user = JSON.parse(session.value);
+        userSession = JSON.parse(session.value);
     } catch {
         redirect('/login');
     }
 
-    // Dummy user data details (Isi tetap sama yang lama)
-    const userEmail = user.name.toLowerCase().replace(/\s+/g, '.') + '@bangunanku.com';
-    const userPhone = '0812-3456-7890';
-    const joinDate = user.role === 'owner' ? 'Januari 2020' : 'Maret 2023';
+    const employee = await prisma.pegawai.findUnique({
+        where: { id_pegawai: userSession.id },
+        include: { jabatan: true }
+    });
+
+    if (!employee) {
+        redirect('/login');
+    }
+
+    // Tentukan role berdasarkan id_jabatan (1 biasanya Owner) atau nama jabatan
+    const role = (employee.id_jabatan === 1 || employee.jabatan.nama_jabatan.toLowerCase().includes('pemilik')) 
+        ? 'owner' 
+        : 'employee';
 
     return (
         <ProfileClient 
-            userData={user}
-            userEmail={userEmail}
-            userPhone={userPhone}
-            joinDate={joinDate}
+            userData={{
+                id: employee.id_pegawai,
+                name: employee.nama_pegawai,
+                role: role
+            }}
+            userEmail={employee.email_pegawai}
+            userPhone={employee.nomor_telepon}
+            joinDate="Januari 2024"
+            birthDate={employee.tanggal_lahir}
         />
     );
 }

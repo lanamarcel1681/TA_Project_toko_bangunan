@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
     LayoutDashboard, BarChart3, PackageCheck, PackageSearch, Users, ShoppingCart, ShoppingBag, UserCog, SendToBack, Truck, CalendarCheck, Tags, LogOut, FileText
 } from 'lucide-react';
+import { useToast } from './Toast';
 
 interface SidebarProps {
     userName: string;
@@ -42,14 +43,17 @@ const employeeNav = [
 
 export default function DashboardSidebar({ userName, role, isExpanded, setIsExpanded }: SidebarProps) {
     const pathname = usePathname();
-    const router = useRouter();
+    const { showToast } = useToast();
     // Support both 'employee' and 'karyawan' depending on middleware
     const navItems = role === 'owner' ? ownerNav : employeeNav;
 
     async function handleLogout() {
+        showToast('Berhasil logout. Sampai jumpa kembali!', 'success');
         await fetch('/api/auth/logout', { method: 'POST' });
         document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
-        window.location.href = '/login';
+        setTimeout(() => {
+            window.location.href = '/login';
+        }, 500);
     }
 
     return (

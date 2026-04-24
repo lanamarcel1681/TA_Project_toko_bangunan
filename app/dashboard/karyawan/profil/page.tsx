@@ -136,6 +136,22 @@ export default function ProfilKaryawanSayaPage() {
         }
     }
 
+    async function handleResetPassword() {
+        if (!confirm(`Apakah Anda yakin ingin mereset password ke tanggal lahir (${birthdate})?`)) return;
+
+        try {
+            const res = await fetch('/api/auth/reset-password-default', { method: 'POST' });
+            const data = await res.json();
+            if (data.success) {
+                alert(data.message);
+            } else {
+                alert(data.error);
+            }
+        } catch (error) {
+            alert("Terjadi kesalahan saat mereset password");
+        }
+    }
+
     const displayAvatar = avatarPreview || avatarUrl;
     const initials = name ? name.charAt(0).toUpperCase() : '?';
 
@@ -330,14 +346,23 @@ export default function ProfilKaryawanSayaPage() {
                     <div className="flex items-center gap-3">
                         {/* Edit / Cancel toggle */}
                         {!isEditMode ? (
-                            <button
-                                id="btn-edit-profil"
-                                onClick={handleEnterEdit}
-                                className="flex items-center gap-2 px-8 py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-black text-[10px] uppercase tracking-[0.15em] rounded-full border border-blue-100 transition-all active:scale-95"
-                            >
-                                <Edit3 className="w-4 h-4" />
-                                Edit Profil
-                            </button>
+                            <>
+                                <button
+                                    onClick={handleResetPassword}
+                                    className="flex items-center gap-2 px-6 py-4 bg-gray-50 hover:bg-orange-50 text-gray-500 hover:text-orange-600 font-black text-[10px] uppercase tracking-[0.15em] rounded-full border border-gray-100 hover:border-orange-100 transition-all active:scale-95"
+                                >
+                                    <ShieldCheck className="w-4 h-4" />
+                                    Reset Password Default
+                                </button>
+                                <button
+                                    id="btn-edit-profil"
+                                    onClick={handleEnterEdit}
+                                    className="flex items-center gap-2 px-8 py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-black text-[10px] uppercase tracking-[0.15em] rounded-full border border-blue-100 transition-all active:scale-95"
+                                >
+                                    <Edit3 className="w-4 h-4" />
+                                    Edit Profil
+                                </button>
+                            </>
                         ) : (
                             <button
                                 id="btn-batal-edit"

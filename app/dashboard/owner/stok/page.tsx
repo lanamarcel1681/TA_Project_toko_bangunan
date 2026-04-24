@@ -35,7 +35,10 @@ interface StokOpname {
     }[];
 }
 
+import { useToast } from '@/app/components/Toast';
+
 export default function StokOwnerPage() {
+    const { showToast } = useToast();
     const [stockItems, setStockItems] = useState<Barang[]>([]);
     const [pendingOpname, setPendingOpname] = useState<StokOpname[]>([]);
     const [historyOpname, setHistoryOpname] = useState<StokOpname[]>([]);
@@ -46,16 +49,10 @@ export default function StokOwnerPage() {
     const [selectedOpname, setSelectedOpname] = useState<StokOpname | null>(null);
     const [isActionLoading, setIsActionLoading] = useState(false);
 
-    const [showToast, setShowToast] = useState(false);
-    const [toastMsg, setToastMsg] = useState('');
-    const [toastType, setToastType] = useState<'success' | 'error'>('success');
-
-    const handleToast = (msg: string, type: 'success' | 'error' = 'success') => {
-        setToastMsg(msg);
-        setToastType(type);
-        setShowToast(true);
-        setTimeout(() => setShowToast(false), 5000);
-    };
+    // Confirmation Modal states
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+    const [confirmType, setConfirmType] = useState<'Approved' | 'Rejected' | null>(null);
+    const [targetOpname, setTargetOpname] = useState<StokOpname | null>(null);
 
     const fetchData = async () => {
         setIsLoading(true);
@@ -69,8 +66,6 @@ export default function StokOwnerPage() {
             const bData = await barangRes.json();
             const aData = await auditRes.json();
 
-            console.log("Raw Audit Data:", aData); // Debug log
-
             setStockItems(Array.isArray(bData) ? bData : []);
             if (Array.isArray(aData)) {
                 setPendingOpname(aData.filter((a: any) => a.status_dokumen === "Pending Review"));
@@ -81,7 +76,7 @@ export default function StokOwnerPage() {
             }
         } catch (error) {
             console.error('Error fetching data:', error);
-            handleToast('Gagal memuat data inventaris', 'error');
+            showToast('Gagal memuat data inventaris', 'error');
         } finally {
             setIsLoading(false);
             setIsLoadingAudit(false);
@@ -102,15 +97,19 @@ export default function StokOwnerPage() {
             });
 
             if (res.ok) {
-                handleToast(`Audit berhasil di-${status.toLowerCase() === 'approved' ? 'setujui' : 'tolak'}`);
+                const message = status === 'Approved' 
+                    ? 'Audit Stok berhasil disetujui! Stok telah diperbarui.' 
+                    : 'Audit Stok telah ditolak.';
+                showToast(message, 'success');
                 setSelectedOpname(null);
+                setShowConfirmModal(false);
                 fetchData(); // Refresh everything
             } else {
                 const err = await res.json();
-                handleToast(`Gagal: ${err.error}${err.details ? ` (${err.details})` : ''}`, 'error');
+                showToast(`Gagal: ${err.error}${err.details ? ` (${err.details})` : ''}`, 'error');
             }
         } catch (error) {
-            handleToast('Terjadi kesalahan sistem', 'error');
+            showToast('Terjadi kesalahan sistem saat memproses audit', 'error');
         } finally {
             setIsActionLoading(false);
         }
@@ -138,22 +137,41 @@ export default function StokOwnerPage() {
 
     return (
         <div className="p-8 w-full max-w-[1600px] mx-auto pb-20 text-left relative">
-            {/* Premium Toast */}
-            {showToast && (
-                <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
-                    <div className={`backdrop-blur-xl border border-white/10 px-8 py-5 rounded-[28px] shadow-2xl flex items-center gap-5 text-white ${toastType === 'success' ? 'bg-gray-900/90' : 'bg-red-900/90'}`}>
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${toastType === 'success' ? 'bg-orange-500/20 text-orange-400' : 'bg-red-500/20 text-red-400'}`}>
-                            {toastType === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+            {/* Confirmation Modal */}
+            {showConfirmModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <div className="bg-white rounded-[40px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmType === 'Approved' ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'}`}>
+                            {confirmType === 'Approved' ? <CheckCircle2 className="w-10 h-10" /> : <AlertCircle className="w-10 h-10" />}
                         </div>
-                        <div>
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] mb-1 opacity-70">
-                                {toastType === 'success' ? 'Berhasil' : 'Perhatian'}
-                            </p>
-                            <p className="text-sm font-bold">{toastMsg}</p>
+                        <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
+                            {confirmType === 'Approved' ? 'Setujui Audit?' : 'Tolak Audit?'}
+                        </h3>
+                        <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
+                            {confirmType === 'Approved' 
+                                ? 'Menyetujui audit akan memperbarui stok database sesuai dengan stok fisik yang dilaporkan.' 
+                                : 'Menolak audit akan membatalkan pengajuan ini tanpa mengubah data stok.'}
+                        </p>
+                        
+                        <div className="flex flex-col w-full gap-3">
+                            <button 
+                                onClick={() => handleAction(targetOpname!.id_opname, confirmType!)}
+                                disabled={isActionLoading}
+                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmType === 'Approved' ? 'bg-green-600 shadow-green-600/20 hover:bg-green-700' : 'bg-red-600 shadow-red-600/20 hover:bg-red-700'}`}
+                            >
+                                {isActionLoading ? 'Memproses...' : confirmType === 'Approved' ? 'Ya, Setujui & Update' : 'Ya, Tolak Pengajuan'}
+                            </button>
+                            <button 
+                                onClick={() => {
+                                    setShowConfirmModal(false);
+                                    setConfirmType(null);
+                                    setTargetOpname(null);
+                                }}
+                                className="w-full py-4 bg-gray-50 text-gray-400 rounded-2xl font-bold text-xs uppercase tracking-widest hover:bg-gray-100 transition-all"
+                            >
+                                Batalkan
+                            </button>
                         </div>
-                        <button onClick={() => setShowToast(false)} className="ml-6 p-2 rounded-2xl">
-                            <X className="w-4 h-4 text-gray-400" />
-                        </button>
                     </div>
                 </div>
             )}
@@ -282,7 +300,11 @@ export default function StokOwnerPage() {
 
                                 <div className="relative z-10 flex items-center gap-3 pt-8 border-t border-gray-50 mt-auto">
                                     <button
-                                        onClick={() => handleAction(opn.id_opname, "Rejected")}
+                                        onClick={() => {
+                                            setConfirmType('Rejected');
+                                            setTargetOpname(opn);
+                                            setShowConfirmModal(true);
+                                        }}
                                         title="Tolak"
                                         className="w-12 h-12 bg-white text-gray-400 hover:text-red-500 border border-gray-100 rounded-xl flex items-center justify-center transition-all active:scale-90 hover:border-red-100 hover:shadow-sm"
                                     >
@@ -292,7 +314,11 @@ export default function StokOwnerPage() {
                                         Review Data &rarr;
                                     </button>
                                     <button
-                                        onClick={() => handleAction(opn.id_opname, "Approved")}
+                                        onClick={() => {
+                                            setConfirmType('Approved');
+                                            setTargetOpname(opn);
+                                            setShowConfirmModal(true);
+                                        }}
                                         title="Setujui"
                                         className="w-12 h-12 bg-white text-green-500 border border-gray-100 rounded-xl flex items-center justify-center transition-all active:scale-90 hover:bg-green-500 hover:text-white hover:border-green-500 shadow-sm"
                                     >
@@ -551,7 +577,11 @@ export default function StokOwnerPage() {
                             </button>
                             <button
                                 disabled={isActionLoading}
-                                onClick={() => handleAction(selectedOpname.id_opname, "Approved")}
+                                onClick={() => {
+                                    setConfirmType('Approved');
+                                    setTargetOpname(selectedOpname);
+                                    setShowConfirmModal(true);
+                                }}
                                 className="px-8 py-3 bg-[#03AC0E] text-white rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#03990D] shadow-lg shadow-green-600/30 transition-all active:scale-95 flex items-center gap-2"
                             >
                                 {isActionLoading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}

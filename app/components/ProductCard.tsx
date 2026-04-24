@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { useToast } from './Toast';
 
 interface Product {
     id_barang: number;
@@ -16,8 +17,9 @@ interface Product {
         satuan_barang: string;
     };
     // Keep internal compatibility fields
-    rating?: number;
-    reviewCount?: number;
+    rating: number;
+    reviewCount: number;
+    soldCount: number;
     badge?: string;
 }
 
@@ -29,8 +31,11 @@ export default function ProductCard({
     const formatPrice = (price: number) =>
         new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(price);
 
-    const rating = product.rating || 4.5;
+    const rating = product.rating || 0;
     const reviewCount = product.reviewCount || 0;
+    const soldCount = product.soldCount || 0;
+
+    const { showToast } = useToast();
 
     const handleAddToCart = async (e: React.MouseEvent) => {
         e.preventDefault();
@@ -44,18 +49,19 @@ export default function ProductCard({
             });
 
             if (res.ok) {
+                showToast(`${product.nama_barang} berhasil masuk keranjang!`, 'success');
                 window.dispatchEvent(new Event('cart-updated'));
-                // Dispatch a custom event for local UI feedback if needed
             } else {
                 const data = await res.json();
                 if (res.status === 401) {
                     window.location.href = '/login';
                 } else {
-                    alert(data.error || "Gagal menambah ke keranjang");
+                    showToast(data.error || "Gagal menambah ke keranjang", "error");
                 }
             }
         } catch (error) {
             console.error("Add to cart error:", error);
+            showToast("Terjadi kesalahan sistem", "error");
         }
     };
 
@@ -88,16 +94,23 @@ export default function ProductCard({
                     </Link>
                 </h3>
 
-                {/* Rating */}
-                <div className="flex items-center gap-1 mb-2">
-                    <div className="flex text-yellow-400">
-                        {Array.from({ length: 5 }).map((_, i) => (
-                            <svg key={i} className={`w-3 h-3 ${i < Math.round(rating) ? 'text-yellow-400' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                            </svg>
-                        ))}
+                {/* Rating & Sold Info */}
+                <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-1">
+                        <div className="flex text-yellow-400">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                                <svg key={i} className={`w-3 h-3 ${i < Math.round(rating) ? 'text-yellow-400' : 'text-gray-200'}`} fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                            ))}
+                        </div>
+                        {reviewCount > 0 && (
+                            <span className="text-[10px] text-gray-400">({reviewCount})</span>
+                        )}
                     </div>
-                    <span className="text-[10px] text-gray-400">({reviewCount})</span>
+                    {soldCount > 0 && (
+                        <span className="text-[10px] font-medium text-gray-500 bg-gray-100 px-1.5 py-0.5 rounded">Terjual {soldCount}</span>
+                    )}
                 </div>
 
                 {/* Price */}
