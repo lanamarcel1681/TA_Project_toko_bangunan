@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import { calculateShippingEstimation } from '@/lib/delivery';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,8 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ error: 'Silakan login terlebih dahulu' }, { status: 401 });
         }
 
-        const user = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const user = await decrypt(sessionCookie.value);
+        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         if (user.role !== 'customer') {
             return NextResponse.json({ error: 'Data tidak ditemukan' }, { status: 403 });
         }

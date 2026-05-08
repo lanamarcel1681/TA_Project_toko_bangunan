@@ -130,7 +130,127 @@ export const EmailTemplates = {
             <p>Salam hangat,</p>
             <p><strong>Toko Bangunan Lumbung Jaya</strong></p>
         </div>
-    `
+    `,
+    transactionReceipt: (
+        customerName: string,
+        invoice: string,
+        tanggal: string,
+        items: { nama: string; jumlah: number; harga_satuan: number; subtotal: number }[],
+        ongkosKirim: number,
+        totalBayar: number,
+        metodePengantaran: string
+    ) => {
+        const formatRp = (val: number) => `Rp ${val.toLocaleString('id-ID')}`;
+        const itemRows = items.map(item => `
+            <tr>
+                <td style="padding:10px 12px; border-bottom:1px solid #f3f4f6; font-size:14px; color:#374151;">${item.nama}</td>
+                <td style="padding:10px 12px; border-bottom:1px solid #f3f4f6; font-size:14px; color:#374151; text-align:center;">${item.jumlah}</td>
+                <td style="padding:10px 12px; border-bottom:1px solid #f3f4f6; font-size:14px; color:#374151; text-align:right;">${formatRp(item.harga_satuan)}</td>
+                <td style="padding:10px 12px; border-bottom:1px solid #f3f4f6; font-size:14px; font-weight:bold; color:#111827; text-align:right;">${formatRp(item.subtotal)}</td>
+            </tr>
+        `).join('');
+
+        const isDelivery = metodePengantaran === 'Diantar ke Rumah';
+
+        return `
+        <!DOCTYPE html>
+        <html lang="id">
+        <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"></head>
+        <body style="margin:0;padding:0;background:#f9fafb;font-family:'Segoe UI',Arial,sans-serif;">
+            <div style="max-width:620px;margin:32px auto;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.08);">
+
+                <!-- Header -->
+                <div style="background:linear-gradient(135deg,#ea580c 0%,#f97316 100%);padding:36px 40px;">
+                    <table width="100%">
+                        <tr>
+                            <td>
+                                <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:rgba(255,255,255,0.75);">NOTA PEMBELIAN</p>
+                                <h1 style="margin:0;font-size:24px;font-weight:900;color:#ffffff;letter-spacing:-0.5px;">TB. Lumbung Jaya</h1>
+                            </td>
+                            <td style="text-align:right;">
+                                <div style="background:rgba(255,255,255,0.15);border-radius:10px;padding:10px 16px;display:inline-block;">
+                                    <p style="margin:0;font-size:11px;color:rgba(255,255,255,0.8);">No. Transaksi</p>
+                                    <p style="margin:4px 0 0;font-size:14px;font-weight:900;color:#ffffff;letter-spacing:1px;">${invoice}</p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Body -->
+                <div style="padding:36px 40px;">
+                    <!-- Greeting -->
+                    <p style="margin:0 0 8px;font-size:16px;color:#374151;">Halo, <strong style="color:#111827;">${customerName}</strong> 👋</p>
+                    <p style="margin:0 0 28px;font-size:14px;color:#6b7280;line-height:1.6;">
+                        Transaksi Anda telah <strong style="color:#16a34a;">berhasil diselesaikan</strong>. Berikut adalah nota pembelian Anda. Simpan email ini sebagai bukti transaksi resmi.
+                    </p>
+
+                    <!-- Info Row -->
+                    <table width="100%" style="margin-bottom:28px;">
+                        <tr>
+                            <td style="width:50%;padding:14px;background:#f9fafb;border-radius:10px 0 0 10px;border:1px solid #f3f4f6;border-right:none;">
+                                <p style="margin:0 0 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;">Tanggal Transaksi</p>
+                                <p style="margin:0;font-size:13px;font-weight:700;color:#111827;">${tanggal}</p>
+                            </td>
+                            <td style="width:50%;padding:14px;background:#f9fafb;border-radius:0 10px 10px 0;border:1px solid #f3f4f6;">
+                                <p style="margin:0 0 3px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#9ca3af;">Metode Pengantaran</p>
+                                <p style="margin:0;font-size:13px;font-weight:700;color:${isDelivery ? '#2563eb' : '#16a34a'};">
+                                    ${isDelivery ? '🚚 Diantar ke Rumah' : '🏪 Ambil di Toko'}
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Items Table -->
+                    <p style="margin:0 0 10px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.12em;color:#9ca3af;">Detail Barang</p>
+                    <table width="100%" style="border-collapse:collapse;border:1px solid #f3f4f6;border-radius:12px;overflow:hidden;margin-bottom:24px;">
+                        <thead>
+                            <tr style="background:#f9fafb;">
+                                <th style="padding:10px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;text-align:left;border-bottom:1px solid #e5e7eb;">Produk</th>
+                                <th style="padding:10px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;text-align:center;border-bottom:1px solid #e5e7eb;">Qty</th>
+                                <th style="padding:10px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;text-align:right;border-bottom:1px solid #e5e7eb;">Harga</th>
+                                <th style="padding:10px 12px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:#6b7280;text-align:right;border-bottom:1px solid #e5e7eb;">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>${itemRows}</tbody>
+                    </table>
+
+                    <!-- Totals -->
+                    <table width="100%" style="margin-bottom:32px;">
+                        ${ongkosKirim > 0 ? `
+                        <tr>
+                            <td style="padding:6px 0;font-size:14px;color:#6b7280;">Ongkos Kirim</td>
+                            <td style="padding:6px 0;font-size:14px;color:#374151;text-align:right;">${formatRp(ongkosKirim)}</td>
+                        </tr>` : ''}
+                        <tr>
+                            <td style="padding:14px 0 0;font-size:16px;font-weight:900;color:#111827;border-top:2px solid #f3f4f6;">Total Pembayaran</td>
+                            <td style="padding:14px 0 0;font-size:18px;font-weight:900;color:#ea580c;text-align:right;border-top:2px solid #f3f4f6;">${formatRp(totalBayar)}</td>
+                        </tr>
+                    </table>
+
+                    <!-- Thank You Banner -->
+                    <div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:1px solid #fed7aa;border-radius:12px;padding:20px 24px;text-align:center;margin-bottom:28px;">
+                        <p style="margin:0 0 4px;font-size:18px;">🎉</p>
+                        <p style="margin:0 0 4px;font-size:15px;font-weight:800;color:#c2410c;">Terima kasih telah berbelanja!</p>
+                        <p style="margin:0;font-size:13px;color:#9a3412;">Kami senang melayani Anda di Toko Bangunan Lumbung Jaya.</p>
+                    </div>
+
+                    <!-- Footer Note -->
+                    <p style="margin:0;font-size:12px;color:#9ca3af;line-height:1.6;text-align:center;">
+                        Jika ada pertanyaan mengenai pesanan Anda, hubungi kami melalui WhatsApp atau kunjungi toko kami langsung.<br>
+                        <strong style="color:#374151;">Toko Bangunan Lumbung Jaya</strong>
+                    </p>
+                </div>
+
+                <!-- Footer Bar -->
+                <div style="background:#1f2937;padding:20px 40px;text-align:center;">
+                    <p style="margin:0;font-size:11px;color:#6b7280;">© ${new Date().getFullYear()} TB. Lumbung Jaya · Nota ini diterbitkan secara elektronik dan sah tanpa tanda tangan basah.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+        `;
+    }
 };
 
 export const getAdminEmails = async (role: 'owner' | 'karyawan') => {

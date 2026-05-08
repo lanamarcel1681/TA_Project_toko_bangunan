@@ -114,7 +114,7 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
     };
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Manajemen Kategori</h1>

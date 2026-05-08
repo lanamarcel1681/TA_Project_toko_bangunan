@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
 import crypto from 'crypto';
+import { hashPassword } from '@/app/utils/hash';
 
 const prisma = new PrismaClient();
 const SECRET = process.env.EMAIL_PASS || 'rahasia_toko_bangunan';
@@ -43,10 +44,10 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Pengguna tidak ditemukan.' }, { status: 404 });
         }
 
-        // Simpan password baru (tanpa hashing rumit, sama seperti pendaftaran biasa di app/api/auth/register/route.ts)
+        // Simpan password baru
         await prisma.pembeli.update({
             where: { email_pembeli: email },
-            data: { password_pembeli: password }
+            data: { password_pembeli: hashPassword(password) }
         });
 
         const { sendEmail, EmailTemplates } = await import('@/lib/mail');

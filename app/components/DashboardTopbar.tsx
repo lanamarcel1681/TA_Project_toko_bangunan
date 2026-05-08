@@ -70,11 +70,11 @@ export default function DashboardTopbar({ userName, role = "employee", isSidebar
     });
 
     return (
-        <header className="bg-white border-b border-gray-100 flex items-center justify-between px-6 py-4 sticky top-0 z-30 shrink-0 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]">
-            <div className="flex items-center gap-4">
+        <header className="bg-white border-b border-gray-100 flex items-center justify-between px-4 md:px-6 py-3 md:py-4 sticky top-0 z-30 shrink-0 shadow-[0_1px_2px_0_rgba(0,0,0,0.02)]">
+            <div className="flex items-center gap-3 md:gap-4 min-w-0">
                 <button
                     onClick={toggleSidebar}
-                    className="p-2 -ml-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500/50"
+                    className="p-2 -ml-1 md:-ml-2 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500/50 flex-shrink-0"
                     aria-label="Toggle Sidebar"
                 >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -83,22 +83,25 @@ export default function DashboardTopbar({ userName, role = "employee", isSidebar
                 </button>
 
                 {/* Mobile Logo visibility when sidebar is hidden/collapsed on small screens */}
-                <div className="md:hidden flex items-center">
-                    <Link href="/" className="text-orange-600 font-bold text-lg tracking-wide">
+                <div className="md:hidden flex items-center min-w-0">
+                    <Link href="/" className="text-orange-600 font-bold text-base tracking-wide truncate">
                         Bangunan<span className="text-gray-800">Jaya</span>
                     </Link>
                 </div>
 
-                {/* Page Title */}
+                {/* Page Title - desktop */}
                 <div className="hidden md:flex flex-col ml-2 border-l border-gray-200 pl-4">
                     <h1 className="text-xl font-bold text-[#002f5e]">{getPageTitle()}</h1>
                     <p className="text-[13px] text-gray-500 mt-0.5 capitalize">{dateStr}</p>
                 </div>
             </div>
 
+            {/* Mobile Page Title (compact) */}
+            <div className="md:hidden flex-1 text-center px-2 min-w-0">
+                <h1 className="text-sm font-bold text-gray-800 truncate">{getPageTitle()}</h1>
+            </div>
 
-
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 md:gap-3 flex-shrink-0">
                 <button className="p-2 text-gray-400 hover:text-gray-600 rounded-full hover:bg-gray-50 transition-colors" title="Notifikasi">
                     <div className="relative">
                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -107,13 +110,13 @@ export default function DashboardTopbar({ userName, role = "employee", isSidebar
                         <span className="absolute top-0 right-0 w-2 h-2 bg-orange-500 rounded-full border border-white"></span>
                     </div>
                 </button>
-                <div className="h-6 w-px bg-gray-200 hidden sm:block mx-2"></div>
+                <div className="h-6 w-px bg-gray-200 hidden sm:block mx-1 md:mx-2"></div>
                 <div className="relative" ref={dropdownRef}>
                     <div
-                        className="flex items-center gap-3 cursor-pointer select-none group bg-gray-50/80 hover:bg-gray-100 px-3 py-2 rounded-xl transition-colors"
+                        className="flex items-center gap-2 md:gap-3 cursor-pointer select-none group bg-gray-50/80 hover:bg-gray-100 px-2 md:px-3 py-1.5 md:py-2 rounded-xl transition-colors"
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     >
-                        <div className="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold shadow-sm group-hover:bg-orange-700 transition shrink-0">
+                        <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-orange-600 text-white flex items-center justify-center font-bold shadow-sm group-hover:bg-orange-700 transition shrink-0 text-sm md:text-base">
                             {userName ? userName.charAt(0).toUpperCase() : 'P'}
                         </div>
                         <div className="hidden sm:flex flex-col pr-1">
@@ -142,7 +145,7 @@ export default function DashboardTopbar({ userName, role = "employee", isSidebar
                             </Link>
 
                             <button
-                                onClick={() => { document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'; window.location.href = '/login'; }}
+                                onClick={async () => { await fetch('/api/auth/logout', { method: 'POST' }); window.location.href = '/login'; }}
                                 className="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors w-full text-left"
                             >
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" /></svg>

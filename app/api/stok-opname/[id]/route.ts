@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
+import { decrypt } from "@/app/utils/session";
 
 const prisma = new PrismaClient();
 
@@ -14,7 +15,8 @@ export async function PATCH(
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const userRole = user.role?.toLowerCase();
 
     if (userRole !== "owner") {

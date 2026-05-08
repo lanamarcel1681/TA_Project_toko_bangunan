@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CornerDownLeft, Search, RefreshCcw, Image as ImageIcon, Camera, ExternalLink, ShieldCheck, CreditCard, ClipboardList, AlertCircle, CheckCircle2, AlertTriangle, Loader2 } from 'lucide-react';
+import { CornerDownLeft, Search, RefreshCcw, Image as ImageIcon, Camera, ExternalLink, ShieldCheck, CreditCard, ClipboardList, AlertCircle, CheckCircle2, AlertTriangle, Loader2, MessageCircle } from 'lucide-react';
 import { useToast } from '@/app/components/Toast';
 
 export default function ReturPembelianPage() {
@@ -122,7 +122,7 @@ export default function ReturPembelianPage() {
     );
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             <div className="mb-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                     <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3 text-left">Monitoring Retur & Batal</h1>
@@ -195,7 +195,18 @@ export default function ReturPembelianPage() {
                                             <p className="font-black text-gray-800 text-base tracking-tight leading-none">{item.inv}</p>
                                         </td>
                                         <td className="px-8 py-8">
-                                            <p className="font-black text-gray-900 text-base leading-none mb-2">{item.customer}</p>
+                                            <div className="flex items-center gap-2 mb-2">
+                                                <p className="font-black text-gray-900 text-base leading-none">{item.customer}</p>
+                                                <a 
+                                                    href={`https://wa.me/${item.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center justify-center p-1 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors"
+                                                    title="Hubungi via WhatsApp"
+                                                >
+                                                    <MessageCircle className="w-3 h-3" />
+                                                </a>
+                                            </div>
                                             <div className="flex items-center gap-2 bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100/50 w-fit">
                                                 <CreditCard className="w-3.5 h-3.5 text-blue-600" />
                                                 <p className="text-[10px] font-black text-blue-600 uppercase tracking-tighter">

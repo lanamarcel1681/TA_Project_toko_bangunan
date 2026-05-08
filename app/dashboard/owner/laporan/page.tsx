@@ -132,7 +132,7 @@ export default function LaporanOwnerPage() {
     }
 
     return (
-        <div className="p-8 w-full max-w-[1600px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1600px] mx-auto pb-20 text-left">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-end gap-6 mb-12">
                 <div>

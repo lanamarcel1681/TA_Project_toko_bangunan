@@ -53,9 +53,9 @@ export default function UserProfile() {
 
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files || e.target.files.length === 0) return;
-        
+
         const file = e.target.files[0];
-        
+
         if (file.size > 1 * 1024 * 1024) {
             showToast('Gagal: Ukuran gambar maksimal 1 MB', 'error');
             return;
@@ -136,9 +136,8 @@ export default function UserProfile() {
                                 <Link href="/history-transaksi" className="flex items-center justify-between px-6 py-3 text-sm font-medium transition-colors text-left text-gray-600 hover:bg-gray-50 hover:text-orange-600 border-l-4 border-transparent">
                                     <div className="flex items-center gap-3">
                                         <ShoppingBag className="w-5 h-5" />
-                                        Pembelian
+                                        History Transaksi
                                     </div>
-                                    <ChevronRight className="w-4 h-4 transition-transform" />
                                 </Link>
                             </nav>
                         </div>
@@ -169,12 +168,12 @@ export default function UserProfile() {
                                         </div>
                                         <div>
                                             <div className="relative">
-                                                <input 
-                                                    type="file" 
-                                                    accept="image/jpeg, image/png" 
+                                                <input
+                                                    type="file"
+                                                    accept="image/jpeg, image/png"
                                                     onChange={handleFileChange}
                                                     disabled={!isEditing}
-                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10" 
+                                                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10"
                                                 />
                                                 <button disabled={!isEditing} className={`px-4 py-2 border border-gray-200 rounded-xl text-sm font-semibold transition-colors shadow-sm focus:ring-2 focus:ring-orange-500/30 outline-none ${!isEditing ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-700 hover:bg-gray-50'}`}>
                                                     Pilih Foto
@@ -190,7 +189,7 @@ export default function UserProfile() {
                                         Nama Lengkap
                                     </div>
                                     <div className="col-span-2">
-                                        <input type="text" disabled={!isEditing} value={formData.name} onChange={(e) => setFormData({...formData, name: e.target.value})} className={`w-full text-black px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50'}`} />
+                                        <input type="text" disabled={!isEditing} value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} className={`w-full text-black px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50'}`} />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 items-start">
@@ -208,7 +207,7 @@ export default function UserProfile() {
                                         Nomor Telepon
                                     </div>
                                     <div className="col-span-2">
-                                        <input type="tel" disabled={!isEditing} value={formData.phone === '-' ? '' : formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className={`w-full text-black px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50'}`} />
+                                        <input type="tel" disabled={!isEditing} value={formData.phone === '-' ? '' : formData.phone} onChange={(e) => setFormData({ ...formData, phone: e.target.value })} className={`w-full text-black px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50'}`} />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8 items-start">
@@ -216,7 +215,7 @@ export default function UserProfile() {
                                         Tanggal Lahir
                                     </div>
                                     <div className="col-span-2">
-                                        <input type="date" disabled={!isEditing} value={formData.birthdate === '-' ? '' : formData.birthdate} onChange={(e) => setFormData({...formData, birthdate: e.target.value})} className={`w-full text-black px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50'}`} />
+                                        <input type="date" disabled={!isEditing} value={formData.birthdate === '-' ? '' : formData.birthdate} onChange={(e) => setFormData({ ...formData, birthdate: e.target.value })} className={`w-full text-black px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500/50 ${!isEditing ? 'bg-gray-100 cursor-not-allowed' : 'bg-gray-50'}`} />
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 items-start">
@@ -228,16 +227,16 @@ export default function UserProfile() {
                                             </div>
                                         )}
                                         <div className="flex gap-4">
-                                            <button 
+                                            <button
                                                 onClick={() => {
                                                     setIsEditing(!isEditing);
                                                     setMessage('');
-                                                }} 
+                                                }}
                                                 className="px-6 py-3 font-semibold text-orange-600 bg-orange-50 hover:bg-orange-100 rounded-xl transition-colors border border-orange-200"
                                             >
                                                 {isEditing ? 'Batal Edit' : 'Edit Profil'}
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={handleSave}
                                                 disabled={!isEditing || isSaving}
                                                 className={`px-6 py-3 rounded-xl font-bold transition-all ${!isEditing ? 'bg-gray-200 text-gray-400 cursor-not-allowed' : 'bg-orange-600 text-white hover:bg-orange-700 shadow-md shadow-orange-500/20'}`}

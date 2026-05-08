@@ -1,11 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { verifyPassword } from '@/app/utils/hash';
+import { encrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
 export async function POST(request: NextRequest) {
     try {
         const { email, password } = await request.json();
+
+        if (!email.toLowerCase().endsWith('@gmail.com')) {
+            return NextResponse.json({ error: 'Gagal! Hanya email @gmail.com yang diizinkan.' }, { status: 400 });
+        }
 
         // 1. Cek di tabel Pegawai (Untuk Owner / Karyawan)
         const pegawai = await prisma.pegawai.findUnique({
@@ -14,7 +20,11 @@ export async function POST(request: NextRequest) {
         });
 
         if (pegawai) {
-            if (pegawai.password_pegawai === password) {
+            if (pegawai.status_pegawai !== 'Aktif') {
+                return NextResponse.json({ error: 'Akun Anda dinonaktifkan. Silakan hubungi Owner.' }, { status: 403 });
+            }
+
+            if (verifyPassword(password, pegawai.password_pegawai)) {
                 // Tentukan role berdasarkan id_jabatan, nama jabatan, atau konvensi (1=Owner, 2=Karyawan)
                 let role = 'karyawan';
                 if (pegawai.id_jabatan === 1 || pegawai.jabatan.nama_jabatan.toLowerCase().includes('pemilik')) {
@@ -28,10 +38,12 @@ export async function POST(request: NextRequest) {
                     role: role,
                 };
 
+                const session = await encrypt(user);
+
                 const response = NextResponse.json({ success: true, role: user.role });
 
-                response.cookies.set('session', JSON.stringify(user), {
-                    httpOnly: false,
+                response.cookies.set('session', session, {
+                    httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'lax',
                     maxAge: 60 * 60 * 8, // 8 jam
@@ -48,7 +60,7 @@ export async function POST(request: NextRequest) {
         });
 
         if (pembeli) {
-            if (pembeli.password_pembeli === password) {
+            if (verifyPassword(password, pembeli.password_pembeli)) {
                 const user = {
                     id: pembeli.id_pembeli,
                     name: pembeli.nama_pembeli,
@@ -56,10 +68,12 @@ export async function POST(request: NextRequest) {
                     role: 'customer'
                 };
 
+                const session = await encrypt(user);
+
                 const response = NextResponse.json({ success: true, role: user.role });
 
-                response.cookies.set('session', JSON.stringify(user), {
-                    httpOnly: false,
+                response.cookies.set('session', session, {
+                    httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'lax',
                     maxAge: 60 * 60 * 8,

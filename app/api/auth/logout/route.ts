@@ -5,7 +5,7 @@ export async function POST() {
     
     // Hapus cookie session dengan mengatur parameter yang sama seperti saat login
     response.cookies.set('session', '', {
-        httpOnly: false,
+        httpOnly: true,
         secure: process.env.NODE_ENV === 'production',
         sameSite: 'lax',
         maxAge: 0, // maxAge 0 akan kedaluwarsa seketika

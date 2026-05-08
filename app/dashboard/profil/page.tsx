@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import ProfileClient from './ProfileClient';
 import { PrismaClient } from '@prisma/client';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -13,9 +14,10 @@ export default async function ProfilPage() {
         redirect('/login');
     }
 
-    let userSession;
+    let userSession: any;
     try {
-        userSession = JSON.parse(session.value);
+        userSession = await decrypt(session.value);
+        if (!userSession) throw new Error('Invalid session');
     } catch {
         redirect('/login');
     }

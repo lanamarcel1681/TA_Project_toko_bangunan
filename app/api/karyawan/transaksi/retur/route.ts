@@ -42,7 +42,8 @@ export async function GET(request: NextRequest) {
                 amount: r.nominal_refund,
                 status: r.status_retur, // Diajukan, Disetujui, Ditolak, Selesai
                 refundStatus: r.nominal_refund ? (r.bukti_refund ? 'Selesai' : 'Pending') : 'N/A',
-                proof: r.bukti_refund
+                proof: r.bukti_refund,
+                phone: r.transaksi.pembeli.nomor_telepon_pembeli
             })),
             ...batalList.map(b => ({
                 id: b.id_pembatalan,
@@ -53,11 +54,12 @@ export async function GET(request: NextRequest) {
                 date: b.tanggal_pembatalan,
                 reason: b.alasan_pembatalan,
                 photo: null,
-                bankInfo: 'Refund Otomatis / Manual',
+                bankInfo: b.data_rekening || 'Belum diisi',
                 amount: b.nominal_refund,
                 status: 'Dibatalkan',
                 refundStatus: b.status_refund,
-                proof: b.bukti_refund
+                proof: b.bukti_refund,
+                phone: b.transaksi.pembeli.nomor_telepon_pembeli
             }))
         ];
 

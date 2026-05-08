@@ -105,8 +105,10 @@ export default function StockOpnameKaryawanPage() {
     }, []);
 
     const handlePhysicalStockChange = (id: number, val: string) => {
+        const parsed = parseInt(val) || 0;
+        const clamped = Math.max(0, parsed);
         setItems(prev => prev.map(item =>
-            item.id_barang === id ? { ...item, stok_fisik: parseInt(val) || 0 } : item
+            item.id_barang === id ? { ...item, stok_fisik: clamped } : item
         ));
     };
 
@@ -154,7 +156,7 @@ export default function StockOpnameKaryawanPage() {
     );
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
             {/* Premium Toast */}
             {showToast && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
@@ -281,8 +283,10 @@ export default function StockOpnameKaryawanPage() {
                                             <div className="relative inline-block">
                                                 <input
                                                     type="number"
+                                                    min="0"
                                                     value={item.stok_fisik}
                                                     onChange={(e) => handlePhysicalStockChange(item.id_barang, e.target.value)}
+                                                    onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
                                                     className="w-24 text-center pl-4 pr-10 py-2.5 bg-white border-2 border-gray-100 rounded-2xl focus:border-blue-500 outline-none font-black text-gray-800 transition-all shadow-sm"
                                                 />
                                             </div>

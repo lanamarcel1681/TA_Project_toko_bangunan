@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -15,7 +16,8 @@ export async function GET(
             return NextResponse.json({ error: 'Silakan login terlebih dahulu' }, { status: 401 });
         }
 
-        const user = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const user = await decrypt(sessionCookie.value);
+        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const transaction = await prisma.transaksiPenjualanBarang.findUnique({
             where: { no_transaksi: invoice },

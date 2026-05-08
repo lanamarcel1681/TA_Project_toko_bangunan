@@ -37,7 +37,8 @@ export async function GET() {
                 proof: payment?.foto_bukti_pembayaran || null,
                 status_pembayaran: payment?.status_pembayaran,
                 status_penjualan: t.status_penjualan,
-                metode_pengantaran: t.metode_pengantaran
+                metode_pengantaran: t.metode_pengantaran,
+                phone: t.pembeli.nomor_telepon_pembeli
             };
         });
 

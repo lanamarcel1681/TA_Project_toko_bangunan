@@ -27,7 +27,7 @@ export default async function KaryawanPage() {
     }).length;
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             {/* Page Heading & Actions */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
                 <div>

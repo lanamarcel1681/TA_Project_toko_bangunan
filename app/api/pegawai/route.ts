@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@/app/utils/hash';
 
 const prisma = new PrismaClient();
 
@@ -36,6 +37,15 @@ export async function POST(request: Request) {
             return NextResponse.json({ error: 'Data tidak lengkap' }, { status: 400 });
         }
 
+        if (!email_pegawai.toLowerCase().endsWith('@gmail.com')) {
+            return NextResponse.json({ error: 'Gagal! Hanya email @gmail.com yang diizinkan.' }, { status: 400 });
+        }
+
+        const phoneRegex = /^\d{10,12}$/;
+        if (!phoneRegex.test(nomor_telepon)) {
+            return NextResponse.json({ error: 'Nomor telepon harus terdiri dari 10 hingga 12 digit angka.' }, { status: 400 });
+        }
+
         const newPegawai = await prisma.pegawai.create({
             data: {
                 nama_pegawai,
@@ -43,7 +53,7 @@ export async function POST(request: Request) {
                 tanggal_lahir,
                 nomor_telepon,
                 email_pegawai,
-                password_pegawai, // NOTE: In prod, hash this!
+                password_pegawai: hashPassword(password_pegawai),
                 status_pegawai: 'Aktif'
             },
             include: {

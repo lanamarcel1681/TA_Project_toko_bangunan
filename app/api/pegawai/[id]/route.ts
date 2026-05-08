@@ -20,6 +20,11 @@ export async function PUT(
             status_pegawai 
         } = body;
 
+        const phoneRegex = /^\d{10,12}$/;
+        if (nomor_telepon && !phoneRegex.test(nomor_telepon)) {
+            return NextResponse.json({ error: 'Nomor telepon harus terdiri dari 10 hingga 12 digit angka.' }, { status: 400 });
+        }
+
         const updated = await prisma.pegawai.update({
             where: { id_pegawai: id },
             data: {

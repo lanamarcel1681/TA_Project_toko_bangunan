@@ -85,19 +85,19 @@ export default function TransactionTableClient({ transactions }: { transactions:
 
     return (
         <>
-            <div className="bg-white rounded-[40px] border border-gray-100 shadow-2xl shadow-gray-200/50 overflow-hidden relative group/table">
+            <div className="bg-white rounded-[24px] md:rounded-[40px] border border-gray-100 shadow-2xl shadow-gray-200/50 overflow-hidden relative group/table">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50/20 -mr-32 -mt-32 rounded-full blur-3xl opacity-0 group-hover/table:opacity-100 transition-opacity duration-1000"></div>
 
                 <div className="overflow-x-auto relative z-10">
-                    <table className="w-full text-left border-collapse">
+                    <table className="w-full text-left border-collapse min-w-[800px]">
                         <thead>
                             <tr className="border-b border-gray-100">
-                                <th scope="col" className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Data Invoice</th>
-                                <th scope="col" className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Otorisasi</th>
-                                <th scope="col" className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] min-w-[250px]">Klien / Partner</th>
-                                <th scope="col" className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Nominal Akhir</th>
-                                <th scope="col" className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Validasi</th>
-                                <th scope="col" className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Integrasi</th>
+                                <th scope="col" className="px-4 md:px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Data Invoice</th>
+                                <th scope="col" className="px-4 md:px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Otorisasi</th>
+                                <th scope="col" className="px-4 md:px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] min-w-[250px]">Klien / Partner</th>
+                                <th scope="col" className="px-4 md:px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Nominal Akhir</th>
+                                <th scope="col" className="px-4 md:px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Validasi</th>
+                                <th scope="col" className="px-4 md:px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Integrasi</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50 border-t border-gray-50/50">
@@ -165,7 +165,7 @@ export default function TransactionTableClient({ transactions }: { transactions:
 
             {/* Transaction Detail Modal */}
             {selectedTx && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-6">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-6">
                     {/* Backdrop */}
                     <div 
                         className="absolute inset-0 bg-gray-900/60 backdrop-blur-md transition-opacity" 
@@ -173,9 +173,9 @@ export default function TransactionTableClient({ transactions }: { transactions:
                     ></div>
                     
                     {/* Modal Content */}
-                    <div className="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] border border-white/20 animate-in fade-in zoom-in duration-300">
+                    <div className="bg-white rounded-[24px] md:rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] border border-white/20 animate-in fade-in zoom-in duration-300">
                         {/* Header */}
-                        <div className="px-10 py-8 border-b border-gray-100 bg-gray-50/50 relative">
+                        <div className="px-5 md:px-10 py-6 md:py-8 border-b border-gray-100 bg-gray-50/50 relative">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
                             <div className="flex items-start justify-between relative z-10">
                                 <div>
@@ -183,7 +183,7 @@ export default function TransactionTableClient({ transactions }: { transactions:
                                         <Tag className="w-4 h-4 text-orange-600" />
                                         <span className="text-[10px] font-black text-orange-600 uppercase tracking-[0.25em]">Audit Ledger Entry</span>
                                     </div>
-                                    <h3 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-2">Detail Transaksi</h3>
+                                    <h3 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight leading-none mb-2">Detail Transaksi</h3>
                                     <p className="text-sm font-bold text-orange-600 uppercase tracking-widest">{selectedTx.id}</p>
                                 </div>
                                 <button 
@@ -196,8 +196,8 @@ export default function TransactionTableClient({ transactions }: { transactions:
                         </div>
                         
                         {/* Body */}
-                        <div className="p-10 overflow-y-auto custom-scrollbar">
-                            <div className="grid grid-cols-2 gap-8 mb-10">
+                        <div className="p-5 md:p-10 overflow-y-auto custom-scrollbar">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-8 mb-6 md:mb-10">
                                 <div className="space-y-2">
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Status Verifikasi</p>
                                     <div className={`px-5 py-3 rounded-2xl border flex items-center gap-3 ${
@@ -233,7 +233,7 @@ export default function TransactionTableClient({ transactions }: { transactions:
                                 </div>
                             </div>
                             
-                            <div className="bg-gray-50 rounded-[32px] p-8 border border-gray-100 mb-10">
+                            <div className="bg-gray-50 rounded-[20px] md:rounded-[32px] p-5 md:p-8 border border-gray-100 mb-6 md:mb-10">
                                 <div className="flex items-center gap-3 mb-6">
                                     <Package className="w-5 h-5 text-gray-400" />
                                     <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Itemized Project Breakdown</h4>
@@ -257,13 +257,13 @@ export default function TransactionTableClient({ transactions }: { transactions:
                             
                             <div className="flex flex-col items-end pt-4">
                                 <span className="text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] mb-2 leading-none">Grand Total Netto</span>
-                                <span className="text-5xl font-black text-orange-600 tracking-tighter tabular-nums leading-none mb-1">{selectedTx.total}</span>
+                                <span className="text-3xl md:text-5xl font-black text-orange-600 tracking-tighter tabular-nums leading-none mb-1">{selectedTx.total}</span>
                                 <div className="w-20 h-1.5 bg-orange-600 rounded-full mt-2"></div>
                             </div>
                         </div>
                         
                         {/* Footer */}
-                        <div className="px-10 py-8 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row justify-end items-center gap-4 relative">
+                        <div className="px-5 md:px-10 py-5 md:py-8 border-t border-gray-100 bg-gray-50/50 flex flex-col sm:flex-row justify-end items-center gap-3 md:gap-4 relative">
                             <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent"></div>
                             <button 
                                 onClick={() => setSelectedTx(null)}

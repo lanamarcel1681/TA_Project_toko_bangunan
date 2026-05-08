@@ -43,6 +43,11 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Semua atribut wajib diisi" }, { status: 400 });
     }
 
+    const phoneRegex = /^\d{10,12}$/;
+    if (!phoneRegex.test(nomor_telepon_supplier)) {
+      return NextResponse.json({ error: "Nomor telepon harus terdiri dari 10 hingga 12 digit angka." }, { status: 400 });
+    }
+
     const newSupplier = await prisma.supplier.create({
       data: {
         nama_supplier,

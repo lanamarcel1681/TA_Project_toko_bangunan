@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { decrypt } from '@/app/utils/session';
 
 export default async function DashboardPage() {
     const cookieStore = await cookies();
@@ -8,7 +9,8 @@ export default async function DashboardPage() {
     if (!session) redirect('/login');
 
     try {
-        const user = JSON.parse(session.value);
+        const user: any = await decrypt(session.value);
+        if (!user) throw new Error('Invalid session');
         if (user.role === 'owner') redirect('/dashboard/owner');
         else redirect('/dashboard/karyawan');
     } catch {

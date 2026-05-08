@@ -10,6 +10,7 @@ export default function PresensiKaryawanPage() {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [lastDate, setLastDate] = useState(new Date().toDateString());
+    const [mounted, setMounted] = useState(false);
 
     // Form Izin State
     const [izinForm, setIzinForm] = useState({
@@ -35,6 +36,7 @@ export default function PresensiKaryawanPage() {
     };
 
     useEffect(() => {
+        setMounted(true);
         fetchStatus();
         
         const timer = setInterval(() => {
@@ -116,7 +118,7 @@ export default function PresensiKaryawanPage() {
     const formatFullDate = (date: Date) => date.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in duration-700">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in duration-700">
             <div className="mb-10">
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Kepegawaian & Presensi</h1>
                 <p className="text-gray-500 font-medium">Catat kehadiran harian Anda dan ajukan perizinan operasional secara digital.</p>
@@ -146,10 +148,10 @@ export default function PresensiKaryawanPage() {
                     <div className="w-full aspect-video bg-gray-50 rounded-[30px] mb-8 relative flex flex-col items-center justify-center border-4 border-gray-100/50 overflow-hidden group/status">
                         <div className="text-center z-10 p-8">
                             <div className="text-5xl font-black text-gray-900 font-mono tracking-tighter mb-4">
-                                {formatFullTime(currentTime)}
+                                {mounted ? formatFullTime(currentTime) : '--.--.--'}
                             </div>
                             <div className="text-xs font-black text-gray-400 uppercase tracking-[0.3em] mb-8">
-                                {formatFullDate(currentTime)}
+                                {mounted ? formatFullDate(currentTime) : 'Memuat Tanggal...'}
                             </div>
                             
                             <div className="grid grid-cols-2 gap-4 w-full max-w-sm mx-auto">

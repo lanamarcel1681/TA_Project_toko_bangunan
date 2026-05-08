@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { Search, FileImage, CheckCircle, XCircle, Clock, User, DollarSign, History, ShieldCheck, ChevronRight, AlertTriangle, Loader2 } from 'lucide-react';
+import { Search, FileImage, CheckCircle, XCircle, Clock, User, DollarSign, History, ShieldCheck, ChevronRight, AlertTriangle, Loader2, MessageCircle } from 'lucide-react';
 import { useToast } from '@/app/components/Toast';
 
 export default function VerifikasiPembayaranPage() {
@@ -77,7 +77,7 @@ export default function VerifikasiPembayaranPage() {
         }
     };
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             <div className="mb-10">
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Verifikasi Transaksi</h1>
                 <p className="text-gray-500 font-medium">Validasi bukti transfer yang diunggah pelanggan untuk sinkronisasi pesanan.</p>
@@ -118,7 +118,18 @@ export default function VerifikasiPembayaranPage() {
                                     <User className="w-4 h-4 text-gray-400"/>
                                     <div>
                                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Customer</p>
-                                        <p className="text-sm font-black text-gray-800 leading-none">{item.customer}</p>
+                                        <div className="flex items-center gap-2">
+                                            <p className="text-sm font-black text-gray-800 leading-none">{item.customer}</p>
+                                            <a 
+                                                href={`https://wa.me/${item.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
+                                                target="_blank" 
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center justify-center p-1 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors"
+                                                title="Hubungi via WhatsApp"
+                                            >
+                                                <MessageCircle className="w-3 h-3" />
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-3 px-5 py-4 bg-gray-50/50 rounded-2xl border border-gray-100/50">

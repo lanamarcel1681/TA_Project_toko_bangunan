@@ -62,14 +62,14 @@ export default function OwnerPresensiMonitoring() {
 
     if (loading && presensi.length === 0) {
         return (
-            <div className="p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
+            <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
                 <RefreshCw className="w-10 h-10 text-orange-600 animate-spin" />
             </div>
         );
     }
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in duration-700">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in duration-700">
             {/* Header Section */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
                 <div>

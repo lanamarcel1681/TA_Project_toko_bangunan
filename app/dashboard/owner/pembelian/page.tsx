@@ -132,7 +132,6 @@ export default function PembelianSupplierOwnerPage() {
         doc.text('Toko Bangunan Utama', 120, 78);
         doc.setTextColor(100);
 
-        const currentUser = getCurrentUser();
         const printerName = currentUser?.name || 'Admin';
         const printerRole = currentUser?.role === 'owner' ? 'Owner' : 'Karyawan';
         doc.text(`Dicetak Oleh: ${printerName} (${printerRole})`, 120, 83);
@@ -203,20 +202,13 @@ export default function PembelianSupplierOwnerPage() {
     const [submitting, setSubmitting] = useState(false);
     const [search, setSearch] = useState('');
     const [searchBarang, setSearchBarang] = useState('');
+    const [currentUser, setCurrentUser] = useState<{ id: number; name: string; role: string } | null>(null);
 
     const getPegawaiId = (): number => {
-        return getCurrentUser()?.id || 1;
+        return currentUser?.id || 1;
     };
 
-    const getCurrentUser = (): { id: number; name: string; role: string } | null => {
-        try {
-            const cookie = document.cookie.split('; ').find(r => r.startsWith('session='));
-            if (cookie) {
-                return JSON.parse(decodeURIComponent(cookie.split('=').slice(1).join('=')));
-            }
-        } catch { }
-        return null;
-    };
+
 
     const fetchData = useCallback(async () => {
         setLoading(true);
@@ -236,7 +228,13 @@ export default function PembelianSupplierOwnerPage() {
         }
     }, [search]);
 
-    useEffect(() => { fetchData(); }, [fetchData]);
+    useEffect(() => {
+        fetch('/api/auth/session')
+            .then(res => res.json())
+            .then(data => setCurrentUser(data))
+            .catch(console.error);
+        fetchData(); 
+    }, [fetchData]);
 
     const handleSupplierChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         const id = parseInt(e.target.value);
@@ -334,6 +332,8 @@ export default function PembelianSupplierOwnerPage() {
         e.preventDefault();
         if (!selectedSupplierId) return showToast('Pilih perusahaan supplier terlebih dahulu!', 'error');
         if (items.some(item => !item.id_barang)) return showToast('Semua item harus dipilih barangnya!', 'error');
+        if (items.some(item => item.harga_satuan < 0)) return showToast('Harga satuan tidak boleh bernilai negatif!', 'error');
+        if (items.some(item => item.jumlah < 1)) return showToast('Kuantitas tidak boleh kurang dari 1!', 'error');
         
         setShowConfirmModal(true);
     };
@@ -400,7 +400,7 @@ export default function PembelianSupplierOwnerPage() {
     );
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             {/* Page Heading & Actions */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-10">
                 <div>
@@ -730,7 +730,7 @@ export default function PembelianSupplierOwnerPage() {
                                                         disabled={!selectedSupplierId}
                                                         className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold text-right outline-none transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-orange-500'}`}
                                                         value={item.harga_satuan}
-                                                        onChange={e => updateItem(item.id, 'harga_satuan', parseFloat(e.target.value) || 0)}
+                                                        onChange={e => updateItem(item.id, 'harga_satuan', Math.max(0, parseFloat(e.target.value) || 0))}
                                                     />
                                                 </div>
                                                 <div className="md:col-span-1 flex justify-center">

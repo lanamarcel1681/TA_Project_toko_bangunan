@@ -4,7 +4,7 @@ import { MapPin, Truck, CreditCard, Receipt, FileImage, ShieldCheck } from 'luci
 
 export default function CheckoutPage() {
     return (
-        <div className="p-8 w-full max-w-6xl mx-auto">
+        <div className="p-4 md:p-8 w-full max-w-6xl mx-auto">
             <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3">
                 <ShieldCheck className="w-8 h-8 text-green-500" /> Checkout Aman
             </h1>

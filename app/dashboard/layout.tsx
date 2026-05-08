@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import DashboardLayoutClient from '../components/DashboardLayoutClient';
+import { decrypt } from '@/app/utils/session';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
     const cookieStore = await cookies();
@@ -12,7 +13,9 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
     let user = { name: 'User', role: 'owner' as 'owner' | 'employee' };
     try {
-        user = JSON.parse(session.value);
+        const decrypted = await decrypt(session.value);
+        if (!decrypted) throw new Error('Invalid session');
+        user = decrypted as any;
     } catch {
         redirect('/login');
     }

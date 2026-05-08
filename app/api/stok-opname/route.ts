@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
+import { decrypt } from "@/app/utils/session";
 
 const prisma = new PrismaClient();
 
@@ -10,7 +11,8 @@ export async function POST(request: NextRequest) {
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await request.json();
     const { items } = body; // Array of { id_barang: number, stok_fisik: number, keterangan_temuan: string }
 
@@ -68,7 +70,8 @@ export async function GET() {
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const userRole = user.role?.toLowerCase();
 
     console.log(`Fetching Stock Opname for user: ${user.name}, Role: ${userRole}`);

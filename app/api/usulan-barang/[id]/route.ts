@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
+import { decrypt } from "@/app/utils/session";
 
 const prisma = new PrismaClient();
 
@@ -15,7 +16,8 @@ export async function PUT(
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await request.json();
     const { 
       nama_barang_usulan, 
@@ -23,7 +25,8 @@ export async function PUT(
       deskripsi_usulan, 
       harga_beli_perkiraan, 
       harga_jual_perkiraan,
-      status_usulan // Added for owner review
+      status_usulan, // Added for owner review
+      id_suppliers
     } = body;
 
     // Check existing
@@ -65,6 +68,10 @@ export async function PUT(
         id_kategori_barang: id_kategori_barang ? parseInt(id_kategori_barang) : undefined,
         harga_beli_perkiraan: harga_beli_perkiraan ? parseFloat(harga_beli_perkiraan) : undefined,
         harga_jual_perkiraan: harga_jual_perkiraan ? parseFloat(harga_jual_perkiraan) : undefined,
+        usulan_supplier: id_suppliers && Array.isArray(id_suppliers) ? {
+          deleteMany: {},
+          create: id_suppliers.map((sid: number) => ({ id_supplier: sid }))
+        } : undefined
       },
     });
 
@@ -86,7 +93,8 @@ export async function DELETE(
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     
     const existing = await prisma.usulanBarang.findUnique({
       where: { id_usulan_barang: parseInt(id) }

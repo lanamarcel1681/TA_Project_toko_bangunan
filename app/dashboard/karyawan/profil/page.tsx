@@ -157,7 +157,7 @@ export default function ProfilKaryawanSayaPage() {
 
     if (isLoading) {
         return (
-            <div className="p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
+            <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center gap-4 text-gray-400">
                     <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
                     <p className="font-semibold text-sm">Memuat profil...</p>
@@ -167,7 +167,7 @@ export default function ProfilKaryawanSayaPage() {
     }
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             {/* Toast Notification */}
             {toast && (
                 <div className={`fixed top-6 right-6 z-50 flex items-center gap-3 px-5 py-4 rounded-2xl shadow-2xl border transition-all animate-in slide-in-from-top-2 duration-300 ${toast.type === 'success'

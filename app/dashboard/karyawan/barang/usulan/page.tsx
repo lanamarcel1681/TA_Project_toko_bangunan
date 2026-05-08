@@ -1,8 +1,8 @@
 'use client';
 import React, { useState, useEffect } from 'react';
-import { 
-    Package, Plus, Search, Edit2, Trash2, Eye, 
-    X, User, Phone, MapPin, Building2, 
+import {
+    Package, Plus, Search, Edit2, Trash2, Eye,
+    X, User, Phone, MapPin, Building2,
     ChevronRight, AlertCircle, CheckCircle2, Calendar,
     Loader2, Tag, FileText, DollarSign, Clock
 } from 'lucide-react';
@@ -22,11 +22,13 @@ interface UsulanBarang {
     harga_jual_perkiraan: number;
     id_kategori_barang: number;
     kategori: Kategori;
+    usulan_supplier?: { id_supplier: number; supplier: any }[];
 }
 
 export default function ManajemenUsulanBarangPage() {
     const [suggestions, setSuggestions] = useState<UsulanBarang[]>([]);
     const [categories, setCategories] = useState<Kategori[]>([]);
+    const [suppliers, setSuppliers] = useState<any[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -49,7 +51,8 @@ export default function ManajemenUsulanBarangPage() {
         id_kategori_barang: '',
         deskripsi_usulan: '',
         harga_beli_perkiraan: '',
-        harga_jual_perkiraan: ''
+        harga_jual_perkiraan: '',
+        id_suppliers: [] as number[]
     });
 
     const fetchData = async () => {
@@ -59,6 +62,11 @@ export default function ManajemenUsulanBarangPage() {
             const catRes = await fetch('/api/kategori');
             const catData = await catRes.json();
             setCategories(catData);
+
+            // Fetch Suppliers
+            const supRes = await fetch('/api/supplier');
+            const supData = await supRes.json();
+            setSuppliers(supData);
 
             // Fetch Suggestions
             const res = await fetch(`/api/usulan-barang${searchQuery ? `?search=${searchQuery}` : ''}`);
@@ -100,7 +108,8 @@ export default function ManajemenUsulanBarangPage() {
                     id_kategori_barang: '',
                     deskripsi_usulan: '',
                     harga_beli_perkiraan: '',
-                    harga_jual_perkiraan: ''
+                    harga_jual_perkiraan: '',
+                    id_suppliers: []
                 });
                 setEditingId(null);
                 fetchData();
@@ -126,7 +135,8 @@ export default function ManajemenUsulanBarangPage() {
             id_kategori_barang: item.id_kategori_barang.toString(),
             deskripsi_usulan: item.deskripsi_usulan,
             harga_beli_perkiraan: item.harga_beli_perkiraan.toString(),
-            harga_jual_perkiraan: item.harga_jual_perkiraan.toString()
+            harga_jual_perkiraan: item.harga_jual_perkiraan.toString(),
+            id_suppliers: item.usulan_supplier ? item.usulan_supplier.map((s: any) => s.id_supplier) : []
         });
         setIsModalOpen(true);
     };
@@ -149,7 +159,7 @@ export default function ManajemenUsulanBarangPage() {
     };
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
             {/* Custom Toast */}
             {showToast && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
@@ -177,16 +187,16 @@ export default function ManajemenUsulanBarangPage() {
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-1 md:flex-none group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors"/>
-                        <input 
-                            type="text" 
-                            placeholder="Cari Nama Barang..." 
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-full md:w-80 font-bold text-sm text-gray-800 transition-all shadow-sm" 
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+                        <input
+                            type="text"
+                            placeholder="Cari Nama Barang..."
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-full md:w-80 font-bold text-sm text-gray-800 transition-all shadow-sm"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
-                    <button 
+                    <button
                         onClick={() => {
                             setEditingId(null);
                             setFormData({
@@ -194,7 +204,8 @@ export default function ManajemenUsulanBarangPage() {
                                 id_kategori_barang: '',
                                 deskripsi_usulan: '',
                                 harga_beli_perkiraan: '',
-                                harga_jual_perkiraan: ''
+                                harga_jual_perkiraan: '',
+                                id_suppliers: []
                             });
                             setIsModalOpen(true);
                         }}
@@ -204,7 +215,7 @@ export default function ManajemenUsulanBarangPage() {
                     </button>
                 </div>
             </div>
-            
+
             <div className="bg-white rounded-[40px] shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left border-collapse">
@@ -255,24 +266,23 @@ export default function ManajemenUsulanBarangPage() {
                                         <p className="font-bold text-gray-800 text-sm">Rp {item.harga_beli_perkiraan.toLocaleString()}</p>
                                     </td>
                                     <td className="px-8 py-5">
-                                        <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider border inline-flex items-center gap-2 ${
-                                            item.status_usulan === 'Pending' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
-                                            item.status_usulan === 'Approved' ? 'bg-green-50 text-green-600 border-green-100' :
-                                            'bg-red-50 text-red-600 border-red-100'
-                                        }`}>
-                                            <Clock className="w-3 h-3"/> {item.status_usulan}
+                                        <span className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-wider border inline-flex items-center gap-2 ${item.status_usulan === 'Pending' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
+                                                item.status_usulan === 'Approved' ? 'bg-green-50 text-green-600 border-green-100' :
+                                                    'bg-red-50 text-red-600 border-red-100'
+                                            }`}>
+                                            <Clock className="w-3 h-3" /> {item.status_usulan}
                                         </span>
                                     </td>
                                     <td className="px-8 py-5 text-right">
                                         <div className="flex justify-end gap-2">
-                                            <button 
+                                            <button
                                                 onClick={() => handleEdit(item)}
                                                 disabled={item.status_usulan !== 'Pending'}
                                                 className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-all shadow-sm disabled:opacity-30" title="Edit"
                                             >
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
-                                            <button 
+                                            <button
                                                 onClick={() => handleDelete(item.id_usulan_barang)}
                                                 disabled={item.status_usulan !== 'Pending'}
                                                 className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-600 hover:bg-red-50 transition-all shadow-sm disabled:opacity-30" title="Hapus"
@@ -319,12 +329,12 @@ export default function ManajemenUsulanBarangPage() {
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Nama Barang Usulan*</label>
                                             <div className="relative">
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><Package className="w-4 h-4" /></span>
-                                                <input 
+                                                <input
                                                     type="text" required
                                                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
                                                     placeholder="Contoh: Semen Gresik Premium"
                                                     value={formData.nama_barang_usulan}
-                                                    onChange={e => setFormData({...formData, nama_barang_usulan: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, nama_barang_usulan: e.target.value })}
                                                 />
                                             </div>
                                         </div>
@@ -332,11 +342,11 @@ export default function ManajemenUsulanBarangPage() {
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Kategori Barang*</label>
                                             <div className="relative">
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><Tag className="w-4 h-4" /></span>
-                                                <select 
+                                                <select
                                                     required
                                                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none"
                                                     value={formData.id_kategori_barang}
-                                                    onChange={e => setFormData({...formData, id_kategori_barang: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, id_kategori_barang: e.target.value })}
                                                 >
                                                     <option value="">Pilih Kategori</option>
                                                     {categories.map(c => (
@@ -352,12 +362,12 @@ export default function ManajemenUsulanBarangPage() {
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Est. Harga Beli*</label>
                                             <div className="relative">
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><DollarSign className="w-4 h-4" /></span>
-                                                <input 
+                                                <input
                                                     type="number" required
                                                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
                                                     placeholder="Perkiraan Harga Beli Satuan"
                                                     value={formData.harga_beli_perkiraan}
-                                                    onChange={e => setFormData({...formData, harga_beli_perkiraan: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, harga_beli_perkiraan: e.target.value })}
                                                 />
                                             </div>
                                         </div>
@@ -365,12 +375,12 @@ export default function ManajemenUsulanBarangPage() {
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Est. Harga Jual</label>
                                             <div className="relative">
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><DollarSign className="w-4 h-4" /></span>
-                                                <input 
+                                                <input
                                                     type="number"
                                                     className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
                                                     placeholder="Usulan Harga Jual"
                                                     value={formData.harga_jual_perkiraan}
-                                                    onChange={e => setFormData({...formData, harga_jual_perkiraan: e.target.value})}
+                                                    onChange={e => setFormData({ ...formData, harga_jual_perkiraan: e.target.value })}
                                                 />
                                             </div>
                                         </div>
@@ -381,37 +391,88 @@ export default function ManajemenUsulanBarangPage() {
                                     <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Alasan / Deskripsi Usulan</label>
                                     <div className="relative">
                                         <span className="absolute left-5 top-5 text-gray-400"><FileText className="w-4 h-4" /></span>
-                                        <textarea 
+                                        <textarea
                                             rows={3}
                                             className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-3xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 text-sm"
                                             placeholder="Jelaskan mengapa barang ini perlu ditambahkan..."
                                             value={formData.deskripsi_usulan}
-                                            onChange={e => setFormData({...formData, deskripsi_usulan: e.target.value})}
+                                            onChange={e => setFormData({ ...formData, deskripsi_usulan: e.target.value })}
                                         />
+                                    </div>
+                                </div>
+
+                                {/* Multi-Supplier Selection Grid */}
+                                <div className="space-y-4">
+                                    <div className="flex justify-between items-center">
+                                        <label className="flex items-center gap-2 text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">
+                                            <Building2 className="w-3 h-3" /> Rekanan Supplier (Multi-Select)
+                                        </label>
+                                        {formData.id_suppliers.length > 0 && (
+                                            <div className="flex flex-wrap gap-1">
+                                                {suppliers.filter((s: any) => formData.id_suppliers.includes(s.id_supplier)).map((s: any) => (
+                                                    <span key={s.id_supplier} className="px-2 py-0.5 bg-orange-600 text-white text-[8px] font-black rounded-full uppercase tracking-tighter">
+                                                        {s.nama_perusahaan_supplier}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {suppliers.map((s: any) => (
+                                            <label
+                                                key={s.id_supplier}
+                                                className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${formData.id_suppliers.includes(s.id_supplier)
+                                                        ? 'bg-orange-50 border-orange-500 shadow-sm'
+                                                        : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
+                                                    }`}
+                                            >
+                                                <div className="relative flex items-center justify-center">
+                                                    <input
+                                                        type="checkbox"
+                                                        className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-orange-600 checked:border-orange-600 transition-all cursor-pointer"
+                                                        checked={formData.id_suppliers.includes(s.id_supplier)}
+                                                        onChange={(e) => {
+                                                            const checked = e.target.checked;
+                                                            setFormData(prev => ({
+                                                                ...prev,
+                                                                id_suppliers: checked
+                                                                    ? [...prev.id_suppliers, s.id_supplier]
+                                                                    : prev.id_suppliers.filter(id => id !== s.id_supplier)
+                                                            }));
+                                                        }}
+                                                    />
+                                                    <Plus className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[11px] font-black text-gray-900 group-hover:text-orange-600 transition-colors">{s.nama_perusahaan_supplier}</span>
+                                                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-tight">{s.nama_supplier}</span>
+                                                </div>
+                                            </label>
+                                        ))}
                                     </div>
                                 </div>
 
                                 <div className="pt-10 border-t border-gray-50 flex flex-col md:flex-row justify-between items-center gap-8">
                                     <div className="flex items-center gap-4 bg-orange-50 px-6 py-4 rounded-2xl border border-orange-100/50">
-                                        <div className="p-2 bg-orange-600 text-white rounded-xl"><AlertCircle className="w-4 h-4"/></div>
-                                        <p className="text-[11px] font-black text-orange-700 uppercase tracking-wider leading-tight">Memberikan usulan membantu toko <br/>berkembang lebih cepat.</p>
+                                        <div className="p-2 bg-orange-600 text-white rounded-xl"><AlertCircle className="w-4 h-4" /></div>
+                                        <p className="text-[11px] font-black text-orange-700 uppercase tracking-wider leading-tight">Memberikan usulan membantu toko <br />berkembang lebih cepat.</p>
                                     </div>
                                     <div className="flex gap-4 w-full md:w-auto">
-                                        <button 
+                                        <button
                                             type="button"
                                             onClick={() => setIsModalOpen(false)}
                                             className="flex-1 md:flex-none px-6 py-3.5 text-gray-500 font-bold text-[11px] uppercase tracking-widest bg-gray-100 rounded-full hover:bg-gray-200 transition-all active:scale-[0.98]"
                                         >
                                             Batal
                                         </button>
-                                        <button 
+                                        <button
                                             type="submit"
                                             disabled={isSubmitting}
                                             className="flex-[2] md:flex-none px-10 py-3.5 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
                                         >
                                             {isSubmitting ? (
                                                 <Loader2 className="w-4 h-4 animate-spin" />
-                                            ) : editingId ? 'Perbarui Usulan' : 'Submit Usulan'} 
+                                            ) : editingId ? 'Perbarui Usulan' : 'Submit Usulan'}
                                             <ChevronRight className="w-4 h-4" />
                                         </button>
                                     </div>

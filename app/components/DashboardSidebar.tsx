@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard, BarChart3, PackageCheck, PackageSearch, Users, ShoppingCart, ShoppingBag, UserCog, SendToBack, Truck, CalendarCheck, Tags, LogOut, FileText
 } from 'lucide-react';
@@ -12,6 +12,8 @@ interface SidebarProps {
     role: 'owner' | 'employee' | 'karyawan';
     isExpanded: boolean;
     setIsExpanded: (expanded: boolean) => void;
+    isMobileOpen?: boolean;
+    onMobileClose?: () => void;
 }
 
 const ownerNav = [
@@ -41,7 +43,7 @@ const employeeNav = [
     { href: '/dashboard/karyawan/presensi', label: 'Presensi', icon: CalendarCheck }
 ];
 
-export default function DashboardSidebar({ userName, role, isExpanded, setIsExpanded }: SidebarProps) {
+export default function DashboardSidebar({ userName, role, isExpanded, setIsExpanded, isMobileOpen = false, onMobileClose }: SidebarProps) {
     const pathname = usePathname();
     const { showToast } = useToast();
     // Support both 'employee' and 'karyawan' depending on middleware
@@ -50,18 +52,17 @@ export default function DashboardSidebar({ userName, role, isExpanded, setIsExpa
     async function handleLogout() {
         showToast('Berhasil logout. Sampai jumpa kembali!', 'success');
         await fetch('/api/auth/logout', { method: 'POST' });
-        document.cookie = 'session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
         setTimeout(() => {
             window.location.href = '/login';
         }, 500);
     }
 
-    return (
-        <aside className={`${isExpanded ? 'w-64' : 'w-20'} transition-all duration-300 bg-white border-r border-gray-100 flex flex-col hidden md:flex h-screen sticky top-0 shrink-0 shadow-sm z-20`}>
+    const sidebarContent = (isMobile: boolean) => (
+        <>
             {/* Logo */}
-            <div className={`px-6 py-5 border-b border-gray-50 flex items-center ${isExpanded ? '' : 'justify-center px-0'}`}>
-                <Link href="/" className="text-orange-600 font-bold text-xl tracking-wide flex items-center justify-center">
-                    {isExpanded ? (
+            <div className={`px-6 py-5 border-b border-gray-50 flex items-center ${!isMobile && !isExpanded ? 'justify-center px-0' : ''}`}>
+                <Link href="/" className="text-orange-600 font-bold text-xl tracking-wide flex items-center justify-center" onClick={isMobile ? onMobileClose : undefined}>
+                    {isMobile || isExpanded ? (
                         <>Bangunan<span className="text-gray-800">Jaya</span></>
                     ) : (
                         <span className="text-2xl">B<span className="text-gray-800">J</span></span>
@@ -78,14 +79,15 @@ export default function DashboardSidebar({ userName, role, isExpanded, setIsExpa
                         <Link
                             key={item.href}
                             href={item.href}
-                            title={isExpanded ? undefined : item.label}
-                            className={`flex items-center ${isExpanded ? 'gap-3 px-3' : 'justify-center px-0'} py-2.5 rounded-lg transition-colors group ${isActive
+                            onClick={isMobile ? onMobileClose : undefined}
+                            title={!isMobile && !isExpanded ? item.label : undefined}
+                            className={`flex items-center ${!isMobile && !isExpanded ? 'justify-center px-0' : 'gap-3 px-3'} py-2.5 rounded-lg transition-colors group ${isActive
                                 ? 'bg-orange-600 text-white shadow-md shadow-orange-600/20'
                                 : 'text-gray-600 hover:bg-orange-50 hover:text-orange-600'
                                 }`}
                         >
                             <Icon className={`w-5 h-5 flex-shrink-0 ${isActive ? 'opacity-90' : 'text-gray-400 group-hover:text-orange-600'}`} />
-                            {isExpanded && <span className="text-sm font-medium whitespace-nowrap overflow-hidden">{item.label}</span>}
+                            {(isMobile || isExpanded) && <span className="text-sm font-medium whitespace-nowrap overflow-hidden">{item.label}</span>}
                         </Link>
                     );
                 })}
@@ -95,13 +97,37 @@ export default function DashboardSidebar({ userName, role, isExpanded, setIsExpa
             <div className="px-3 py-4 border-t border-gray-50">
                 <button
                     onClick={handleLogout}
-                    title={isExpanded ? undefined : "Keluar"}
-                    className={`flex items-center ${isExpanded ? 'gap-3 px-3 text-left' : 'justify-center px-0'} py-2.5 text-red-600 hover:bg-red-50 rounded-lg group transition-colors w-full`}
+                    title={!isMobile && !isExpanded ? "Keluar" : undefined}
+                    className={`flex items-center ${!isMobile && !isExpanded ? 'justify-center px-0' : 'gap-3 px-3 text-left'} py-2.5 text-red-600 hover:bg-red-50 rounded-lg group transition-colors w-full`}
                 >
                     <LogOut className="w-5 h-5 flex-shrink-0 text-red-500" />
-                    {isExpanded && <span className="text-sm font-medium">Keluar</span>}
+                    {(isMobile || isExpanded) && <span className="text-sm font-medium">Keluar</span>}
                 </button>
             </div>
-        </aside>
+        </>
+    );
+
+    return (
+        <>
+            {/* Desktop Sidebar */}
+            <aside className={`${isExpanded ? 'w-64' : 'w-20'} transition-all duration-300 bg-white border-r border-gray-100 flex-col hidden md:flex h-screen sticky top-0 shrink-0 shadow-sm z-20`}>
+                {sidebarContent(false)}
+            </aside>
+
+            {/* Mobile Sidebar Overlay */}
+            {isMobileOpen && (
+                <div className="fixed inset-0 z-[70] md:hidden">
+                    {/* Backdrop */}
+                    <div
+                        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+                        onClick={onMobileClose}
+                    />
+                    {/* Sidebar Drawer */}
+                    <aside className="absolute top-0 left-0 w-72 h-full bg-white shadow-2xl flex flex-col animate-fadeIn overflow-hidden">
+                        {sidebarContent(true)}
+                    </aside>
+                </div>
+            )}
+        </>
     );
 }

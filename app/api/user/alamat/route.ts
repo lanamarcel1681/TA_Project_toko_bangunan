@@ -1,14 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
+
+const isInsideDIY = (kab: string) => {
+    if (!kab || kab === '-') return false;
+    const k = kab.toLowerCase();
+    return k.includes('sleman') || k.includes('bantul') || k.includes('gunungkidul') || k.includes('kulon progo') || k.includes('yogyakarta') || k.includes('kota');
+};
 
 export async function GET(request: NextRequest) {
     const sessionCookie = request.cookies.get('session');
     if (!sessionCookie) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     try {
-        const userSession = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const userSession = await decrypt(sessionCookie.value);
+        if (!userSession) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         if (userSession.role !== 'customer') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
@@ -45,8 +53,13 @@ export async function POST(request: NextRequest) {
     if (!sessionCookie) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     try {
-        const userSession = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const userSession = await decrypt(sessionCookie.value);
+        if (!userSession) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         const body = await request.json();
+
+        if (!isInsideDIY(body.kabupaten)) {
+            return NextResponse.json({ error: 'Alamat harus berada di area Daerah Istimewa Yogyakarta (Sleman, Bantul, Gunungkidul, Kulon Progo, Kota Yogyakarta).' }, { status: 400 });
+        }
 
         // Set all existing to false if this one is main
         if (body.status_default) {
@@ -82,7 +95,8 @@ export async function PUT(request: NextRequest) {
     if (!sessionCookie) return NextResponse.json({ error: 'Not authenticated' }, { status: 401 });
 
     try {
-        const userSession = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const userSession = await decrypt(sessionCookie.value);
+        if (!userSession) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         const body = await request.json();
 
         if (body.action === 'setMain') {
@@ -98,6 +112,10 @@ export async function PUT(request: NextRequest) {
             });
             return NextResponse.json({ success: true, message: 'Alamat utama diubah' });
         } else if (body.action === 'update') {
+            if (!isInsideDIY(body.kabupaten)) {
+                return NextResponse.json({ error: 'Alamat harus berada di area Daerah Istimewa Yogyakarta (Sleman, Bantul, Gunungkidul, Kulon Progo, Kota Yogyakarta).' }, { status: 400 });
+            }
+
             if (body.status_default) {
                 await prisma.alamat.updateMany({
                     where: { id_pembeli: userSession.id },

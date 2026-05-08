@@ -4,13 +4,26 @@ import { calculateShippingEstimation } from '@/lib/delivery';
 
 const prisma = new PrismaClient();
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     try {
+        const { searchParams } = new URL(request.url);
+        const pegawaiIdParam = searchParams.get('pegawaiId');
+        const pegawaiId = pegawaiIdParam ? parseInt(pegawaiIdParam) : null;
+
+        // Build where clause — jika pegawaiId dikirim, filter hanya pengiriman milik driver tersebut
+        const whereClause: any = {
+            status_penjualan: 'Sedang Dikirim',
+            metode_pengantaran: 'Diantar ke Rumah',
+        };
+
+        if (pegawaiId) {
+            whereClause.pengiriman = {
+                some: { id_pegawai: pegawaiId }
+            };
+        }
+
         const activeDeliveries = await prisma.transaksiPenjualanBarang.findMany({
-            where: {
-                status_penjualan: 'Sedang Dikirim',
-                metode_pengantaran: 'Diantar ke Rumah'
-            },
+            where: whereClause,
             include: {
                 pembeli: true,
                 pengiriman: {
@@ -38,11 +51,13 @@ export async function GET() {
                 driver: ship?.pegawai?.nama_pegawai || "Belum ditentukan",
                 departureTime: ship?.tanggal_berangkat,
                 estimasi: `± ${est.duration}`,
-                eta: est.eta
+                eta: est.eta,
+                phone: t.pembeli.nomor_telepon_pembeli
             };
         });
 
         // Dynamic Proposals: Group missions by driver and find those with 2+ orders
+        // Hanya buat proposal untuk driver yang sedang login (jika ada pegawaiId)
         const proposals: any[] = [];
         const driverGroups: Record<number, any[]> = {};
 
@@ -54,6 +69,8 @@ export async function GET() {
         });
 
         Object.values(driverGroups).forEach((group, index) => {
+            // Jika pegawaiId ada, hanya buat proposal untuk driver yang bersangkutan
+            if (pegawaiId && group[0]?.driverId !== pegawaiId) return;
             if (group.length >= 2) {
                 proposals.push({
                     id: `PROP-${index + 1}`,
@@ -83,10 +100,14 @@ export async function PATCH(request: NextRequest) {
             const now = new Date();
             const ids = Array.isArray(id) ? id : [id];
             
-            // Collect all transaction IDs and verify existence
+            // Collect all transaction IDs and verify existence — include detail barang untuk nota
             const transactions = await prisma.transaksiPenjualanBarang.findMany({
                 where: { no_transaksi: { in: ids } },
-                include: { pengiriman: true, pembeli: true }
+                include: {
+                    pengiriman: true,
+                    pembeli: true,
+                    detail: { include: { barang: true } }
+                }
             });
 
             if (transactions.length === 0) {
@@ -118,14 +139,35 @@ export async function PATCH(request: NextRequest) {
 
             await prisma.$transaction(operations);
 
-            // Send emails
+            // Send email nota lengkap ke setiap pembeli
             const { sendEmail, EmailTemplates } = await import('@/lib/mail');
             for (const t of transactions) {
                 if (t.pembeli?.email_pembeli) {
+                    const receiptItems = t.detail.map((d: any) => ({
+                        nama: d.barang.nama_barang,
+                        jumlah: d.jumlah_penjualan_barang,
+                        harga_satuan: d.barang.harga_barang,
+                        subtotal: d.total_harga
+                    }));
+
+                    const totalBarang = t.detail.reduce((sum: number, d: any) => sum + d.total_harga, 0);
+                    const totalBayar = totalBarang + (t.ongkos_kirim || 0);
+                    const tanggal = new Date(t.tanggal_penjualan).toLocaleDateString('id-ID', {
+                        day: 'numeric', month: 'long', year: 'numeric'
+                    });
+
                     await sendEmail(
                         t.pembeli.email_pembeli,
-                        `Pesanan Telah Sampai - ${t.no_transaksi}`,
-                        EmailTemplates.orderArrived(t.pembeli.nama_pembeli, t.no_transaksi)
+                        `✅ Nota Pembelian - ${t.no_transaksi}`,
+                        EmailTemplates.transactionReceipt(
+                            t.pembeli.nama_pembeli,
+                            t.no_transaksi,
+                            tanggal,
+                            receiptItems,
+                            t.ongkos_kirim || 0,
+                            totalBayar,
+                            t.metode_pengantaran
+                        )
                     );
                 }
             }

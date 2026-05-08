@@ -46,7 +46,7 @@ export default function ProfileClient({ userData, userEmail, userPhone, joinDate
     };
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in zoom-in-95 duration-500">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left animate-in fade-in zoom-in-95 duration-500">
             {/* Page Heading */}
             <div className="flex items-center justify-between mb-12">
                 <div className="flex items-center gap-4">

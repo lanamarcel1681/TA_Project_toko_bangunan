@@ -94,7 +94,7 @@ export default function RiwayatPenjualanKaryawanPage() {
     );
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20">
             {/* Header Section */}
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="text-left">

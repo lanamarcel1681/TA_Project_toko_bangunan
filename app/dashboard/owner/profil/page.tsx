@@ -98,7 +98,7 @@ export default function ProfilOwnerSayaPage() {
     };
 
     return (
-        <div className="p-8 w-full max-w-5xl mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-5xl mx-auto pb-20 text-left">
             {/* Page Heading */}
             <div className="flex items-center gap-3 mb-10">
                 <div className="w-8 h-8 bg-orange-100 text-orange-600 rounded-lg flex items-center justify-center">

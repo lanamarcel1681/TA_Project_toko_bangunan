@@ -36,6 +36,7 @@ export async function GET(request: NextRequest) {
                 customer: t.pembeli.nama_pembeli,
                 date: t.tanggal_penjualan.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
                 address: t.pengiriman[0]?.alamat_tujuan || "Alamat tidak tersedia",
+                phone: t.pembeli.nomor_telepon_pembeli,
                 status: t.status_penjualan,
                 rawDetail: t.detail // Include for PDF generation
             }));
@@ -47,6 +48,7 @@ export async function GET(request: NextRequest) {
                 customer: t.pembeli.nama_pembeli,
                 date: t.tanggal_penjualan.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }),
                 area: "Gudang Utama", // Mock area for now
+                phone: t.pembeli.nomor_telepon_pembeli,
                 status: t.status_penjualan,
                 rawDetail: t.detail // Include for PDF generation
             }));
@@ -135,15 +137,40 @@ export async function PATCH(request: NextRequest) {
             const transaction = await prisma.transaksiPenjualanBarang.update({
                 where: { no_transaksi: id },
                 data: { status_penjualan: 'Selesai' },
-                include: { pembeli: true }
+                include: {
+                    pembeli: true,
+                    detail: { include: { barang: true } }
+                }
             });
 
-            // Send Email
+            // Send Email — Nota Transaksi Lengkap
             const { sendEmail, EmailTemplates } = await import('@/lib/mail');
+
+            const receiptItems = transaction.detail.map(d => ({
+                nama: d.barang.nama_barang,
+                jumlah: d.jumlah_penjualan_barang,
+                harga_satuan: d.barang.harga_barang,
+                subtotal: d.total_harga
+            }));
+
+            const totalBarang = transaction.detail.reduce((sum, d) => sum + d.total_harga, 0);
+            const totalBayar = totalBarang + (transaction.ongkos_kirim || 0);
+            const tanggal = new Date(transaction.tanggal_penjualan).toLocaleDateString('id-ID', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+
             await sendEmail(
                 transaction.pembeli.email_pembeli,
-                `Pesanan Telah Diambil - ${transaction.no_transaksi}`,
-                EmailTemplates.orderPickedUp(transaction.pembeli.nama_pembeli, transaction.no_transaksi)
+                `✅ Nota Pembelian - ${transaction.no_transaksi}`,
+                EmailTemplates.transactionReceipt(
+                    transaction.pembeli.nama_pembeli,
+                    transaction.no_transaksi,
+                    tanggal,
+                    receiptItems,
+                    transaction.ongkos_kirim || 0,
+                    totalBayar,
+                    transaction.metode_pengantaran
+                )
             );
 
             return NextResponse.json({ success: true, message: 'Penyerahan berhasil dikonfirmasi' });

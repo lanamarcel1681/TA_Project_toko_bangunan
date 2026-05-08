@@ -127,7 +127,7 @@ export default function ManajemenSupplierKaryawanPage() {
     };
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
             {/* Delete Confirmation Modal */}
             {showDeleteConfirm && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">

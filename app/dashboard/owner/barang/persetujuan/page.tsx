@@ -69,7 +69,7 @@ export default function PersetujuanBarangPage() {
     const historyItems = suggestions.filter(item => item.status_usulan !== 'Pending');
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             {/* Page Heading */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
                 <div>

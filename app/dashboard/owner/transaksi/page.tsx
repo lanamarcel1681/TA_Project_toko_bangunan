@@ -142,7 +142,7 @@ export default async function TransaksiPage({
     };
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
 
             {/* Page Heading & Actions */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12">
@@ -153,7 +153,7 @@ export default async function TransaksiPage({
                         </div>
                         <span className="text-[10px] font-black text-orange-600 uppercase tracking-[0.2em]">Transaction Ledger</span>
                     </div>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none">Arus Kas & Transaksi</h1>
+                    <h1 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight leading-none">Arus Kas & Transaksi</h1>
                     <p className="text-gray-500 font-medium mt-3">Konsolidasi seluruh aktivitas penjualan dan pembelian material bangunan secara periodik.</p>
                 </div>
                 <div className="flex gap-3">
@@ -165,9 +165,9 @@ export default async function TransaksiPage({
             </div>
 
             {/* Summary Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 mb-8 md:mb-12">
                 {/* Total Penjualan */}
-                <div className="bg-white rounded-[40px] p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
+                <div className="bg-white rounded-[24px] md:rounded-[40px] p-6 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-green-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-6">
@@ -177,13 +177,13 @@ export default async function TransaksiPage({
                             <span className="text-[10px] font-black text-green-600 bg-green-100 px-3 py-1 rounded-lg uppercase tracking-widest">+ Live</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Total Penjualan</p>
-                        <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPenjualan}</h3>
+                        <h3 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPenjualan}</h3>
                         <div className="w-10 h-1 bg-green-500 rounded-full"></div>
                     </div>
                 </div>
 
                 {/* Total Pembelian */}
-                <div className="bg-white rounded-[40px] p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
+                <div className="bg-white rounded-[24px] md:rounded-[40px] p-6 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-6">
@@ -193,13 +193,13 @@ export default async function TransaksiPage({
                             <span className="text-[10px] font-black text-blue-600 bg-blue-100 px-3 py-1 rounded-lg uppercase tracking-widest">Database</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Total Pembelian</p>
-                        <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPembelian}</h3>
+                        <h3 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPembelian}</h3>
                         <div className="w-10 h-1 bg-blue-500 rounded-full"></div>
                     </div>
                 </div>
 
                 {/* Laba Kotor */}
-                <div className="bg-white rounded-[40px] p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
+                <div className="bg-white rounded-[24px] md:rounded-[40px] p-6 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
                     <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-6">
@@ -209,7 +209,7 @@ export default async function TransaksiPage({
                             <span className="text-[10px] font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-lg uppercase tracking-widest">Kalkulasi</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Laba Kotor Estimasi</p>
-                        <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.labaKotor}</h3>
+                        <h3 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.labaKotor}</h3>
                         <div className="w-10 h-1 bg-orange-600 rounded-full"></div>
                     </div>
                 </div>

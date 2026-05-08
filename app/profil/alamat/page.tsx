@@ -25,7 +25,7 @@ export default function AlamatPembeliPage() {
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [addressToDelete, setAddressToDelete] = useState<number | null>(null);
     const { showToast } = useToast();
-    
+
     const [addresses, setAddresses] = useState<Address[]>([]);
     const [isLoading, setIsLoading] = useState(true);
     const [editingId, setEditingId] = useState<number | null>(null);
@@ -100,7 +100,7 @@ export default function AlamatPembeliPage() {
                 setIsAddModalOpen(false);
                 setEditingId(null);
                 setFormData({ nama_jalan: '', kabupaten: '', kecamatan: '', kelurahan: '', kode_pos: '', deskripsi_alamat: '', label_alamat: 'Rumah', status_default: false });
-                
+
                 showToast(editingId ? 'Alamat berhasil diperbarui!' : 'Alamat baru berhasil ditambahkan!', 'success');
             } else {
                 showToast('Gagal menyimpan alamat', 'error');
@@ -206,9 +206,8 @@ export default function AlamatPembeliPage() {
                                 <Link href="/history-transaksi" className="flex items-center justify-between px-6 py-3 text-sm font-medium transition-colors text-left text-gray-600 hover:bg-gray-50 hover:text-orange-600 border-l-4 border-transparent">
                                     <div className="flex items-center gap-3">
                                         <ShoppingBag className="w-5 h-5" />
-                                        Pembelian
+                                        History Transaksi
                                     </div>
-                                    <ChevronRight className="w-4 h-4 transition-transform" />
                                 </Link>
                             </nav>
                         </div>
@@ -264,11 +263,11 @@ export default function AlamatPembeliPage() {
                                                 <button onClick={() => setAsMain(addr.id)} className="text-gray-500 hover:text-orange-600 font-bold hover:underline border-r border-gray-200 pr-4 text-xs uppercase tracking-wider">
                                                     Jadikan Utama
                                                 </button>
-                                                <button 
+                                                <button
                                                     onClick={() => {
                                                         setAddressToDelete(addr.id);
                                                         setShowDeleteModal(true);
-                                                    }} 
+                                                    }}
                                                     className="text-red-500 hover:text-red-600 font-bold hover:underline flex items-center gap-1 text-xs uppercase tracking-wider"
                                                 >
                                                     <Trash2 className="w-4 h-4" /> Hapus
@@ -364,15 +363,15 @@ export default function AlamatPembeliPage() {
                         <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
                             Alamat ini akan dihapus permanen. Anda yakin ingin melanjutkannya?
                         </p>
-                        
+
                         <div className="flex flex-col w-full gap-3">
-                            <button 
+                            <button
                                 onClick={() => addressToDelete && deleteAddress(addressToDelete)}
                                 className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95"
                             >
                                 Ya, Hapus Sekarang
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowDeleteModal(false);
                                     setAddressToDelete(null);

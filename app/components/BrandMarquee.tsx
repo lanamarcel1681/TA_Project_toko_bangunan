@@ -1,7 +1,7 @@
 export default function BrandMarquee() {
     const brands = [
         { name: "RUCIKA", logo: "https://www.rucika.co.id/wp-content/uploads/2021/10/rucika-logo-png-Aldira-Sasmito@2x.png" },
-        { name: "DULUX", logo: "https://logos-world.net/wp-content/uploads/2022/07/Dulux-Logo.png" },
+        { name: "DULUX", logo: "https://vectorseek.com/wp-content/uploads/2021/01/Dulux-Logo-Vector-1.jpg" },
         { name: "MAKITA", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6oLUyW5EArhUg8HpusFoxDE7t_l_lz1x2oQ&s" },
         { name: "HOLCIM", logo: "https://images.seeklogo.com/logo-png/6/2/holcim-logo-png_seeklogo-67373.png" },
         { name: "NIPPON PAINT", logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTpU9PYonG_msmfbZBKgOWB51CEasE9ePdEZA&s" },

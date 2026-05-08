@@ -1,6 +1,6 @@
 'use client'
 import React, { useState, useEffect } from 'react';
-import { Truck, CheckCircle, Combine, Timer, MapPin, ChevronRight, Zap, AlertTriangle, Loader2 } from 'lucide-react';
+import { Truck, CheckCircle, Combine, Timer, MapPin, ChevronRight, Zap, AlertTriangle, Loader2, MessageCircle } from 'lucide-react';
 import { useToast } from '@/app/components/Toast';
 
 export default function ManajemenPengantaranPage() {
@@ -18,7 +18,22 @@ export default function ManajemenPengantaranPage() {
     const fetchMissions = async () => {
         try {
             setLoading(true);
-            const res = await fetch('/api/karyawan/pengantaran');
+
+            // Ambil ID pegawai dari session API
+            let pegawaiId: number | null = null;
+            try {
+                const sessionRes = await fetch('/api/auth/session');
+                if (sessionRes.ok) {
+                    const session = await sessionRes.json();
+                    pegawaiId = session?.id || null;
+                }
+            } catch { }
+
+            const url = pegawaiId
+                ? `/api/karyawan/pengantaran?pegawaiId=${pegawaiId}`
+                : '/api/karyawan/pengantaran';
+
+            const res = await fetch(url);
             const data = await res.json();
             if (data.success) {
                 setMissions(data.missions);
@@ -100,7 +115,7 @@ export default function ManajemenPengantaranPage() {
     };
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left">
             <div className="mb-10">
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight leading-none mb-3">Monitoring Pengantaran</h1>
                 <p className="text-gray-500 font-medium">Kelola tugas pengiriman aktif dan optimasi rute kurir operasional toko.</p>
@@ -136,7 +151,18 @@ export default function ManajemenPengantaranPage() {
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Penerima Barang</p>
                                     <p className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md leading-none uppercase">{mission.driver}</p>
                                 </div>
-                                <h3 className="text-xl font-black text-gray-900 leading-tight">{mission.customer}</h3>
+                                <div className="flex items-center gap-3">
+                                    <h3 className="text-xl font-black text-gray-900 leading-tight">{mission.customer}</h3>
+                                    <a 
+                                        href={`https://wa.me/${mission.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
+                                        target="_blank" 
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center justify-center p-1.5 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors"
+                                        title="Hubungi via WhatsApp"
+                                    >
+                                        <MessageCircle className="w-4 h-4" />
+                                    </a>
+                                </div>
                                 <div className="flex items-start gap-2 mt-2 text-gray-500">
                                     <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0 text-red-500" />
                                     <p className="text-sm font-medium leading-relaxed">{mission.address}</p>

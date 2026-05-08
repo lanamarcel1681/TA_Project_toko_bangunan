@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@/app/utils/hash';
 
 const prisma = new PrismaClient();
 
@@ -11,6 +12,10 @@ export async function POST(request: NextRequest) {
         // Validasi kelengkapan data
         if (!name || !email || !password) {
             return NextResponse.json({ error: 'Nama, Email, dan Password wajib diisi' }, { status: 400 });
+        }
+
+        if (!email.toLowerCase().endsWith('@gmail.com')) {
+            return NextResponse.json({ error: 'Gagal! Hanya email @gmail.com yang diizinkan.' }, { status: 400 });
         }
 
         // Cek apakah email sudah terdaftar di pembeli
@@ -32,7 +37,7 @@ export async function POST(request: NextRequest) {
             data: {
                 nama_pembeli: name,
                 email_pembeli: email,
-                password_pembeli: password, // Pada produksi ini harus di hashing (misal menggunakan bcrypt)
+                password_pembeli: hashPassword(password),
                 nomor_telepon_pembeli: '-',
                 tanggal_lahir_pembeli: '-',
             }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
+import { decrypt } from "@/app/utils/session";
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,8 @@ export async function GET(request: NextRequest) {
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search");
 
@@ -30,6 +32,11 @@ export async function GET(request: NextRequest) {
         pegawai: {
           select: {
             nama_pegawai: true
+          }
+        },
+        usulan_supplier: {
+          include: {
+            supplier: true
           }
         }
       },
@@ -52,14 +59,16 @@ export async function POST(request: NextRequest) {
     const session = cookieStore.get("session");
     if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const user = JSON.parse(session.value);
+    const user = await decrypt(session.value);
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     const body = await request.json();
     const { 
       nama_barang_usulan, 
       id_kategori_barang, 
       deskripsi_usulan, 
       harga_beli_perkiraan, 
-      harga_jual_perkiraan 
+      harga_jual_perkiraan,
+      id_suppliers
     } = body;
 
     if (!nama_barang_usulan || !id_kategori_barang || !harga_beli_perkiraan) {
@@ -75,7 +84,12 @@ export async function POST(request: NextRequest) {
         harga_beli_perkiraan: parseFloat(harga_beli_perkiraan),
         harga_jual_perkiraan: parseFloat(harga_jual_perkiraan) || 0,
         tanggal_usulan: new Date(),
-        status_usulan: "Pending"
+        status_usulan: "Pending",
+        usulan_supplier: id_suppliers && Array.isArray(id_suppliers) && id_suppliers.length > 0 ? {
+          create: id_suppliers.map((id: number) => ({
+            id_supplier: id
+          }))
+        } : undefined
       },
     });
 

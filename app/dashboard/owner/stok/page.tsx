@@ -136,7 +136,7 @@ export default function StokOwnerPage() {
     };
 
     return (
-        <div className="p-8 w-full max-w-[1600px] mx-auto pb-20 text-left relative">
+        <div className="p-4 md:p-8 w-full max-w-[1600px] mx-auto pb-20 text-left relative">
             {/* Confirmation Modal */}
             {showConfirmModal && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-gray-900/60 backdrop-blur-sm animate-in fade-in duration-300">

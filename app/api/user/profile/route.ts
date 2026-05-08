@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { encrypt, decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -11,7 +12,10 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        const userSession = JSON.parse(sessionCookie.value);
+        const userSession = await decrypt(sessionCookie.value);
+        if (!userSession) {
+            return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+        }
 
         if (userSession.role === 'customer') {
             const userData = await prisma.pembeli.findUnique({
@@ -58,7 +62,10 @@ export async function PUT(request: NextRequest) {
     }
 
     try {
-        const userSession = JSON.parse(sessionCookie.value);
+        const userSession = await decrypt(sessionCookie.value);
+        if (!userSession) {
+            return NextResponse.json({ error: 'Invalid session' }, { status: 401 });
+        }
         const body = await request.json();
         
         const phone = body.phone || '-';
@@ -67,6 +74,13 @@ export async function PUT(request: NextRequest) {
         const avatar = body.avatar || undefined;
 
         if (!name) return NextResponse.json({ error: 'Nama tidak boleh kosong' }, { status: 400 });
+
+        if (phone !== '-') {
+            const phoneRegex = /^\d{10,12}$/;
+            if (!phoneRegex.test(phone)) {
+                return NextResponse.json({ error: 'Nomor telepon harus terdiri dari 10 hingga 12 digit angka.' }, { status: 400 });
+            }
+        }
 
         if (userSession.role === 'customer') {
             await prisma.pembeli.update({
@@ -91,9 +105,10 @@ export async function PUT(request: NextRequest) {
         }
 
         const updatedSession = { ...userSession, name: name };
+        const sessionString = await encrypt(updatedSession);
         const response = NextResponse.json({ success: true, message: 'Updated' });
-        response.cookies.set('session', JSON.stringify(updatedSession), {
-            httpOnly: false,
+        response.cookies.set('session', sessionString, {
+            httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             sameSite: 'lax',
             maxAge: 60 * 60 * 8,

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
     ShoppingCart, Printer, CalendarClock, PackageCheck, AlertTriangle,
     X, Truck, User, Calendar, Clock, MapPin, CheckCircle2, ChevronRight,
-    Store, ClipboardCheck, Timer, History, Loader2
+    Store, ClipboardCheck, Timer, History, Loader2, MessageCircle
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -254,11 +254,11 @@ export default function TransaksiPenjualanKaryawanPage() {
     const selectedOrder = deliveries.find(d => d.id === selectedId);
 
     return (
-        <div className="p-8 w-full max-w-[1400px] mx-auto pb-20">
+        <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20">
             {/* Header Section */}
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="text-left">
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none mb-3">Monitoring Penjualan</h1>
+                    <h1 className="text-2xl md:text-4xl font-black text-gray-900 tracking-tight leading-none mb-2 md:mb-3">Monitoring Penjualan</h1>
                     <p className="text-gray-500 font-medium tracking-tight">Kelola persiapan barang dan penugasan driver untuk pesanan pelanggan.</p>
                 </div>
                 <Link
@@ -269,7 +269,7 @@ export default function TransaksiPenjualanKaryawanPage() {
                 </Link>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-10">
                 {/* Kolom Pengiriman (Diantar) */}
                 <div className="space-y-8">
                     <div className="flex items-center justify-between px-2">
@@ -289,11 +289,11 @@ export default function TransaksiPenjualanKaryawanPage() {
                             </div>
                         ) : (
                             deliveries.map((delivery) => (
-                                <div key={delivery.id} className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-blue-200">
+                                <div key={delivery.id} className="bg-white rounded-[24px] md:rounded-[40px] p-5 md:p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-blue-200">
                                     <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 -mr-16 -mt-16 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
 
                                     <div className="relative">
-                                        <div className="flex items-center justify-between mb-8">
+                                        <div className="flex items-center justify-between mb-4 md:mb-8">
                                             <div className="flex items-center gap-4">
                                                 <div className="p-4 bg-gray-50 text-blue-600 rounded-2xl border border-gray-100">
                                                     <ShoppingCart className="w-6 h-6" />
@@ -301,13 +301,23 @@ export default function TransaksiPenjualanKaryawanPage() {
                                                 <div>
                                                     <h3 className="text-xl font-black text-gray-900 leading-tight mb-1">{delivery.id}</h3>
                                                     <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest flex items-center gap-2">
-                                                        {delivery.customer} <span className="text-gray-300 font-normal">·</span> {delivery.date}
+                                                        {delivery.customer} 
+                                                        <a 
+                                                            href={`https://wa.me/${delivery.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
+                                                            target="_blank" 
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center justify-center p-1 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors ml-1"
+                                                            title="Hubungi via WhatsApp"
+                                                        >
+                                                            <MessageCircle className="w-3 h-3" />
+                                                        </a>
+                                                        <span className="text-gray-300 font-normal">·</span> {delivery.date}
                                                     </p>
                                                 </div>
                                             </div>
                                         </div>
 
-                                        <div className="bg-gray-50/50 rounded-3xl p-6 border border-gray-100 mb-8 text-left">
+                                        <div className="bg-gray-50/50 rounded-2xl md:rounded-3xl p-4 md:p-6 border border-gray-100 mb-4 md:mb-8 text-left">
                                             <div className="flex items-center gap-3 mb-3">
                                                 <MapPin className="w-4 h-4 text-blue-600" />
                                                 <span className="font-black text-[10px] text-gray-400 uppercase tracking-widest">Alamat Tujuan Pengiriman:</span>
@@ -354,22 +364,32 @@ export default function TransaksiPenjualanKaryawanPage() {
                         </div>
                     ) : (
                         pickups.map((pickup) => (
-                            <div key={pickup.id} className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-green-200">
+                            <div key={pickup.id} className="bg-white rounded-[24px] md:rounded-[40px] p-5 md:p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-green-200">
                                 <div className="absolute top-0 right-0 w-32 h-32 bg-green-50/50 -mr-16 -mt-16 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
                                 <div className="relative text-left">
-                                    <div className="flex items-center gap-4 mb-8 text-left">
+                                    <div className="flex items-center gap-4 mb-4 md:mb-8 text-left">
                                         <div className="p-4 bg-gray-50 text-green-600 rounded-2xl border border-gray-100">
                                             <PackageCheck className="w-6 h-6" />
                                         </div>
                                         <div className="text-left">
                                             <h3 className="text-xl font-black text-gray-900 leading-tight mb-1">{pickup.id}</h3>
                                             <p className="text-[10px] font-black text-green-600 uppercase tracking-widest flex items-center gap-2">
-                                                {pickup.customer} <span className="text-gray-300 font-normal">·</span> {pickup.date}
+                                                {pickup.customer} 
+                                                <a 
+                                                    href={`https://wa.me/${pickup.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
+                                                    target="_blank" 
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center justify-center p-1 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors ml-1"
+                                                    title="Hubungi via WhatsApp"
+                                                >
+                                                    <MessageCircle className="w-3 h-3" />
+                                                </a>
+                                                <span className="text-gray-300 font-normal">·</span> {pickup.date}
                                             </p>
                                         </div>
                                     </div>
 
-                                    <div className="bg-green-50/30 rounded-3xl p-6 border border-green-100/50 mb-8 text-left relative overflow-hidden">
+                                    <div className="bg-green-50/30 rounded-2xl md:rounded-3xl p-4 md:p-6 border border-green-100/50 mb-4 md:mb-8 text-left relative overflow-hidden">
                                         <div className="flex items-center gap-3 mb-3">
                                             <ClipboardCheck className="w-4 h-4 text-green-600" />
                                             <span className="font-black text-[10px] text-green-600/60 uppercase tracking-widest">Status Persiapan Barang:</span>

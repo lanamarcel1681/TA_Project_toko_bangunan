@@ -25,10 +25,24 @@
   }
 }
 
+html, body {
+  overflow-x: hidden;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: "Poppins", sans-serif;
+}
+
+/* Responsive table wrapper — wrap any <table> that can overflow on mobile */
+.responsive-table {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.responsive-table table {
+  min-width: 600px;
 }
 
 /* Custom scrollbar */
@@ -90,4 +104,18 @@ details>summary::-webkit-details-marker {
 
 .animate-fadeIn {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* Hide number input spinner arrows — Chrome, Safari, Edge */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+  -webkit-appearance: none !important;
+  appearance: none !important;
+  margin: 0 !important;
+}
+
+/* Hide number input spinner arrows — Firefox */
+input[type='number'] {
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
 }

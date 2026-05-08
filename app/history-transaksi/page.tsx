@@ -13,9 +13,12 @@ export default function HistoryTransaksiPage() {
     const [showReturnModal, setShowReturnModal] = useState(false);
     const [selectedOrderId, setSelectedOrderId] = useState<number | null>(null);
     const [cancelReason, setCancelReason] = useState('');
+    const [cancelBankInfo, setCancelBankInfo] = useState('');
+    const [cancelBankError, setCancelBankError] = useState('');
     const [returnReason, setReturnReason] = useState('');
     const [returnPhoto, setReturnPhoto] = useState('');
     const [bankInfo, setBankInfo] = useState('');
+    const [bankError, setBankError] = useState('');
     const [processing, setProcessing] = useState(false);
 
     const purchaseTabs = ['Semua', 'Verifikasi Pembayaran', 'Disiapkan', 'Dikirim', 'Selesai', 'Batal/Retur'];
@@ -47,9 +50,9 @@ export default function HistoryTransaksiPage() {
         );
         if (purchaseStatus === 'Dikirim') return transactions.filter(t => t.status_penjualan === 'Sedang Dikirim');
         if (purchaseStatus === 'Selesai') return transactions.filter(t => t.status_penjualan === 'Selesai');
-        if (purchaseStatus === 'Batal/Retur') return transactions.filter(t => 
-            t.status_penjualan.includes('Retur') || 
-            t.status_penjualan.includes('Dibatalkan') || 
+        if (purchaseStatus === 'Batal/Retur') return transactions.filter(t =>
+            t.status_penjualan.includes('Retur') ||
+            t.status_penjualan.includes('Dibatalkan') ||
             t.status_penjualan.includes('Refund')
         );
         return transactions;
@@ -87,18 +90,37 @@ export default function HistoryTransaksiPage() {
     };
 
     const handleCancel = async () => {
+        setCancelBankError('');
         if (!cancelReason) return alert("Harap isi alasan pembatalan");
+        if (!cancelBankInfo) return alert("Harap isi info rekening refund");
+
+        // Validasi format rekening
+        const normalized = cancelBankInfo.replace(/ – /g, ' - ');
+        const parts = normalized.split(' - ');
+        if (parts.length !== 3) {
+            setCancelBankError('Format tidak valid. Gunakan: Nama Bank - Nomor Rek - Nama Pemilik');
+            return;
+        }
+        const [namaBank, nomorRek, namaPemilik] = parts;
+        if (!namaBank.trim()) { setCancelBankError('Nama bank/e-wallet tidak boleh kosong.'); return; }
+        if (!/^\d{6,20}$/.test(nomorRek.trim())) { setCancelBankError('Nomor rekening harus berupa angka (6-20 digit).'); return; }
+        if (!namaPemilik.trim() || !/^[a-zA-Z\s]+$/.test(namaPemilik.trim())) { setCancelBankError('Nama pemilik hanya boleh berisi huruf dan spasi.'); return; }
+
+        const finalBankInfo = `${namaBank.trim()} – ${nomorRek.trim()} – ${namaPemilik.trim()}`;
         setProcessing(true);
         try {
             const res = await fetch('/api/user/transaksi/batal', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId: selectedOrderId, reason: cancelReason })
+                body: JSON.stringify({ orderId: selectedOrderId, reason: cancelReason, bankInfo: finalBankInfo })
             });
             const data = await res.json();
             if (data.success) {
                 alert(data.message);
                 setShowCancelModal(false);
+                setCancelReason('');
+                setCancelBankInfo('');
+                setCancelBankError('');
                 fetchHistory();
             } else {
                 alert(data.error);
@@ -111,7 +133,24 @@ export default function HistoryTransaksiPage() {
     };
 
     const handleReturn = async () => {
+        setBankError('');
+
         if (!returnReason || !returnPhoto || !bankInfo) return alert("Harap lengkapi semua data retur");
+
+        // Validasi format: NamaBank - NomorRek - NamaPemilik (menerima "-" atau "–")
+        const normalized = bankInfo.replace(/ – /g, ' - ');
+        const parts = normalized.split(' - ');
+        if (parts.length !== 3) {
+            setBankError('Format tidak valid. Gunakan: Nama Bank - Nomor Rek - Nama Pemilik');
+            return;
+        }
+        const [namaBank, nomorRek, namaPemilik] = parts;
+        if (!namaBank.trim()) { setBankError('Nama bank/e-wallet tidak boleh kosong.'); return; }
+        if (!/^\d{6,20}$/.test(nomorRek.trim())) { setBankError('Nomor rekening harus berupa angka (6-20 digit).'); return; }
+        if (!namaPemilik.trim() || !/^[a-zA-Z\s]+$/.test(namaPemilik.trim())) { setBankError('Nama pemilik hanya boleh berisi huruf dan spasi.'); return; }
+
+        // Normalisasi ke format baku sebelum dikirim
+        const finalBankInfo = `${namaBank.trim()} – ${nomorRek.trim()} – ${namaPemilik.trim()}`;
         setProcessing(true);
         try {
             const res = await fetch('/api/user/transaksi/retur', {
@@ -121,13 +160,14 @@ export default function HistoryTransaksiPage() {
                     orderId: selectedOrderId,
                     reason: returnReason,
                     photo: returnPhoto,
-                    bankInfo: bankInfo
+                    bankInfo: finalBankInfo
                 })
             });
             const data = await res.json();
             if (data.success) {
                 alert(data.message);
                 setShowReturnModal(false);
+                setBankInfo(''); setBankError('');
                 fetchHistory();
             } else {
                 alert(data.error);
@@ -203,9 +243,8 @@ export default function HistoryTransaksiPage() {
                                 <Link href="/history-transaksi" className="flex items-center justify-between px-6 py-3 text-sm font-medium transition-colors text-left text-orange-600 border-l-4 border-orange-600 bg-orange-50/30">
                                     <div className="flex items-center gap-3">
                                         <ShoppingBag className="w-5 h-5" />
-                                        Pembelian
+                                        History Transaksi
                                     </div>
-                                    <ChevronRight className="w-4 h-4 transition-transform rotate-90" />
                                 </Link>
                             </nav>
                         </div>
@@ -329,7 +368,7 @@ export default function HistoryTransaksiPage() {
                                                             <Link href={`/history-transaksi/${item.inv}`} className="w-full bg-white border border-gray-200 text-gray-600 px-4 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-gray-50 transition-all active:scale-95 flex items-center justify-center gap-2">
                                                                 Lihat Detail <ChevronRight className="w-3 h-3" />
                                                             </Link>
-                                                            <button 
+                                                            <button
                                                                 onClick={() => { setSelectedOrderId(item.id); setShowCancelModal(true); }}
                                                                 className="w-full bg-white border border-red-200 text-red-600 px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-widest hover:bg-red-50 transition-all active:scale-95 mt-1"
                                                             >
@@ -374,21 +413,41 @@ export default function HistoryTransaksiPage() {
             {showCancelModal && (
                 <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
                     <div className="bg-white rounded-[32px] w-full max-w-lg overflow-hidden shadow-2xl animate-in fade-in zoom-in duration-200">
-                        <div className="p-8">
+                        <div className="p-8 max-h-[90vh] overflow-y-auto custom-scrollbar">
                             <h2 className="text-2xl font-black text-gray-900 tracking-tight mb-2">Batalkan Pesanan?</h2>
-                            <p className="text-gray-500 mb-8 font-medium">Beritahu kami alasan Anda membatalkan pesanan ini agar kami bisa melayani lebih baik.</p>
+                            <p className="text-gray-500 mb-6 font-medium text-sm">Beritahu kami alasan Anda membatalkan pesanan dan cantumkan rekening untuk pengembalian dana.</p>
 
-                            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Alasan Pembatalan</label>
-                            <textarea
-                                className="w-full h-32 bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm text-black font-medium focus:ring-2 focus:ring-orange-500 outline-none transition-all"
-                                placeholder="Contoh: Saya berubah pikiran, salah masukkan alamat, dll..."
-                                value={cancelReason}
-                                onChange={(e) => setCancelReason(e.target.value)}
-                            />
+                            <div className="space-y-5">
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Alasan Pembatalan</label>
+                                    <textarea
+                                        className="w-full h-28 bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm text-black font-medium focus:ring-2 focus:ring-red-400 outline-none transition-all"
+                                        placeholder="Contoh: Saya berubah pikiran, salah masukkan alamat, dll..."
+                                        value={cancelReason}
+                                        onChange={(e) => setCancelReason(e.target.value)}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Rekening / E-Wallet Refund</label>
+                                    <p className="text-[10px] text-gray-400 italic mb-2 ml-1">Format: <span className="font-black text-red-500 not-italic">Nama Bank - Nomor Rek - Nama Pemilik</span></p>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm text-black font-medium focus:ring-2 focus:ring-red-400 outline-none transition-all"
+                                        placeholder="Contoh: BCA - 1234567890 - Budi Santoso"
+                                        value={cancelBankInfo}
+                                        onChange={(e) => { setCancelBankInfo(e.target.value); setCancelBankError(''); }}
+                                    />
+                                    {cancelBankError && (
+                                        <p className="text-[11px] font-bold text-red-500 mt-2 ml-1">⚠️ {cancelBankError}</p>
+                                    )}
+                                    <p className="text-[10px] text-gray-400 mt-2 ml-1">*Data rekening digunakan untuk proses pengembalian dana oleh admin.</p>
+                                </div>
+                            </div>
 
                             <div className="flex gap-3 mt-8">
                                 <button
-                                    onClick={() => setShowCancelModal(false)}
+                                    onClick={() => { setShowCancelModal(false); setCancelReason(''); setCancelBankInfo(''); setCancelBankError(''); }}
                                     className="flex-1 px-6 py-3.5 rounded-xl font-black text-[10px] uppercase tracking-widest text-gray-400 hover:bg-gray-50 transition-all"
                                 >
                                     Tutup
@@ -444,13 +503,17 @@ export default function HistoryTransaksiPage() {
 
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 ml-1">Rekening / E-Wallet Refund</label>
+                                    <p className="text-[10px] text-gray-400 italic mb-2 ml-1">Format: <span className="font-black text-orange-500 not-italic">Nama Bank - Nomor Rek - Nama Pemilik</span></p>
                                     <input
                                         type="text"
                                         className="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm text-black font-medium focus:ring-2 focus:ring-orange-500 outline-none transition-all"
-                                        placeholder="Contoh: BCA - 123456789 (A/N Agus)"
+                                        placeholder="Contoh: BCA - 1234567890 - Agus Santoso"
                                         value={bankInfo}
-                                        onChange={(e) => setBankInfo(e.target.value)}
+                                        onChange={(e) => { setBankInfo(e.target.value); setBankError(''); }}
                                     />
+                                    {bankError && (
+                                        <p className="text-[11px] font-bold text-red-500 mt-2 ml-1">⚠️ {bankError}</p>
+                                    )}
                                 </div>
                             </div>
 

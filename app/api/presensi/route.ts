@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -18,7 +19,8 @@ export async function GET(req: Request) {
         const cookie = req.headers.get('cookie')?.split('; ').find(r => r.startsWith('session='));
         if (!cookie) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const session = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+        const session = await decrypt(cookie.split('=')[1]);
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         const id_pegawai = session.id;
         const role = session.role?.toLowerCase();
 
@@ -79,7 +81,8 @@ export async function POST(req: Request) {
         const cookie = req.headers.get('cookie')?.split('; ').find(r => r.startsWith('session='));
         if (!cookie) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
-        const session = JSON.parse(decodeURIComponent(cookie.split('=')[1]));
+        const session = await decrypt(cookie.split('=')[1]);
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         const id_pegawai = session.id;
 
         const todayStr = getTodayString();

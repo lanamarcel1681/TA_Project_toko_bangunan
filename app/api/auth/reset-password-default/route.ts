@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { hashPassword } from '@/app/utils/hash';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +12,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Silakan login terlebih dahulu' }, { status: 401 });
         }
 
-        const userSession = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const userSession = await decrypt(sessionCookie.value);
+        if (!userSession) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         
         // Find the employee to get their birth date
         const employee = await prisma.pegawai.findUnique({
@@ -29,7 +32,7 @@ export async function POST(request: NextRequest) {
 
         await prisma.pegawai.update({
             where: { id_pegawai: userSession.id },
-            data: { password_pegawai: defaultPassword }
+            data: { password_pegawai: hashPassword(defaultPassword) }
         });
 
         return NextResponse.json({ 

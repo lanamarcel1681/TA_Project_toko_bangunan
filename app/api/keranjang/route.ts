@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { decrypt } from '@/app/utils/session';
 
 const prisma = new PrismaClient();
 
@@ -10,7 +11,8 @@ export async function GET(request: NextRequest) {
             return NextResponse.json({ items: [], totalItems: 0 });
         }
         
-        const user = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const user = await decrypt(sessionCookie.value);
+        if (!user) return NextResponse.json({ items: [], totalItems: 0 });
         
         if (user.role !== 'customer') {
             return NextResponse.json({ items: [], totalItems: 0 });
@@ -37,7 +39,8 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Silakan login terlebih dahulu' }, { status: 401 });
         }
         
-        const user = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const user = await decrypt(sessionCookie.value);
+        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         
         if (user.role !== 'customer') {
             return NextResponse.json({ error: 'Hanya pembeli yang dapat menambah ke keranjang' }, { status: 403 });
@@ -86,7 +89,8 @@ export async function PATCH(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         
-        const user = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const user = await decrypt(sessionCookie.value);
+        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         
         const { cartId, quantity } = await request.json();
 
@@ -116,7 +120,8 @@ export async function DELETE(request: NextRequest) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
         
-        const user = JSON.parse(decodeURIComponent(sessionCookie.value));
+        const user = await decrypt(sessionCookie.value);
+        if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         
         const { searchParams } = new URL(request.url);
         const cartId = parseInt(searchParams.get('id') || '');
