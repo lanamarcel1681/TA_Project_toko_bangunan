@@ -15,7 +15,7 @@ export default function DashboardLayoutClient({ children, userName, role }: Dash
     const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
     return (
-        <div className="bg-white min-h-screen flex antialiased text-gray-800">
+        <div className="bg-white h-screen flex antialiased text-gray-800 overflow-hidden">
             {/* Desktop Sidebar */}
             <DashboardSidebar
                 userName={userName}
@@ -25,7 +25,7 @@ export default function DashboardLayoutClient({ children, userName, role }: Dash
                 isMobileOpen={isMobileSidebarOpen}
                 onMobileClose={() => setIsMobileSidebarOpen(false)}
             />
-            <div className="flex-1 flex flex-col min-h-screen overflow-hidden bg-gray-50">
+            <div className="flex-1 flex flex-col h-screen overflow-hidden bg-gray-50">
                 <DashboardTopbar
                     userName={userName}
                     role={role}

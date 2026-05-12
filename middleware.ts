@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { decrypt } from './app/utils/session';
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
     const session = request.cookies.get('session');
     const { pathname } = request.nextUrl;
 
@@ -11,7 +12,12 @@ export function middleware(request: NextRequest) {
         }
 
         try {
-            const user = JSON.parse(session.value);
+            const user = await decrypt(session.value);
+            
+            if (!user) {
+                return NextResponse.redirect(new URL('/login', request.url));
+            }
+
             // Protect owner-only routes
             if (pathname.startsWith('/dashboard/owner') && user.role !== 'owner') {
                 return NextResponse.redirect(new URL(user.role === 'karyawan' ? '/dashboard/karyawan' : '/', request.url));
@@ -28,9 +34,11 @@ export function middleware(request: NextRequest) {
     // Already logged in: redirect away from login page
     if (pathname === '/login' && session) {
         try {
-            const user = JSON.parse(session.value);
-            const dest = user.role === 'owner' ? '/dashboard/owner' : user.role === 'karyawan' ? '/dashboard/karyawan' : '/';
-            return NextResponse.redirect(new URL(dest, request.url));
+            const user = await decrypt(session.value);
+            if (user) {
+                const dest = user.role === 'owner' ? '/dashboard/owner' : user.role === 'karyawan' ? '/dashboard/karyawan' : '/';
+                return NextResponse.redirect(new URL(dest, request.url));
+            }
         } catch {
             // bad cookie, let through
         }

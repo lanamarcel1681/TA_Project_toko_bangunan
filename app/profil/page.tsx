@@ -124,7 +124,7 @@ export default function UserProfile() {
                             <nav className="flex flex-col py-2">
                                 <Link href="/profil" className="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors text-left text-orange-600 border-l-4 border-orange-600 bg-orange-50/30">
                                     <Mail className="w-5 h-5" />
-                                    Kotak Masuk
+                                    Profil Saya
                                 </Link>
                                 <Link
                                     href="/profil/alamat"

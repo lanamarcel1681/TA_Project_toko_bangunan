@@ -76,13 +76,6 @@ export default function LoginPage() {
                         <p className="text-orange-100 text-sm mb-6 max-w-sm leading-relaxed">
                             Selamat datang di halaman login Toko TB. Lumbung Jaya. Pastikan Anda memiliki kredensial yang valid untuk mengakses sistem.
                         </p>
-
-                        {/* Hint credentials */}
-                        <div className="bg-white/10 rounded-xl p-4 w-full text-left text-xs space-y-1">
-                            <p className="font-bold text-white/90 mb-2">Akun Demo (DB):</p>
-                            <p><span className="text-white/70">Pemilik:</span> owner@toko.com / owner123</p>
-                            <p><span className="text-white/70">Karyawan:</span> karyawan@toko.com / karyawan123</p>
-                        </div>
                     </div>
                 </div>
 

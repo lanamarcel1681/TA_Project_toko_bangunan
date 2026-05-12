@@ -231,7 +231,7 @@ export default function HistoryTransaksiPage() {
                             <nav className="flex flex-col py-2">
                                 <Link href="/profil" className="flex items-center gap-3 px-6 py-3 text-sm font-medium transition-colors text-left text-gray-600 hover:bg-gray-50 hover:text-orange-600 border-l-4 border-transparent">
                                     <Mail className="w-5 h-5" />
-                                    Kotak Masuk
+                                    Profil Saya
                                 </Link>
                                 <Link
                                     href="/profil/alamat"
