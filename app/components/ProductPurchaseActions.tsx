@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ShoppingCart, Plus, Minus, Check } from 'lucide-react';
 import { useToast } from './Toast';
 
@@ -13,6 +14,7 @@ export default function ProductPurchaseActions({ productId, stock }: ProductPurc
     const [quantity, setQuantity] = useState(1);
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const router = useRouter();
 
     const handleIncrement = () => {
         if (quantity < stock) setQuantity(prev => prev + 1);
@@ -49,6 +51,30 @@ export default function ProductPurchaseActions({ productId, stock }: ProductPurc
             console.error("Add to cart error:", error);
             showToast("Terjadi kesalahan sistem saat menghubungi server", "error");
         } finally {
+            setLoading(false);
+        }
+    };
+
+    const buyNow = async () => {
+        setLoading(true);
+        try {
+            const res = await fetch('/api/keranjang', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, quantity })
+            });
+
+            if (res.ok) {
+                window.dispatchEvent(new Event('cart-updated'));
+                router.push('/pembayaran');
+            } else {
+                const data = await res.json();
+                showToast(data.error || "Gagal memproses pembelian", "error");
+                setLoading(false);
+            }
+        } catch (error) {
+            console.error("Buy now error:", error);
+            showToast("Terjadi kesalahan sistem saat menghubungi server", "error");
             setLoading(false);
         }
     };
@@ -98,6 +124,7 @@ export default function ProductPurchaseActions({ productId, stock }: ProductPurc
             </button>
 
             <button 
+                onClick={buyNow}
                 disabled={stock <= 0 || loading}
                 className="w-full sm:flex-1 h-12 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all px-6 active:scale-95 disabled:bg-gray-300 disabled:shadow-none"
             >
