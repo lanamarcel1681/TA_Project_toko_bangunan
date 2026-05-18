@@ -263,7 +263,7 @@ export default function TransaksiPenjualanKaryawanPage() {
                 </div>
                 <Link
                     href="/dashboard/karyawan/transaksi/penjualan/riwayat"
-                    className="flex items-center gap-3 px-6 py-4 bg-white border border-gray-100 rounded-3xl text-gray-600 hover:text-blue-600 hover:border-blue-100 hover:bg-blue-50/50 transition-all font-black text-[10px] uppercase tracking-widest shadow-sm group"
+                    className="flex items-center gap-3 px-6 py-4 bg-white border border-gray-100 rounded-3xl text-gray-600 hover:text-orange-600 hover:border-orange-100 hover:bg-orange-50/50 transition-all font-black text-[10px] uppercase tracking-widest shadow-sm group"
                 >
                     <History className="w-4 h-4 group-hover:rotate-[-20deg] transition-transform" /> Lihat Riwayat Penjualan
                 </Link>
@@ -274,12 +274,12 @@ export default function TransaksiPenjualanKaryawanPage() {
                 <div className="space-y-8">
                     <div className="flex items-center justify-between px-2">
                         <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100">
+                            <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center border border-orange-100">
                                 <Truck className="w-5 h-5" />
                             </div>
                             <h2 className="text-xl font-black text-gray-900 tracking-tight">Antar Alamat</h2>
                         </div>
-                        <span className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-blue-600/20">{deliveries.length} PESANAN</span>
+                        <span className="bg-orange-600 text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg shadow-orange-600/20">{deliveries.length} PESANAN</span>
                     </div>
 
                     <div className="space-y-6">
@@ -289,18 +289,18 @@ export default function TransaksiPenjualanKaryawanPage() {
                             </div>
                         ) : (
                             deliveries.map((delivery) => (
-                                <div key={delivery.id} className="bg-white rounded-[24px] md:rounded-[40px] p-5 md:p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-blue-200">
-                                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/50 -mr-16 -mt-16 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
+                                <div key={delivery.id} className="bg-white rounded-[24px] md:rounded-[40px] p-5 md:p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-orange-200">
+                                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50/50 -mr-16 -mt-16 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
 
                                     <div className="relative">
                                         <div className="flex items-center justify-between mb-4 md:mb-8">
                                             <div className="flex items-center gap-4">
-                                                <div className="p-4 bg-gray-50 text-blue-600 rounded-2xl border border-gray-100">
+                                                <div className="p-4 bg-gray-50 text-orange-600 rounded-2xl border border-gray-100">
                                                     <ShoppingCart className="w-6 h-6" />
                                                 </div>
                                                 <div>
                                                     <h3 className="text-xl font-black text-gray-900 leading-tight mb-1">{delivery.id}</h3>
-                                                    <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest flex items-center gap-2">
+                                                    <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
                                                         {delivery.customer} 
                                                         <a 
                                                             href={`https://wa.me/${delivery.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
@@ -319,7 +319,7 @@ export default function TransaksiPenjualanKaryawanPage() {
 
                                         <div className="bg-gray-50/50 rounded-2xl md:rounded-3xl p-4 md:p-6 border border-gray-100 mb-4 md:mb-8 text-left">
                                             <div className="flex items-center gap-3 mb-3">
-                                                <MapPin className="w-4 h-4 text-blue-600" />
+                                                <MapPin className="w-4 h-4 text-orange-600" />
                                                 <span className="font-black text-[10px] text-gray-400 uppercase tracking-widest">Alamat Tujuan Pengiriman:</span>
                                             </div>
                                             <p className="text-sm font-black text-gray-800 leading-relaxed pl-7">{delivery.address}</p>
@@ -328,13 +328,13 @@ export default function TransaksiPenjualanKaryawanPage() {
                                         <div className="flex flex-col sm:flex-row gap-3">
                                             <button
                                                 onClick={() => openAssignmentModal(delivery.id)}
-                                                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.15em] flex justify-center items-center gap-3 shadow-lg shadow-blue-600/20 active:scale-95 transition-all"
+                                                className="flex-1 bg-orange-600 hover:bg-orange-700 text-white px-8 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.15em] flex justify-center items-center gap-3 shadow-lg shadow-orange-600/20 active:scale-95 transition-all"
                                             >
                                                 <CalendarClock className="w-4 h-4" /> Tugaskan Driver &rarr;
                                             </button>
                                             <button
                                                 onClick={() => generateInvoicePDF(delivery)}
-                                                className="w-14 h-14 bg-white border border-gray-100 text-gray-400 rounded-2xl flex items-center justify-center hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm active:scale-95"
+                                                className="w-14 h-14 bg-white border border-gray-100 text-gray-400 rounded-2xl flex items-center justify-center hover:text-orange-600 hover:bg-orange-50 transition-all shadow-sm active:scale-95"
                                             >
                                                 <Printer className="w-5 h-5" />
                                             </button>
@@ -427,7 +427,7 @@ export default function TransaksiPenjualanKaryawanPage() {
                         <div className="flex items-center justify-between px-10 py-8 border-b border-gray-50 bg-gray-50/30">
                             <div>
                                 <h3 className="text-2xl font-black text-gray-900 flex items-center gap-4 tracking-tight">
-                                    <div className="w-12 h-12 bg-blue-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-blue-600/20">
+                                    <div className="w-12 h-12 bg-orange-600 text-white rounded-2xl flex items-center justify-center shadow-lg shadow-orange-600/20">
                                         <Truck className="w-6 h-6" />
                                     </div>
                                     Penugasan Kurir
@@ -445,10 +445,10 @@ export default function TransaksiPenjualanKaryawanPage() {
                                     <div className="text-left">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Personel Driver / Supir</label>
                                         <div className="relative group/input">
-                                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-blue-600 transition-colors pointer-events-none"><User className="w-5 h-5" /></span>
+                                            <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-orange-600 transition-colors pointer-events-none"><User className="w-5 h-5" /></span>
                                             <select
                                                 required
-                                                className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-blue-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner appearance-none"
+                                                className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-orange-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner appearance-none"
                                                 value={assignment.driverId}
                                                 onChange={e => setAssignment({ ...assignment, driverId: e.target.value })}
                                             >
@@ -468,10 +468,10 @@ export default function TransaksiPenjualanKaryawanPage() {
                                         <div>
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Tanggal Distribusi</label>
                                             <div className="relative group/input">
-                                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-blue-600 transition-colors pointer-events-none"><Calendar className="w-5 h-5" /></span>
+                                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-orange-600 transition-colors pointer-events-none"><Calendar className="w-5 h-5" /></span>
                                                 <input
                                                     type="date" required
-                                                    className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-blue-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner"
+                                                    className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-orange-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner"
                                                     value={assignment.date}
                                                     onChange={e => setAssignment({ ...assignment, date: e.target.value })}
                                                 />
@@ -480,10 +480,10 @@ export default function TransaksiPenjualanKaryawanPage() {
                                         <div>
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Waktu Keberangkatan</label>
                                             <div className="relative group/input">
-                                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-blue-600 transition-colors pointer-events-none"><Clock className="w-5 h-5" /></span>
+                                                <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-orange-600 transition-colors pointer-events-none"><Clock className="w-5 h-5" /></span>
                                                 <input
                                                     type="time" required
-                                                    className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-blue-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner font-mono"
+                                                    className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-orange-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner font-mono"
                                                     value={assignment.time}
                                                     onChange={e => setAssignment({ ...assignment, time: e.target.value })}
                                                 />
@@ -502,7 +502,7 @@ export default function TransaksiPenjualanKaryawanPage() {
                                     </button>
                                     <button
                                         type="submit"
-                                        className="flex-[2] py-5 bg-blue-600 text-white font-black text-[10px] uppercase tracking-[0.15em] rounded-full shadow-xl shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-[0.98] text-center"
+                                        className="flex-[2] py-5 bg-orange-600 text-white font-black text-[10px] uppercase tracking-[0.15em] rounded-full shadow-xl shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-[0.98] text-center"
                                     >
                                         Konfirmasi & Tugaskan &rarr;
                                     </button>
@@ -516,7 +516,7 @@ export default function TransaksiPenjualanKaryawanPage() {
             {showConfirmModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
                     <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
-                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-600'}`}>
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-600'}`}>
                             {confirmAction === 'ASSIGN_DRIVER' ? <Truck className="w-10 h-10" /> : <CheckCircle2 className="w-10 h-10" />}
                         </div>
                         <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
@@ -532,7 +532,7 @@ export default function TransaksiPenjualanKaryawanPage() {
                             <button 
                                 onClick={executeAction}
                                 disabled={isActionLoading}
-                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700' : 'bg-green-600 shadow-green-600/20 hover:bg-green-700'}`}
+                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700' : 'bg-green-600 shadow-green-600/20 hover:bg-green-700'}`}
                             >
                                 {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (confirmAction === 'ASSIGN_DRIVER' ? 'Ya, Tugaskan' : 'Ya, Konfirmasi Penyerahan')}
                             </button>

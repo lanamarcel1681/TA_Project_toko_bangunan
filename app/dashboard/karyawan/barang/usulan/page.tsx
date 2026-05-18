@@ -164,7 +164,7 @@ export default function ManajemenUsulanBarangPage() {
             {showToast && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
                     <div className={`backdrop-blur-xl border border-white/10 px-8 py-5 rounded-[28px] shadow-2xl flex items-center gap-5 text-white ${toastType === 'success' ? 'bg-gray-900/90' : 'bg-red-900/90'}`}>
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${toastType === 'success' ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400'}`}>
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${toastType === 'success' ? 'bg-orange-500/20 text-orange-400' : 'bg-red-500/20 text-red-400'}`}>
                             {toastType === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
                         </div>
                         <div>
@@ -187,11 +187,11 @@ export default function ManajemenUsulanBarangPage() {
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-1 md:flex-none group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors" />
                         <input
                             type="text"
                             placeholder="Cari Nama Barang..."
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-full md:w-80 font-bold text-sm text-gray-800 transition-all shadow-sm"
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-full md:w-80 font-bold text-sm text-gray-800 transition-all shadow-sm"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -209,7 +209,7 @@ export default function ManajemenUsulanBarangPage() {
                             });
                             setIsModalOpen(true);
                         }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-orange-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
                     >
                         <Plus className="w-4 h-4" /> BUAT USULAN &rarr;
                     </button>
@@ -468,7 +468,7 @@ export default function ManajemenUsulanBarangPage() {
                                         <button
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="flex-[2] md:flex-none px-10 py-3.5 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+                                            className="flex-[2] md:flex-none px-10 py-3.5 bg-orange-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
                                         >
                                             {isSubmitting ? (
                                                 <Loader2 className="w-4 h-4 animate-spin" />

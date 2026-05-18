@@ -167,11 +167,11 @@ export default function ManajemenSupplierKaryawanPage() {
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-1 md:flex-none group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors"/>
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors"/>
                         <input 
                             type="text" 
                             placeholder="Cari Nama Supplier atau Perusahaan..." 
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-full md:w-80 font-bold text-sm text-gray-800 transition-all shadow-sm" 
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-full md:w-80 font-bold text-sm text-gray-800 transition-all shadow-sm" 
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
@@ -187,7 +187,7 @@ export default function ManajemenSupplierKaryawanPage() {
                             });
                             setIsModalOpen(true);
                         }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-orange-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
                     >
                         <Plus className="w-4 h-4" /> TAMBAH SUPPLIER &rarr;
                     </button>
@@ -225,13 +225,13 @@ export default function ManajemenSupplierKaryawanPage() {
                                 <tr key={supplier.id_supplier} className="hover:bg-gray-50/50 transition-all group">
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-2 h-2 rounded-full bg-blue-500"></div>
+                                            <div className="w-2 h-2 rounded-full bg-orange-500"></div>
                                             <span className="text-sm font-black text-gray-400 font-mono tracking-tighter">SUP-{String(supplier.id_supplier).padStart(3, '0')}</span>
                                         </div>
                                     </td>
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                                            <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-sm">
                                                 <Truck className="w-6 h-6" />
                                             </div>
                                             <div>
@@ -242,7 +242,7 @@ export default function ManajemenSupplierKaryawanPage() {
                                     </td>
                                     <td className="px-8 py-5">
                                         <p className="font-bold text-gray-800 text-sm">{supplier.nama_supplier}</p>
-                                        <p className="text-[11px] font-bold text-blue-600 flex items-center gap-1 mt-1">
+                                        <p className="text-[11px] font-bold text-orange-600 flex items-center gap-1 mt-1">
                                             <Phone className="w-3 h-3" /> {supplier.nomor_telepon_supplier}
                                         </p>
                                     </td>
@@ -280,7 +280,7 @@ export default function ManajemenSupplierKaryawanPage() {
                         {/* Modal Header */}
                         <div className="px-10 py-8 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between">
                             <div className="flex items-center gap-4">
-                                <div className="p-3.5 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                                <div className="p-3.5 bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-600/20">
                                     <Building2 className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -306,7 +306,7 @@ export default function ManajemenSupplierKaryawanPage() {
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><User className="w-4 h-4" /></span>
                                                 <input 
                                                     type="text" required
-                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
+                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
                                                     placeholder="Contoh: Hendra Gunawan"
                                                     value={formData.nama_supplier}
                                                     onChange={e => setFormData({...formData, nama_supplier: e.target.value})}
@@ -319,7 +319,7 @@ export default function ManajemenSupplierKaryawanPage() {
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><Building2 className="w-4 h-4" /></span>
                                                 <input 
                                                     type="text" required
-                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
+                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
                                                     placeholder="Contoh: PT Bangun Cipta Utama"
                                                     value={formData.nama_perusahaan_supplier}
                                                     onChange={e => setFormData({...formData, nama_perusahaan_supplier: e.target.value})}
@@ -335,7 +335,7 @@ export default function ManajemenSupplierKaryawanPage() {
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><Phone className="w-4 h-4" /></span>
                                                 <input 
                                                     type="tel" required
-                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
+                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"
                                                     placeholder="0812-xxxx-xxxx"
                                                     value={formData.nomor_telepon_supplier}
                                                     onChange={e => setFormData({...formData, nomor_telepon_supplier: e.target.value})}
@@ -348,7 +348,7 @@ export default function ManajemenSupplierKaryawanPage() {
                                                 <span className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400"><Calendar className="w-4 h-4" /></span>
                                                 <input 
                                                     type="date"
-                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none"
+                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none"
                                                     value={formData.tanggal_lahir_supplier}
                                                     onChange={e => setFormData({...formData, tanggal_lahir_supplier: e.target.value})}
                                                 />
@@ -374,7 +374,7 @@ export default function ManajemenSupplierKaryawanPage() {
                                         <button 
                                             type="submit"
                                             disabled={isSubmitting}
-                                            className="flex-[2] md:flex-none px-10 py-3.5 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+                                            className="flex-[2] md:flex-none px-10 py-3.5 bg-orange-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
                                         >
                                             {isSubmitting ? (
                                                 <Loader2 className="w-4 h-4 animate-spin" />

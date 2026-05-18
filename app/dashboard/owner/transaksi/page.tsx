@@ -184,17 +184,17 @@ export default async function TransaksiPage({
 
                 {/* Total Pembelian */}
                 <div className="bg-white rounded-[24px] md:rounded-[40px] p-6 md:p-10 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="relative z-10">
                         <div className="flex items-center justify-between mb-6">
-                            <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                            <div className="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center">
                                 <ArrowDownRight className="w-7 h-7" />
                             </div>
-                            <span className="text-[10px] font-black text-blue-600 bg-blue-100 px-3 py-1 rounded-lg uppercase tracking-widest">Database</span>
+                            <span className="text-[10px] font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-lg uppercase tracking-widest">Database</span>
                         </div>
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 leading-none">Total Pembelian</p>
                         <h3 className="text-xl md:text-3xl font-black text-gray-900 tracking-tight mb-2">{summaryData.totalPembelian}</h3>
-                        <div className="w-10 h-1 bg-blue-500 rounded-full"></div>
+                        <div className="w-10 h-1 bg-orange-500 rounded-full"></div>
                     </div>
                 </div>
 

@@ -16,11 +16,11 @@ interface ProfileClientProps {
 
 export default function ProfileClient({ userData, userEmail, userPhone, joinDate, birthDate }: ProfileClientProps) {
     const isOwner = userData.role === 'owner';
-    const themeColor = isOwner ? 'text-orange-600' : 'text-blue-600';
-    const themeBg = isOwner ? 'bg-orange-50' : 'bg-blue-50';
-    const themeBorder = isOwner ? 'border-orange-100' : 'border-blue-100';
-    const themeIconColor = isOwner ? 'text-orange-400' : 'text-blue-400';
-    const themeHoverBorder = isOwner ? 'focus-within:border-orange-200 focus-within:shadow-orange-200/10' : 'focus-within:border-blue-200 focus-within:shadow-blue-200/10';
+    const themeColor = isOwner ? 'text-orange-600' : 'text-orange-600';
+    const themeBg = isOwner ? 'bg-orange-50' : 'bg-orange-50';
+    const themeBorder = isOwner ? 'border-orange-100' : 'border-orange-100';
+    const themeIconColor = isOwner ? 'text-orange-400' : 'text-orange-400';
+    const themeHoverBorder = isOwner ? 'focus-within:border-orange-200 focus-within:shadow-orange-200/10' : 'focus-within:border-orange-200 focus-within:shadow-orange-200/10';
     
     const [name, setName] = useState(userData.name);
     const [phone, setPhone] = useState(userPhone);
@@ -67,10 +67,10 @@ export default function ProfileClient({ userData, userEmail, userPhone, joinDate
                 {/* Left Column: Avatar & Quick Info */}
                 <div className="lg:col-span-1 space-y-10">
                     <div className="bg-white rounded-[40px] p-12 border border-gray-100 shadow-2xl shadow-gray-200/50 flex flex-col items-center relative overflow-hidden group">
-                        <div className={`absolute top-0 right-0 w-32 h-32 ${isOwner ? 'bg-orange-50' : 'bg-blue-50'} rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700`}></div>
+                        <div className={`absolute top-0 right-0 w-32 h-32 ${isOwner ? 'bg-orange-50' : 'bg-orange-50'} rounded-full blur-3xl -mr-16 -mt-16 opacity-50 group-hover:scale-150 transition-transform duration-700`}></div>
 
                         <div className="relative mb-10">
-                            <div className={`w-40 h-40 ${isOwner ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'} rounded-[48px] flex items-center justify-center text-5xl font-black shadow-inner border-4 border-white group-hover:scale-105 transition-transform duration-500 shadow-lg`}>
+                            <div className={`w-40 h-40 ${isOwner ? 'bg-orange-100 text-orange-600' : 'bg-orange-100 text-orange-600'} rounded-[48px] flex items-center justify-center text-5xl font-black shadow-inner border-4 border-white group-hover:scale-105 transition-transform duration-500 shadow-lg`}>
                                 {name.charAt(0).toUpperCase()}
                             </div>
                             <button className="absolute -bottom-2 -right-2 w-12 h-12 bg-white rounded-2xl shadow-xl border border-gray-100 text-gray-400 hover:text-orange-600 hover:border-orange-100 flex items-center justify-center transition-all active:scale-90" title="Ubah Foto Profil">
@@ -88,9 +88,9 @@ export default function ProfileClient({ userData, userEmail, userPhone, joinDate
                                         className="bg-transparent text-center text-2xl font-black text-gray-900 tracking-tight outline-none focus:text-orange-600 transition-colors w-full min-w-[200px]"
                                         placeholder="Nama Lengkap"
                                     />
-                                    <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-1 ${isOwner ? 'bg-orange-500' : 'bg-blue-500'} group-focus-within/name:w-full transition-all duration-300`}></div>
+                                    <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-0 h-1 ${isOwner ? 'bg-orange-500' : 'bg-orange-500'} group-focus-within/name:w-full transition-all duration-300`}></div>
                                 </div>
-                                <Pencil className={`w-4 h-4 text-gray-200 group-hover/name:${isOwner ? 'text-orange-400' : 'text-blue-400'} transition-colors shrink-0`} />
+                                <Pencil className={`w-4 h-4 text-gray-200 group-hover/name:${isOwner ? 'text-orange-400' : 'text-orange-400'} transition-colors shrink-0`} />
                             </div>
                             
                             <div className={`inline-flex items-center gap-2 px-4 py-1.5 ${themeBg} border ${themeBorder} rounded-full mb-8 shadow-sm`}>
@@ -207,7 +207,7 @@ export default function ProfileClient({ userData, userEmail, userPhone, joinDate
                                 <Lock className={`w-4 h-4 mr-2.5 ${reseting ? 'animate-spin' : ''}`} />
                                 {reseting ? 'Memproses...' : 'Reset ke Password Default'}
                             </button>
-                            <button className={`inline-flex items-center justify-center px-12 py-5 ${isOwner ? 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700' : 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700'} text-white rounded-full font-black text-[11px] uppercase tracking-[0.25em] shadow-xl hover:scale-105 transition-all active:scale-95 group`}>
+                            <button className={`inline-flex items-center justify-center px-12 py-5 ${isOwner ? 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700' : 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700'} text-white rounded-full font-black text-[11px] uppercase tracking-[0.25em] shadow-xl hover:scale-105 transition-all active:scale-95 group`}>
                                 <Save className="w-4 h-4 mr-2.5 group-hover:rotate-12 transition-transform" />
                                 Perbarui Informasi &rarr;
                             </button>

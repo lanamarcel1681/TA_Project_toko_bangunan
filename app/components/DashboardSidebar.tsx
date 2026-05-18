@@ -61,11 +61,10 @@ export default function DashboardSidebar({ userName, role, isExpanded, setIsExpa
         <>
             {/* Logo */}
             <div className={`px-6 py-5 border-b border-gray-50 flex items-center ${!isMobile && !isExpanded ? 'justify-center px-0' : ''}`}>
-                <Link href="/" className="text-orange-600 font-bold text-xl tracking-wide flex items-center justify-center" onClick={isMobile ? onMobileClose : undefined}>
-                    {isMobile || isExpanded ? (
+                <Link href="/" className="text-orange-600 font-bold text-xl tracking-wide flex items-center justify-center gap-2" onClick={isMobile ? onMobileClose : undefined}>
+                    <img src="/Logo.png" alt="Logo" className="w-8 h-8" />
+                    {(isMobile || isExpanded) && (
                         <>Bangunan<span className="text-gray-800">Jaya</span></>
-                    ) : (
-                        <span className="text-2xl">B<span className="text-gray-800">J</span></span>
                     )}
                 </Link>
             </div>

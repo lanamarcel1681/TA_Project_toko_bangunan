@@ -35,11 +35,11 @@ export default function EmployeeListWrapper({ initialEmployees = [] }: { initial
             {showToast && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[200] animate-in slide-in-from-bottom-10 fade-in duration-500">
                     <div className="bg-gray-900/90 backdrop-blur-xl border border-white/10 px-8 py-4 rounded-[24px] shadow-2xl flex items-center gap-4 text-white">
-                        <div className="w-10 h-10 bg-blue-500/20 text-blue-400 rounded-full flex items-center justify-center">
+                        <div className="w-10 h-10 bg-orange-500/20 text-orange-400 rounded-full flex items-center justify-center">
                             <Activity className="w-5 h-5" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-black uppercase tracking-widest text-blue-400 mb-0.5">Selesai</p>
+                            <p className="text-[10px] font-black uppercase tracking-widest text-orange-400 mb-0.5">Selesai</p>
                             <p className="text-sm font-bold text-gray-100">{toastMsg}</p>
                         </div>
                         <button onClick={() => setShowToast(false)} className="ml-4 p-2 hover:bg-white/5 rounded-xl transition-colors">
@@ -98,7 +98,7 @@ export default function EmployeeListWrapper({ initialEmployees = [] }: { initial
                                 </div>
                             </div>
                             <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1.5 rounded-xl border border-gray-100">
-                                <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
+                                <ShieldCheck className="w-3.5 h-3.5 text-orange-600" />
                                 <span className="text-[9px] font-black text-gray-500 uppercase tracking-widest">{k.jabatan?.nama_jabatan || 'Personel'}</span>
                             </div>
                         </div>
@@ -126,7 +126,7 @@ export default function EmployeeListWrapper({ initialEmployees = [] }: { initial
                         <div className="flex items-center gap-3 relative z-10 opacity-0 group-hover/card:opacity-100 translate-y-4 group-hover/card:translate-y-0 transition-all duration-300">
                             <button 
                                 onClick={() => handleEditClick(k)}
-                                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-blue-600 bg-blue-50 hover:bg-blue-600 hover:text-white rounded-full transition-all border border-blue-100 active:scale-95"
+                                className="flex-1 flex items-center justify-center gap-2 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-orange-600 bg-orange-50 hover:bg-orange-600 hover:text-white rounded-full transition-all border border-orange-100 active:scale-95"
                             >
                                 <Edit3 className="w-3.5 h-3.5" /> Edit & Kelola Profil &rarr;
                             </button>

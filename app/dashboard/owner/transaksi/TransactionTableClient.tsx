@@ -113,9 +113,9 @@ export default function TransactionTableClient({ transactions }: { transactions:
                                         <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest border transition-colors ${
                                             tx.type === 'Penjualan' 
                                             ? 'bg-green-50 text-green-700 border-green-100' 
-                                            : 'bg-blue-50 text-blue-700 border-blue-100'
+                                            : 'bg-orange-50 text-orange-700 border-orange-100'
                                         }`}>
-                                            <div className={`w-1 h-1 rounded-full ${tx.type === 'Penjualan' ? 'bg-green-600' : 'bg-blue-600'}`}></div>
+                                            <div className={`w-1 h-1 rounded-full ${tx.type === 'Penjualan' ? 'bg-green-600' : 'bg-orange-600'}`}></div>
                                             {tx.type}
                                         </span>
                                     </td>
@@ -211,7 +211,7 @@ export default function TransactionTableClient({ transactions }: { transactions:
                                 <div className="space-y-2">
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Kanal Otorisasi</p>
                                     <div className={`px-5 py-3 rounded-2xl border flex items-center gap-3 ${
-                                        selectedTx.type === 'Penjualan' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-blue-50 text-blue-700 border-blue-100'
+                                        selectedTx.type === 'Penjualan' ? 'bg-green-50 text-green-700 border-green-100' : 'bg-orange-50 text-orange-700 border-orange-100'
                                     }`}>
                                         <CreditCard className="w-4 h-4" />
                                         <span className="text-sm font-black uppercase tracking-widest">{selectedTx.type}</span>

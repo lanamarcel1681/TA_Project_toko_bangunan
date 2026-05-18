@@ -94,9 +94,9 @@ export default function OwnerPresensiMonitoring() {
             {/* Stat Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 mb-12">
                 <div className="bg-white rounded-[40px] p-8 border border-gray-100 shadow-xl relative overflow-hidden group">
-                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-blue-50 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-orange-50 rounded-full blur-3xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="flex items-center justify-between mb-6 relative z-10">
-                        <div className="w-14 h-14 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100 shadow-sm">
+                        <div className="w-14 h-14 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center border border-orange-100 shadow-sm">
                             <UserCheck className="w-7 h-7" />
                         </div>
                     </div>
@@ -138,7 +138,7 @@ export default function OwnerPresensiMonitoring() {
                 <div className="bg-white rounded-[40px] border border-gray-100 shadow-xl overflow-hidden flex flex-col h-full">
                     <div className="px-10 py-8 border-b border-gray-50 flex items-center justify-between bg-gray-50/30">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-white text-blue-600 rounded-xl flex items-center justify-center border border-gray-100 shadow-sm">
+                            <div className="w-10 h-10 bg-white text-orange-600 rounded-xl flex items-center justify-center border border-gray-100 shadow-sm">
                                 <Clock className="w-5 h-5" />
                             </div>
                             <h4 className="font-black text-gray-900 tracking-tight">Presensi Hari Ini</h4>

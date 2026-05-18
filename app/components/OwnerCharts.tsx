@@ -208,7 +208,7 @@ export default function OwnerCharts({ externalData }: OwnerChartsProps) {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:border-blue-200 transition-colors">
+                <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between hover:border-orange-200 transition-colors">
                     <div>
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Total Pembelian</p>
                         <h3 className="text-2xl font-black text-gray-800">{formatCurrency(totalPembelian)}</h3>
@@ -258,7 +258,7 @@ export default function OwnerCharts({ externalData }: OwnerChartsProps) {
                                 <span className="w-2 h-2 rounded-full bg-orange-500"></span> Penjualan
                             </div>
                             <div className="flex items-center gap-1.5 font-medium text-gray-600">
-                                <span className="w-2 h-2 rounded-full bg-blue-500"></span> Pembelian
+                                <span className="w-2 h-2 rounded-full bg-orange-500"></span> Pembelian
                             </div>
                         </div>
                     </div>
@@ -388,7 +388,7 @@ export default function OwnerCharts({ externalData }: OwnerChartsProps) {
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 lg:col-span-2 overflow-hidden flex flex-col min-h-[400px]">
                     <div className="p-8 border-b border-gray-50 flex justify-between items-center bg-gray-50/30">
                         <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                            <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-xl flex items-center justify-center">
                                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
                                 </svg>
@@ -400,11 +400,11 @@ export default function OwnerCharts({ externalData }: OwnerChartsProps) {
                         </div>
                         <div className="hidden sm:flex gap-4">
                             <div className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-orange-600"></span>
                                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Revenue</span>
                             </div>
                             <div className="flex items-center gap-1.5">
-                                <span className="w-2.5 h-2.5 rounded-full bg-blue-200"></span>
+                                <span className="w-2.5 h-2.5 rounded-full bg-orange-200"></span>
                                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest">Cost</span>
                             </div>
                         </div>

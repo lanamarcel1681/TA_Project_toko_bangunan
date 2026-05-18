@@ -136,15 +136,15 @@ export default function EditEmployeeModal({
 
                 <div className="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] border border-white/20 animate-in fade-in zoom-in duration-300 text-left">
                     <div className="flex items-center justify-between px-10 py-8 border-b border-gray-100 bg-gray-50/50 relative">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-2">
-                                <Activity className="w-4 h-4 text-blue-600" />
-                                <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.25em]">Update Personnel Profile</span>
+                                <Activity className="w-4 h-4 text-orange-600" />
+                                <span className="text-[10px] font-black text-orange-600 uppercase tracking-[0.25em]">Update Personnel Profile</span>
                             </div>
                             <h3 className="text-2xl font-black text-gray-900 tracking-tight leading-none">Edit Data Karyawan</h3>
                         </div>
-                        <button onClick={onClose} className="w-12 h-12 bg-white text-gray-400 hover:text-blue-600 hover:border-blue-100 border border-transparent rounded-2xl shadow-sm flex items-center justify-center transition-all active:scale-90 relative z-10">
+                        <button onClick={onClose} className="w-12 h-12 bg-white text-gray-400 hover:text-orange-600 hover:border-orange-100 border border-transparent rounded-2xl shadow-sm flex items-center justify-center transition-all active:scale-90 relative z-10">
                             <X className="w-6 h-6" />
                         </button>
                     </div>
@@ -160,7 +160,7 @@ export default function EditEmployeeModal({
                                         value={formData.nama_pegawai} 
                                         onChange={(e) => setFormData({...formData, nama_pegawai: e.target.value})} 
                                         disabled={formData.status_pegawai === 'Non-aktif'}
-                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
+                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
                                     />
                                 </div>
 
@@ -171,7 +171,7 @@ export default function EditEmployeeModal({
                                         value={formData.id_jabatan} 
                                         onChange={(e) => setFormData({...formData, id_jabatan: e.target.value})} 
                                         disabled={formData.status_pegawai === 'Non-aktif'}
-                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner appearance-none cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
                                         <option value="" disabled>Pilih Posisi</option>
                                         {jabatans.map((j: any) => (
@@ -182,7 +182,7 @@ export default function EditEmployeeModal({
 
                                 <div className="space-y-2">
                                     <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Activity className="w-3 h-3" /> Status</label>
-                                    <select disabled value={formData.status_pegawai} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all shadow-inner appearance-none cursor-not-allowed opacity-70">
+                                    <select disabled value={formData.status_pegawai} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 transition-all shadow-inner appearance-none cursor-not-allowed opacity-70">
                                         <option value="Aktif">Aktif</option>
                                         <option value="Non-aktif">Non-aktif</option>
                                     </select>
@@ -197,7 +197,7 @@ export default function EditEmployeeModal({
                                         value={formData.tanggal_lahir} 
                                         onChange={(e) => setFormData({...formData, tanggal_lahir: e.target.value})} 
                                         disabled={formData.status_pegawai === 'Non-aktif'}
-                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
+                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed" 
                                     />
                                 </div>
 
@@ -209,7 +209,7 @@ export default function EditEmployeeModal({
                                         value={formData.email_pegawai} 
                                         onChange={(e) => setFormData({...formData, email_pegawai: e.target.value})} 
                                         disabled={formData.status_pegawai === 'Non-aktif'}
-                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
+                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
                                     />
                                 </div>
 
@@ -221,7 +221,7 @@ export default function EditEmployeeModal({
                                         value={formData.nomor_telepon} 
                                         onChange={(e) => setFormData({...formData, nomor_telepon: e.target.value})} 
                                         disabled={formData.status_pegawai === 'Non-aktif'}
-                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
+                                        className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner disabled:opacity-50 disabled:cursor-not-allowed" 
                                     />
                                 </div>
                             </div>
@@ -242,7 +242,7 @@ export default function EditEmployeeModal({
                                 type="submit" 
                                 form="editEmployeeForm" 
                                 disabled={isSubmitting || formData.status_pegawai === 'Non-aktif'} 
-                                className="px-10 py-4 bg-blue-600 rounded-full text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 hover:bg-blue-700 active:scale-95 disabled:opacity-50 disabled:bg-gray-400 disabled:shadow-none flex items-center justify-center gap-3"
+                                className="px-10 py-4 bg-orange-600 rounded-full text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-xl shadow-orange-600/20 hover:bg-orange-700 active:scale-95 disabled:opacity-50 disabled:bg-gray-400 disabled:shadow-none flex items-center justify-center gap-3"
                                 title={formData.status_pegawai === 'Non-aktif' ? 'Aktifkan kembali karyawan untuk dapat mengupdate data.' : ''}
                             >
                                 <Save className="w-4 h-4" /> {isSubmitting ? 'Menyimpan...' : 'Update Data'}

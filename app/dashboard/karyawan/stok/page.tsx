@@ -161,7 +161,7 @@ export default function StockOpnameKaryawanPage() {
             {showToast && (
                 <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
                     <div className={`backdrop-blur-xl border border-white/10 px-8 py-5 rounded-[28px] shadow-2xl flex items-center gap-5 text-white ${toastType === 'success' ? 'bg-gray-900/90' : 'bg-red-900/90'}`}>
-                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${toastType === 'success' ? 'bg-blue-500/20 text-blue-400' : 'bg-red-500/20 text-red-400'}`}>
+                        <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg ${toastType === 'success' ? 'bg-orange-500/20 text-orange-400' : 'bg-red-500/20 text-red-400'}`}>
                             {toastType === 'success' ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
                         </div>
                         <div>
@@ -184,11 +184,11 @@ export default function StockOpnameKaryawanPage() {
                 </div>
                 <div className="flex gap-4 w-full md:w-auto">
                     <div className="relative group flex-1 md:flex-none">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors" />
                         <input
                             type="text"
                             placeholder="Cari Barang..."
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-full md:w-64 font-bold text-sm text-gray-800 transition-all shadow-sm"
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-full md:w-64 font-bold text-sm text-gray-800 transition-all shadow-sm"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -198,7 +198,7 @@ export default function StockOpnameKaryawanPage() {
                         disabled={items.length === 0 || isSubmitting || submitted}
                         className={`px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] transition-all outline-none whitespace-nowrap shadow-lg ${items.length === 0 || isSubmitting || submitted
                             ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
-                            : 'bg-blue-600 hover:bg-blue-700 text-white shadow-blue-600/20 active:scale-95'
+                            : 'bg-orange-600 hover:bg-orange-700 text-white shadow-orange-600/20 active:scale-95'
                             }`}
                     >
                         {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
@@ -224,7 +224,7 @@ export default function StockOpnameKaryawanPage() {
                                 <tr>
                                     <td colSpan={5} className="px-8 py-20 text-center font-bold text-gray-400">
                                         <div className="flex items-center justify-center gap-2">
-                                            <Loader2 className="w-6 h-6 animate-spin text-blue-500" /> Memuat katalog barang...
+                                            <Loader2 className="w-6 h-6 animate-spin text-orange-500" /> Memuat katalog barang...
                                         </div>
                                     </td>
                                 </tr>
@@ -259,13 +259,13 @@ export default function StockOpnameKaryawanPage() {
                                     <tr key={item.id_barang} className="hover:bg-gray-50/50 transition-all group">
                                         <td className="px-8 py-6">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-2 h-2 rounded-full bg-blue-500 shadow-sm shadow-blue-500/40"></div>
+                                                <div className="w-2 h-2 rounded-full bg-orange-500 shadow-sm shadow-orange-500/40"></div>
                                                 <span className="text-sm font-black text-gray-400 font-mono tracking-tighter">PRD-{String(item.id_barang).padStart(3, '0')}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-6 text-left">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                                                <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-sm">
                                                     <Package className="w-6 h-6" />
                                                 </div>
                                                 <div>
@@ -287,7 +287,7 @@ export default function StockOpnameKaryawanPage() {
                                                     value={item.stok_fisik}
                                                     onChange={(e) => handlePhysicalStockChange(item.id_barang, e.target.value)}
                                                     onKeyDown={(e) => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }}
-                                                    className="w-24 text-center pl-4 pr-10 py-2.5 bg-white border-2 border-gray-100 rounded-2xl focus:border-blue-500 outline-none font-black text-gray-800 transition-all shadow-sm"
+                                                    className="w-24 text-center pl-4 pr-10 py-2.5 bg-white border-2 border-gray-100 rounded-2xl focus:border-orange-500 outline-none font-black text-gray-800 transition-all shadow-sm"
                                                 />
                                             </div>
                                         </td>
@@ -298,7 +298,7 @@ export default function StockOpnameKaryawanPage() {
                                                     placeholder="Catatan temuan..."
                                                     value={item.keterangan}
                                                     onChange={(e) => handleKeteranganChange(item.id_barang, e.target.value)}
-                                                    className="w-full px-5 py-2.5 bg-white border border-gray-200 rounded-2xl text-sm focus:border-blue-500 outline-none font-medium text-gray-700 transition-all placeholder:text-gray-300 shadow-sm"
+                                                    className="w-full px-5 py-2.5 bg-white border border-gray-200 rounded-2xl text-sm focus:border-orange-500 outline-none font-medium text-gray-700 transition-all placeholder:text-gray-300 shadow-sm"
                                                 />
                                             </div>
                                         </td>
@@ -308,14 +308,14 @@ export default function StockOpnameKaryawanPage() {
                         </tbody>
                     </table>
                 </div>
-                <div className="p-8 bg-blue-50/50 border-t border-blue-100/50 flex flex-col md:flex-row gap-6 items-center justify-between">
+                <div className="p-8 bg-orange-50/50 border-t border-orange-100/50 flex flex-col md:flex-row gap-6 items-center justify-between">
                     <div className="flex gap-4 items-center">
-                        <div className="w-12 h-12 bg-white text-blue-600 rounded-2xl border border-blue-100 shadow-sm flex items-center justify-center">
+                        <div className="w-12 h-12 bg-white text-orange-600 rounded-2xl border border-orange-100 shadow-sm flex items-center justify-center">
                             <ClipboardList className="w-6 h-6" />
                         </div>
                         <div className="text-left">
-                            <p className="text-[11px] font-black text-blue-700 uppercase tracking-widest mb-0.5 leading-none">Peringatan Audit</p>
-                            <p className="text-xs font-bold text-blue-900/60 leading-none">Pastikan data fisik telah diperiksa secara manual sebelum sinkronisasi data.</p>
+                            <p className="text-[11px] font-black text-orange-700 uppercase tracking-widest mb-0.5 leading-none">Peringatan Audit</p>
+                            <p className="text-xs font-bold text-orange-900/60 leading-none">Pastikan data fisik telah diperiksa secara manual sebelum sinkronisasi data.</p>
                         </div>
                     </div>
                 </div>
@@ -343,7 +343,7 @@ export default function StockOpnameKaryawanPage() {
                                 {isLoadingHistory ? (
                                     <tr>
                                         <td colSpan={4} className="px-10 py-10 text-center font-bold text-gray-400">
-                                            <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-blue-500" />
+                                            <Loader2 className="w-5 h-5 animate-spin mx-auto mb-2 text-orange-500" />
                                             Memuat riwayat...
                                         </td>
                                     </tr>
@@ -378,7 +378,7 @@ export default function StockOpnameKaryawanPage() {
                                         <td className="px-10 py-6 text-right pr-12">
                                             <button
                                                 onClick={() => setSelectedHistory(history)}
-                                                className="px-6 py-2 bg-gray-50 text-gray-400 hover:text-blue-600 border border-gray-100 rounded-full text-[9px] font-black uppercase tracking-widest transition-all"
+                                                className="px-6 py-2 bg-gray-50 text-gray-400 hover:text-orange-600 border border-gray-100 rounded-full text-[9px] font-black uppercase tracking-widest transition-all"
                                             >
                                                 Lihat Detail
                                             </button>

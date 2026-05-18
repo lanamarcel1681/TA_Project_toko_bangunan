@@ -46,13 +46,13 @@ export default async function KaryawanPage() {
             {/* Metric Cards Portfolio */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 <div className="bg-white rounded-[32px] p-8 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 -mr-12 -mt-12 rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 -mr-12 -mt-12 rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="flex items-center gap-3 mb-4">
-                        <Users className="w-5 h-5 text-blue-600" />
+                        <Users className="w-5 h-5 text-orange-600" />
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Total Karyawan</p>
                     </div>
                     <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{totalKaryawan} <span className="text-sm font-bold text-gray-400">Team Members</span></h3>
-                    <div className="w-10 h-1 bg-blue-600 rounded-full"></div>
+                    <div className="w-10 h-1 bg-orange-600 rounded-full"></div>
                 </div>
 
                 <div className="bg-white rounded-[32px] p-8 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">

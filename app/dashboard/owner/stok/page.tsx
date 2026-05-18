@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import {
     PackageSearch, AlertTriangle, CheckCircle2, Clock, Search, Filter,
     ArrowUpRight, ArrowDownRight, MoreVertical, Check, X,
-    Layers, Inbox, History, Download, TrendingDown, ArrowRight, Save, Trash2, Package, Plus, LayoutGrid, Settings, Loader2, AlertCircle, RefreshCw, Eye
+    Layers, Inbox, TrendingDown, ArrowRight, Save, Trash2, Package, Plus, LayoutGrid, Loader2, AlertCircle, RefreshCw, Eye
 } from 'lucide-react';
 
 interface Barang {
@@ -194,17 +194,9 @@ export default function StokOwnerPage() {
                     </div>
                 </div>
                 <div className="flex gap-3">
-                    <button className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-500 rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-gray-200/20 border border-gray-100 hover:bg-gray-50 transition-all active:scale-95 group">
-                        <Download className="w-4 h-4 mr-2 group-hover:-translate-y-0.5 transition-transform" />
-                        Export CSV
-                    </button>
                     <button onClick={fetchData} className="inline-flex items-center justify-center px-8 py-4 bg-white text-gray-500 rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-gray-200/20 border border-gray-100 hover:bg-gray-50 transition-all active:scale-95 group">
                         <RefreshCw className={`w-4 h-4 mr-2 ${isLoading || isLoadingAudit ? 'animate-spin' : 'group-hover:rotate-180 transition-transform duration-500'}`} />
                         Refresh Data
-                    </button>
-                    <button className="inline-flex items-center justify-center px-8 py-4 bg-orange-600 text-white rounded-full font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-95 group">
-                        <History className="w-4 h-4 mr-2 group-hover:rotate-12 transition-transform" />
-                        Mutasi Stok &rarr;
                     </button>
                 </div>
             </div>
@@ -212,13 +204,13 @@ export default function StokOwnerPage() {
             {/* KPI Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
                 <div className="bg-white rounded-[32px] p-8 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-24 h-24 bg-blue-50 -mr-12 -mt-12 rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-orange-50 -mr-12 -mt-12 rounded-full blur-2xl opacity-50 group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="flex items-center gap-3 mb-4">
-                        <Layers className="w-5 h-5 text-blue-600" />
+                        <Layers className="w-5 h-5 text-orange-600" />
                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Total SKU</p>
                     </div>
                     <h3 className="text-3xl font-black text-gray-900 tracking-tight mb-2">{stats.total} <span className="text-sm font-bold text-gray-400 uppercase tracking-widest ml-1">Products</span></h3>
-                    <div className="w-10 h-1 bg-blue-600 rounded-full"></div>
+                    <div className="w-10 h-1 bg-orange-600 rounded-full"></div>
                 </div>
 
                 <div className="bg-white rounded-[32px] p-8 border border-gray-100 shadow-xl shadow-gray-200/40 relative overflow-hidden group">
@@ -440,19 +432,18 @@ export default function StokOwnerPage() {
                                     <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em]">Kategori</th>
                                     <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right">Volume Persediaan</th>
                                     <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-center">Status Stok</th>
-                                    <th className="px-10 py-6 text-[10px] font-black text-gray-400 uppercase tracking-[0.2em] text-right pr-12">Action</th>
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-50 border-t border-gray-50/50">
                                 {isLoading ? (
                                     <tr>
-                                        <td colSpan={5} className="px-10 py-20 text-center text-gray-400 font-bold">
+                                        <td colSpan={4} className="px-10 py-20 text-center text-gray-400 font-bold">
                                             <Loader2 className="w-8 h-8 animate-spin mx-auto mb-2 text-orange-500" /> Memuat data...
                                         </td>
                                     </tr>
                                 ) : filteredItems.length === 0 ? (
                                     <tr>
-                                        <td colSpan={5} className="px-10 py-12 text-center text-gray-400">Tidak ada produk ditemukan.</td>
+                                        <td colSpan={4} className="px-10 py-12 text-center text-gray-400">Tidak ada produk ditemukan.</td>
                                     </tr>
                                 ) : filteredItems.map((item) => (
                                     <tr key={item.id_barang} className="hover:bg-orange-50/30 transition-all duration-300 group/row">
@@ -493,16 +484,6 @@ export default function StokOwnerPage() {
                                                 {getStatus(item.stok_barang)}
                                             </span>
                                         </td>
-                                        <td className="px-10 py-8 text-right pr-12">
-                                            <div className="flex items-center justify-end gap-2 translate-x-4 opacity-0 group-hover/row:translate-x-0 group-hover/row:opacity-100 transition-all duration-300">
-                                                <button className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:border-orange-200 active:scale-90 transition-all" title="Detail Stok">
-                                                    <Eye className="w-4 h-4" />
-                                                </button>
-                                                <button className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-200 active:scale-90 transition-all" title="Ubah Parameter">
-                                                    <Settings className="w-4 h-4" />
-                                                </button>
-                                            </div>
-                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -530,8 +511,8 @@ export default function StokOwnerPage() {
                                     <p className="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-2">Tanggal Pengiriman</p>
                                     <p className="text-sm font-black text-gray-900">{new Date(selectedOpname.tanggal_opname).toLocaleDateString()}</p>
                                 </div>
-                                <div className="bg-blue-50/50 p-6 rounded-3xl border border-blue-100">
-                                    <p className="text-[9px] font-black text-blue-400 uppercase tracking-widest mb-2">Catatan Karyawan</p>
+                                <div className="bg-orange-50/50 p-6 rounded-3xl border border-orange-100">
+                                    <p className="text-[9px] font-black text-orange-400 uppercase tracking-widest mb-2">Catatan Karyawan</p>
                                     <p className="text-sm font-bold text-gray-600 line-clamp-1">{selectedOpname.catatan_pengiriman || "Tidak ada catatan."}</p>
                                 </div>
                             </div>

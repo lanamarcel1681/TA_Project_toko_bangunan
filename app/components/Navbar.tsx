@@ -90,9 +90,7 @@ export default function Navbar() {
                     <div className="flex justify-between h-16">
                         <div className="flex items-center">
                             <Link href="/" className="flex-shrink-0 flex items-center">
-                                <svg className="h-8 w-8 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
+                                <img src="/Logo.png" alt="Logo TB Lumbung Jaya" className="h-12 w-auto" />
                                 <span className="ml-2 text-xl font-bold text-gray-900">
                                     TB. Lumbung <span className="text-orange-600">Jaya</span>
                                 </span>
@@ -264,11 +262,10 @@ export default function Navbar() {
                                     key={link.href}
                                     href={link.href}
                                     onClick={() => setIsMobileMenuOpen(false)}
-                                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                                        pathname === link.href
+                                    className={`flex items-center px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${pathname === link.href
                                             ? 'bg-orange-50 text-orange-600'
                                             : 'text-gray-600 hover:bg-gray-50 hover:text-orange-600'
-                                    }`}
+                                        }`}
                                 >
                                     {link.label}
                                 </Link>

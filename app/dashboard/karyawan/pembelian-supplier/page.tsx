@@ -400,14 +400,14 @@ export default function TransaksiPembelianSupplierPage() {
                 <div className="flex items-center gap-3">
                     <button
                         onClick={fetchData}
-                        className="w-11 h-11 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-200 transition-all shadow-sm active:scale-95"
+                        className="w-11 h-11 bg-white border border-gray-200 rounded-full flex items-center justify-center text-gray-400 hover:text-orange-600 hover:border-orange-200 transition-all shadow-sm active:scale-95"
                         title="Refresh Data"
                     >
                         <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                     </button>
                     <button
                         onClick={() => { resetForm(); setIsModalOpen(true); }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.2em] shadow-lg shadow-orange-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
                     >
                         <FilePlus2 className="w-4 h-4" /> Buat PO Baru &rarr;
                     </button>
@@ -418,13 +418,13 @@ export default function TransaksiPembelianSupplierPage() {
             <div className="flex gap-4 mb-8">
                 <button
                     onClick={() => setActiveTab('history')}
-                    className={`px-8 py-4 rounded-[20px] font-black text-[10px] uppercase tracking-widest flex items-center gap-3 transition-all ${activeTab === 'history' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-gray-400 hover:text-gray-600 border border-gray-100'}`}
+                    className={`px-8 py-4 rounded-[20px] font-black text-[10px] uppercase tracking-widest flex items-center gap-3 transition-all ${activeTab === 'history' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'bg-white text-gray-400 hover:text-gray-600 border border-gray-100'}`}
                 >
                     <List className="w-4 h-4" /> Riwayat Transaksi
                 </button>
                 <button
                     onClick={() => setActiveTab('suggestion')}
-                    className={`px-8 py-4 rounded-[20px] font-black text-[10px] uppercase tracking-widest flex items-center gap-3 transition-all ${activeTab === 'suggestion' ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/20' : 'bg-white text-gray-400 hover:text-gray-600 border border-gray-100'}`}
+                    className={`px-8 py-4 rounded-[20px] font-black text-[10px] uppercase tracking-widest flex items-center gap-3 transition-all ${activeTab === 'suggestion' ? 'bg-orange-600 text-white shadow-lg shadow-orange-600/20' : 'bg-white text-gray-400 hover:text-gray-600 border border-gray-100'}`}
                 >
                     <AlertCircle className="w-4 h-4" /> Rekomendasi Pengadaan
                     {lowStockBarang.length > 0 && <span className="bg-red-500 text-white w-5 h-5 rounded-full flex items-center justify-center text-[8px]">{lowStockBarang.length}</span>}
@@ -461,12 +461,12 @@ export default function TransaksiPembelianSupplierPage() {
                                     transaksiList.map((trx) => (
                                         <tr key={trx.id_transaksipembelian} className="hover:bg-gray-50/50 transition-all group">
                                             <td className="px-8 py-6">
-                                                <div className="font-black text-blue-600 text-sm mb-1">PO-{String(trx.id_transaksipembelian).padStart(5, '0')}</div>
+                                                <div className="font-black text-orange-600 text-sm mb-1">PO-{String(trx.id_transaksipembelian).padStart(5, '0')}</div>
                                                 <div className="text-[10px] font-black text-gray-400 uppercase tracking-tight">{formatDate(trx.tanggal_pembelian)}</div>
                                             </td>
                                             <td className="px-8 py-6 text-left">
                                                 <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shrink-0">
+                                                    <div className="w-10 h-10 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100 shrink-0">
                                                         <Building2 className="w-5 h-5" />
                                                     </div>
                                                     <div>
@@ -479,7 +479,7 @@ export default function TransaksiPembelianSupplierPage() {
                                                 <div className="font-black text-gray-900 text-lg tracking-tighter">{formatRp(trx.total_biaya)}</div>
                                             </td>
                                             <td className="px-8 py-6">
-                                                <span className="inline-flex items-center px-3 py-1 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black border border-blue-100 uppercase tracking-widest whitespace-nowrap">
+                                                <span className="inline-flex items-center px-3 py-1 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-black border border-orange-100 uppercase tracking-widest whitespace-nowrap">
                                                     {trx.detail.length} item
                                                 </span>
                                             </td>
@@ -503,7 +503,7 @@ export default function TransaksiPembelianSupplierPage() {
                                                     </a>
                                                     <button
                                                         onClick={() => { setSelectedTransaksi(trx); setIsDetailOpen(true); }}
-                                                        className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 hover:border-blue-100 transition-all shadow-sm"
+                                                        className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 hover:border-orange-100 transition-all shadow-sm"
                                                         title="Detail"
                                                     >
                                                         <FileText className="w-4 h-4" />
@@ -613,7 +613,7 @@ export default function TransaksiPembelianSupplierPage() {
                         {/* Modal Header */}
                         <div className="px-10 py-8 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-4">
-                                <div className="p-3.5 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                                <div className="p-3.5 bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-600/20">
                                     {editMode ? <Pencil className="w-6 h-6" /> : <Plus className="w-6 h-6" />}
                                 </div>
                                 <div>
@@ -635,7 +635,7 @@ export default function TransaksiPembelianSupplierPage() {
                                 {/* Supplier Section */}
                                 <div className="space-y-8">
                                     <div className="flex items-center gap-3">
-                                        <Building2 className="w-4 h-4 text-blue-600" />
+                                        <Building2 className="w-4 h-4 text-orange-600" />
                                         <span className="text-[11px] font-black text-gray-400 uppercase tracking-widest">Informasi Supplier Utama</span>
                                         <div className="h-px bg-gray-100 flex-1"></div>
                                     </div>
@@ -647,10 +647,10 @@ export default function TransaksiPembelianSupplierPage() {
                                                 Nama Perusahaan
                                             </label>
                                             <div className="relative group">
-                                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none transition-colors group-focus-within:text-blue-500" />
+                                                <Building2 className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none transition-colors group-focus-within:text-orange-500" />
                                                 <select
                                                     required
-                                                    className="w-full pl-12 pr-10 py-4 bg-gray-50 border-2 border-transparent hover:border-gray-200 focus:bg-white rounded-[20px] focus:border-blue-500 outline-none transition-all font-bold text-sm text-gray-800 appearance-none cursor-pointer shadow-inner"
+                                                    className="w-full pl-12 pr-10 py-4 bg-gray-50 border-2 border-transparent hover:border-gray-200 focus:bg-white rounded-[20px] focus:border-orange-500 outline-none transition-all font-bold text-sm text-gray-800 appearance-none cursor-pointer shadow-inner"
                                                     value={selectedSupplierId ?? ''}
                                                     onChange={handleSupplierChange}
                                                 >
@@ -669,10 +669,10 @@ export default function TransaksiPembelianSupplierPage() {
                                         <div className="space-y-3">
                                             <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">Tanggal Transaksi</label>
                                             <div className="relative group">
-                                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none group-focus-within:text-blue-500" />
+                                                <Calendar className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none group-focus-within:text-orange-500" />
                                                 <input
                                                     type="date" required
-                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent hover:border-gray-200 focus:bg-white rounded-[20px] focus:border-blue-500 outline-none transition-all font-bold text-sm text-gray-800 shadow-inner"
+                                                    className="w-full pl-12 pr-4 py-4 bg-gray-50 border-2 border-transparent hover:border-gray-200 focus:bg-white rounded-[20px] focus:border-orange-500 outline-none transition-all font-bold text-sm text-gray-800 shadow-inner"
                                                     value={orderDate}
                                                     onChange={e => setOrderDate(e.target.value)}
                                                 />
@@ -682,7 +682,7 @@ export default function TransaksiPembelianSupplierPage() {
                                         {/* Nama Supplier (auto-fill, disabled) */}
                                         <div className="space-y-3 opacity-80">
                                             <label className="flex items-center gap-2 text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                                                Nama Supplier <span className="text-[8px] font-bold text-blue-500 italic">(Otomatis)</span>
+                                                Nama Supplier <span className="text-[8px] font-bold text-orange-500 italic">(Otomatis)</span>
                                             </label>
                                             <div className="relative">
                                                 <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 w-4 h-4 pointer-events-none" />
@@ -699,7 +699,7 @@ export default function TransaksiPembelianSupplierPage() {
                                         {/* Nomor Telepon (auto-fill, disabled) */}
                                         <div className="space-y-3 opacity-80">
                                             <label className="flex items-center gap-2 text-[11px] font-black text-gray-400 uppercase tracking-widest ml-1">
-                                                Nomor Telepon <span className="text-[8px] font-bold text-blue-500 italic">(Otomatis)</span>
+                                                Nomor Telepon <span className="text-[8px] font-bold text-orange-500 italic">(Otomatis)</span>
                                             </label>
                                             <div className="relative">
                                                 <Phone className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-300 w-4 h-4 pointer-events-none" />
@@ -717,13 +717,13 @@ export default function TransaksiPembelianSupplierPage() {
                                 {/* Items Section */}
                                 <div className="space-y-8">
                                     <div className="flex items-center gap-4">
-                                        <Package className="w-5 h-5 text-blue-600" />
+                                        <Package className="w-5 h-5 text-orange-600" />
                                         <h4 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.25em]">Detail Items Pengadaan</h4>
                                         <div className="h-px bg-gray-100 flex-1"></div>
                                     </div>
                                     <div className="space-y-6">
                                         {items.map((item, index) => (
-                                            <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end bg-gray-50/50 p-8 rounded-[36px] border border-gray-100 group transition-all hover:bg-white hover:shadow-2xl hover:border-blue-100">
+                                            <div key={item.id} className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end bg-gray-50/50 p-8 rounded-[36px] border border-gray-100 group transition-all hover:bg-white hover:shadow-2xl hover:border-orange-100">
                                                 <div className="md:col-span-1 text-center">
                                                     <span className="w-10 h-10 bg-white border border-gray-100 text-gray-400 rounded-full flex items-center justify-center font-black text-xs shadow-sm">#{index + 1}</span>
                                                 </div>
@@ -733,7 +733,7 @@ export default function TransaksiPembelianSupplierPage() {
                                                         <select
                                                             required
                                                             disabled={!selectedSupplierId}
-                                                            className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold outline-none shadow-sm appearance-none cursor-pointer transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-blue-500 hover:border-blue-200'}`}
+                                                            className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold outline-none shadow-sm appearance-none cursor-pointer transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-orange-500 hover:border-orange-200'}`}
                                                             value={item.id_barang ?? ''}
                                                             onChange={e => handleBarangChange(item.id, parseInt(e.target.value))}
                                                         >
@@ -752,7 +752,7 @@ export default function TransaksiPembelianSupplierPage() {
                                                     <input
                                                         type="number" required min="1"
                                                         disabled={!selectedSupplierId}
-                                                        className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold text-center outline-none transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-blue-500'}`}
+                                                        className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold text-center outline-none transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-orange-500'}`}
                                                         value={item.jumlah}
                                                         onChange={e => updateItem(item.id, 'jumlah', parseInt(e.target.value) || 1)}
                                                     />
@@ -762,7 +762,7 @@ export default function TransaksiPembelianSupplierPage() {
                                                     <input
                                                         type="number" required min="0" step="1000"
                                                         disabled={!selectedSupplierId}
-                                                        className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold text-right outline-none transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-blue-500'}`}
+                                                        className={`w-full px-6 py-4 border border-gray-100 rounded-2xl text-sm font-bold text-right outline-none transition-all ${!selectedSupplierId ? 'bg-gray-100 text-gray-400 cursor-not-allowed' : 'bg-white text-gray-900 focus:border-orange-500'}`}
                                                         value={item.harga_satuan}
                                                         onChange={e => updateItem(item.id, 'harga_satuan', Math.max(0, parseFloat(e.target.value) || 0))}
                                                     />
@@ -778,7 +778,7 @@ export default function TransaksiPembelianSupplierPage() {
                                             type="button"
                                             onClick={addItem}
                                             disabled={!selectedSupplierId}
-                                            className={`w-full py-6 border-2 border-dashed rounded-[36px] font-black text-[10px] uppercase tracking-[0.25em] transition-all flex items-center justify-center gap-3 active:scale-[0.99] mt-4 ${!selectedSupplierId ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed' : 'border-gray-200 text-gray-400 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50'}`}
+                                            className={`w-full py-6 border-2 border-dashed rounded-[36px] font-black text-[10px] uppercase tracking-[0.25em] transition-all flex items-center justify-center gap-3 active:scale-[0.99] mt-4 ${!selectedSupplierId ? 'bg-gray-50 border-gray-100 text-gray-300 cursor-not-allowed' : 'border-gray-200 text-gray-400 hover:border-orange-300 hover:text-orange-600 hover:bg-orange-50'}`}
                                         >
                                             <Plus className="w-5 h-5" /> Tambah Transaksi Item Baru
                                         </button>
@@ -787,7 +787,7 @@ export default function TransaksiPembelianSupplierPage() {
 
                                 {/* Summary & Actions */}
                                 <div className="pt-10 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8">
-                                    <div className="bg-gray-100 px-10 py-6 rounded-[32px] border border-gray-200 group transition-all hover:bg-white hover:shadow-xl hover:border-blue-200">
+                                    <div className="bg-gray-100 px-10 py-6 rounded-[32px] border border-gray-200 group transition-all hover:bg-white hover:shadow-xl hover:border-orange-200">
                                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1 leading-none">Total Estimasi Pembelian</span>
                                         <span className="text-4xl font-black text-gray-900 tracking-tighter leading-none">{formatRp(calculateTotal())}</span>
                                     </div>
@@ -802,7 +802,7 @@ export default function TransaksiPembelianSupplierPage() {
                                         <button
                                             type="submit"
                                             disabled={submitting || !selectedSupplierId}
-                                            className="flex-[2] md:flex-none px-12 py-5 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-2xl shadow-blue-600/30 hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed group"
+                                            className="flex-[2] md:flex-none px-12 py-5 bg-orange-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-2xl shadow-orange-600/30 hover:bg-orange-700 transition-all active:scale-95 flex items-center justify-center gap-3 disabled:opacity-60 disabled:cursor-not-allowed group"
                                         >
                                             {submitting ? <RefreshCw className="w-4 h-4 animate-spin" /> : (editMode ? <Save className="w-4 h-4 group-hover:rotate-12 transition-transform" /> : <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />)}
                                             <span>{submitting ? 'Memproses...' : (editMode ? 'Simpan Perubahan' : 'Finalisasi Pesanan')}</span>
@@ -822,7 +822,7 @@ export default function TransaksiPembelianSupplierPage() {
                     <div className="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] animate-in fade-in zoom-in duration-300">
                         <div className="px-12 py-10 border-b border-gray-50 bg-gray-50/30 flex items-center justify-between shrink-0">
                             <div className="flex items-center gap-4">
-                                <div className="p-3 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                                <div className="p-3 bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-600/20">
                                     <ShoppingCart className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -836,13 +836,13 @@ export default function TransaksiPembelianSupplierPage() {
                         </div>
                         <div className="overflow-y-auto p-12 space-y-8 flex-1 custom-scrollbar">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-blue-50/50 rounded-3xl p-6 border border-blue-100 relative group/card">
-                                    <p className="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em] mb-3">Tujuan Supplier</p>
+                                <div className="bg-orange-50/50 rounded-3xl p-6 border border-orange-100 relative group/card">
+                                    <p className="text-[9px] font-black text-orange-400 uppercase tracking-[0.2em] mb-3">Tujuan Supplier</p>
                                     <p className="font-black text-gray-900 text-lg leading-tight mb-2">{selectedTransaksi.supplier.nama_perusahaan_supplier}</p>
                                     <div className="flex items-center gap-2 text-gray-500 font-bold text-xs uppercase tracking-tight">
                                         <User className="w-3 h-3" /> {selectedTransaksi.supplier.nama_supplier}
                                     </div>
-                                    <div className="flex items-center justify-between gap-2 mt-4 pt-4 border-t border-blue-100/50">
+                                    <div className="flex items-center justify-between gap-2 mt-4 pt-4 border-t border-orange-100/50">
                                         <div className="flex items-center gap-2 text-gray-500 font-bold text-xs">
                                             <Phone className="w-3 h-3" /> {selectedTransaksi.supplier.nomor_telepon_supplier}
                                         </div>
@@ -875,7 +875,7 @@ export default function TransaksiPembelianSupplierPage() {
                                     {selectedTransaksi.detail.map(d => (
                                         <div key={d.id_detailtransaksipembelian} className="flex items-center justify-between bg-gray-50 rounded-[24px] px-8 py-5 border border-transparent hover:border-gray-200 transition-all group">
                                             <div className="flex items-center gap-4">
-                                                <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-blue-500 group-hover:border-blue-100 transition-all shadow-sm">
+                                                <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center text-gray-400 group-hover:text-orange-500 group-hover:border-orange-100 transition-all shadow-sm">
                                                     <Package className="w-5 h-5" />
                                                 </div>
                                                 <div>
@@ -885,14 +885,14 @@ export default function TransaksiPembelianSupplierPage() {
                                                     </p>
                                                 </div>
                                             </div>
-                                            <p className="font-black text-gray-900 group-hover:text-blue-600 transition-colors">{formatRp(d.jumlah_pembelian_barang * d.harga_satuan_barang)}</p>
+                                            <p className="font-black text-gray-900 group-hover:text-orange-600 transition-colors">{formatRp(d.jumlah_pembelian_barang * d.harga_satuan_barang)}</p>
                                         </div>
                                     ))}
                                 </div>
                             </div>
 
                             <div className="pt-8 border-t border-gray-100">
-                                <div className="flex justify-between items-center bg-blue-600 text-white p-8 rounded-[32px] shadow-xl shadow-blue-600/20">
+                                <div className="flex justify-between items-center bg-orange-600 text-white p-8 rounded-[32px] shadow-xl shadow-orange-600/20">
                                     <div>
                                         <p className="text-[10px] font-black uppercase tracking-[0.3em] opacity-70 mb-1">Total Pembayaran PO</p>
                                         <p className="text-4xl font-black tracking-tighter leading-none tracking-tighter">{formatRp(selectedTransaksi.total_biaya)}</p>
@@ -914,7 +914,7 @@ export default function TransaksiPembelianSupplierPage() {
             {showConfirmModal && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
                     <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center text-center animate-in zoom-in-95 duration-300">
-                        <div className="w-20 h-20 bg-blue-50 text-blue-600 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
+                        <div className="w-20 h-20 bg-orange-50 text-orange-600 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform">
                             <ShoppingCart className="w-10 h-10" />
                         </div>
                         <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">{editMode ? 'Simpan Perubahan?' : 'Konfirmasi PO?'}</h3>
@@ -927,7 +927,7 @@ export default function TransaksiPembelianSupplierPage() {
                         <div className="flex flex-col w-full gap-3">
                             <button 
                                 onClick={confirmSubmit}
-                                className="w-full py-4 bg-blue-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-95"
+                                className="w-full py-4 bg-orange-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-95"
                             >
                                 Ya, Eksekusi Sekarang
                             </button>

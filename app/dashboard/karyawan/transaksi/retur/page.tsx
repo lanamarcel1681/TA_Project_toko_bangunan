@@ -133,7 +133,7 @@ export default function ReturPembelianPage() {
                     <input
                         type="text"
                         placeholder="Cari Invoice / Pelanggan..."
-                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-blue-500 outline-none transition-all shadow-sm"
+                        className="w-full pl-11 pr-4 py-3 bg-white border border-gray-100 rounded-2xl text-sm font-medium focus:ring-2 focus:ring-orange-500 outline-none transition-all shadow-sm"
                         value={filterInv}
                         onChange={(e) => setFilterInv(e.target.value)}
                     />
@@ -157,7 +157,7 @@ export default function ReturPembelianPage() {
                             {loading ? (
                                 <tr>
                                     <td colSpan={6} className="py-20 text-center">
-                                        <RefreshCcw className="w-8 h-8 text-blue-500 animate-spin mx-auto mb-4" />
+                                        <RefreshCcw className="w-8 h-8 text-orange-500 animate-spin mx-auto mb-4" />
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Memuat Data...</p>
                                     </td>
                                 </tr>
@@ -170,7 +170,7 @@ export default function ReturPembelianPage() {
                                 </tr>
                             ) : (
                                 filteredItems.map((item, idx) => (
-                                    <tr key={idx} className="hover:bg-blue-50/30 transition-all group">
+                                    <tr key={idx} className="hover:bg-orange-50/30 transition-all group">
                                         <td className="px-10 py-8">
                                             <div className="flex justify-center">
                                                 {item.photo ? (
@@ -191,7 +191,7 @@ export default function ReturPembelianPage() {
                                             <span className={`text-[9px] font-black px-2 py-0.5 rounded-full uppercase tracking-widest mb-2 inline-block ${item.type === 'RETUR' ? 'bg-indigo-100 text-indigo-600' : 'bg-red-100 text-red-600'}`}>
                                                 {item.type}
                                             </span>
-                                            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">ID INV</p>
+                                            <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest mb-1">ID INV</p>
                                             <p className="font-black text-gray-800 text-base tracking-tight leading-none">{item.inv}</p>
                                         </td>
                                         <td className="px-8 py-8">
@@ -207,9 +207,9 @@ export default function ReturPembelianPage() {
                                                     <MessageCircle className="w-3 h-3" />
                                                 </a>
                                             </div>
-                                            <div className="flex items-center gap-2 bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100/50 w-fit">
-                                                <CreditCard className="w-3.5 h-3.5 text-blue-600" />
-                                                <p className="text-[10px] font-black text-blue-600 uppercase tracking-tighter">
+                                            <div className="flex items-center gap-2 bg-orange-50/50 px-3 py-1.5 rounded-lg border border-orange-100/50 w-fit">
+                                                <CreditCard className="w-3.5 h-3.5 text-orange-600" />
+                                                <p className="text-[10px] font-black text-orange-600 uppercase tracking-tighter">
                                                     {item.bankInfo}
                                                 </p>
                                             </div>
@@ -248,7 +248,7 @@ export default function ReturPembelianPage() {
                                                     <button
                                                         onClick={() => handleAction(item.type, item.id, 'REFUND', item.amount)}
                                                         disabled={uploading}
-                                                        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 font-black text-[9px] uppercase tracking-[0.15em] transition-all shadow-lg shadow-blue-600/20 active:scale-95 disabled:opacity-50"
+                                                        className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 font-black text-[9px] uppercase tracking-[0.15em] transition-all shadow-lg shadow-orange-600/20 active:scale-95 disabled:opacity-50"
                                                     >
                                                         <RefreshCcw className={`w-3.5 h-3.5 ${uploading ? 'animate-spin' : ''}`} />
                                                         {uploading ? 'UPLOADING...' : 'Input Bukti TF &rarr;'}
@@ -276,21 +276,21 @@ export default function ReturPembelianPage() {
 
                 <div className="p-10 bg-gray-50/50 border-t border-gray-100">
                     <div className="flex flex-col md:flex-row bg-white rounded-[32px] p-8 border border-gray-100 shadow-sm items-center gap-8 relative overflow-hidden group/notice">
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50/30 -mr-16 -mt-16 rounded-full blur-2xl group-hover/notice:scale-110 transition-transform"></div>
-                        <div className="w-16 h-16 bg-blue-600 rounded-2xl text-white flex items-center justify-center shadow-xl shadow-blue-600/20 shrink-0">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50/30 -mr-16 -mt-16 rounded-full blur-2xl group-hover/notice:scale-110 transition-transform"></div>
+                        <div className="w-16 h-16 bg-orange-600 rounded-2xl text-white flex items-center justify-center shadow-xl shadow-orange-600/20 shrink-0">
                             <ClipboardList className="w-8 h-8" />
                         </div>
                         <div className="flex-1 text-left">
                             <h4 className="font-black text-gray-900 uppercase tracking-widest text-[11px] mb-3 flex items-center gap-2">
-                                <ShieldCheck className="w-4 h-4 text-blue-600" /> Protokol Operasional Refund
+                                <ShieldCheck className="w-4 h-4 text-orange-600" /> Protokol Operasional Refund
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div className="flex items-start gap-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
                                     <p className="text-sm text-gray-500 font-medium leading-relaxed">Untuk **Retur**: Pastikan barang fisik sudah diterima/diverifikasi sebelum menginput bukti transfer.</p>
                                 </div>
                                 <div className="flex items-start gap-3">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0"></div>
+                                    <div className="w-1.5 h-1.5 rounded-full bg-orange-500 mt-1.5 shrink-0"></div>
                                     <p className="text-sm text-gray-500 font-medium leading-relaxed">Untuk **Batal**: Dana harus segera dikembalikan agar pelanggan merasa aman berbelanja di TB. Lumbung Jaya.</p>
                                 </div>
                             </div>
@@ -302,7 +302,7 @@ export default function ReturPembelianPage() {
             {showConfirmModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
                     <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
-                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmAction === 'APPROVE' ? 'bg-indigo-50 text-indigo-600' : 'bg-blue-50 text-blue-600'}`}>
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmAction === 'APPROVE' ? 'bg-indigo-50 text-indigo-600' : 'bg-orange-50 text-orange-600'}`}>
                             {confirmAction === 'APPROVE' ? <CornerDownLeft className="w-10 h-10" /> : <CreditCard className="w-10 h-10" />}
                         </div>
                         <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
@@ -318,7 +318,7 @@ export default function ReturPembelianPage() {
                             <button
                                 onClick={executeAction}
                                 disabled={isActionLoading}
-                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'APPROVE' ? 'bg-indigo-600 shadow-indigo-600/20 hover:bg-indigo-700' : 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700'}`}
+                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'APPROVE' ? 'bg-indigo-600 shadow-indigo-600/20 hover:bg-indigo-700' : 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700'}`}
                             >
                                 {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (confirmAction === 'APPROVE' ? 'Ya, Setujui Retur' : 'Ya, Proses Refund')}
                             </button>

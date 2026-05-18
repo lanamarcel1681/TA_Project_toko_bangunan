@@ -23,8 +23,6 @@ export default function RegisterPage() {
         const email = (form.elements.namedItem('email') as HTMLInputElement).value;
         const password = (form.elements.namedItem('password') as HTMLInputElement).value;
 
-
-
         try {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
@@ -61,10 +59,8 @@ export default function RegisterPage() {
                     <div className="relative z-10 flex flex-col items-center text-center w-full">
                         {/* Logo */}
                         <div className="mb-6 flex flex-col items-center">
-                            <div className="bg-white/10 p-4 rounded-full shadow-inner backdrop-blur-sm mb-3">
-                                <svg className="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                </svg>
+                            <div className="bg-white p-4 rounded-full shadow-inner backdrop-blur-sm mb-3">
+                                <img src="/Logo.png" alt="Logo TB Lumbung Jaya" className="h-16 w-16 object-contain" />
                             </div>
                             <span className="text-sm font-bold tracking-widest uppercase">TB. Lumbung Jaya</span>
                         </div>

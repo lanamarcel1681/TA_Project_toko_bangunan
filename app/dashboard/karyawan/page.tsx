@@ -29,7 +29,7 @@ export default function KaryawanDashboard() {
     if (loading && !data) {
         return (
             <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
-                <RefreshCw className="w-10 h-10 text-blue-600 animate-spin" />
+                <RefreshCw className="w-10 h-10 text-orange-600 animate-spin" />
             </div>
         );
     }
@@ -50,12 +50,12 @@ export default function KaryawanDashboard() {
                 <div className="flex items-center gap-4">
                     <button 
                         onClick={fetchData}
-                        className="p-4 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-blue-600 transition-all shadow-sm active:scale-95"
+                        className="p-4 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-orange-600 transition-all shadow-sm active:scale-95"
                     >
                         <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
                     </button>
                     <div className="flex bg-white px-6 py-4 rounded-3xl border border-gray-100 shadow-sm items-center gap-4">
-                        <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center">
+                        <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center">
                             <Clock className="w-5 h-5" />
                         </div>
                         <div>
@@ -70,7 +70,7 @@ export default function KaryawanDashboard() {
 
             {/* Stat Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8 mb-8 md:mb-12">
-                <div className="bg-blue-600 rounded-[24px] md:rounded-[40px] p-6 md:p-10 text-white shadow-2xl shadow-blue-600/30 relative overflow-hidden group">
+                <div className="bg-orange-600 rounded-[24px] md:rounded-[40px] p-6 md:p-10 text-white shadow-2xl shadow-orange-600/30 relative overflow-hidden group">
                     <div className="absolute -right-4 -bottom-4 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
                     <div className="flex items-start justify-between mb-4 md:mb-8">
                         <div className="w-16 h-16 bg-white/20 backdrop-blur-md rounded-[20px] flex items-center justify-center shadow-lg border border-white/20">
@@ -81,10 +81,10 @@ export default function KaryawanDashboard() {
                         </div>
                     </div>
                     <div>
-                        <p className="text-blue-100 text-sm font-black uppercase tracking-widest mb-1">Total Jenis Barang</p>
+                        <p className="text-orange-100 text-sm font-black uppercase tracking-widest mb-1">Total Jenis Barang</p>
                         <div className="flex items-end gap-3">
                             <h3 className="text-4xl md:text-6xl font-black tracking-tighter">{totalItems}</h3>
-                            <p className="text-blue-100 font-black text-sm mb-2">SKU TERDAFTAR</p>
+                            <p className="text-orange-100 font-black text-sm mb-2">SKU TERDAFTAR</p>
                         </div>
                     </div>
                 </div>
@@ -126,7 +126,7 @@ export default function KaryawanDashboard() {
                                 <div key={i} className="flex items-center justify-between p-3 md:p-5 rounded-[16px] md:rounded-[24px] bg-gray-50/50 hover:bg-gray-50 transition-all border border-transparent hover:border-gray-100 group">
                                     <div className="flex items-center gap-4 flex-1 min-w-0">
                                         <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all ${
-                                            item.status === 'low' ? 'bg-red-50 border-red-100 text-red-600' : 'bg-blue-50 border-blue-100 text-blue-600'
+                                            item.status === 'low' ? 'bg-red-50 border-red-100 text-red-600' : 'bg-orange-50 border-orange-100 text-orange-600'
                                         }`}>
                                             <Package className="w-6 h-6" />
                                         </div>

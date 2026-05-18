@@ -50,7 +50,7 @@ export default function PembayaranPage() {
     const [pakaiAsuransi, setPakaiAsuransi] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<string>('CASH');
     // Timer QRIS
-    const [qrisTimeLeft, setQrisTimeLeft] = useState(60); // 5 minutes
+    const [qrisTimeLeft, setQrisTimeLeft] = useState(300); // 5 minutes
     const [isQrisExpired, setIsQrisExpired] = useState(false);
     const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);

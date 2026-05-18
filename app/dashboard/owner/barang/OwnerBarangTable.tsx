@@ -212,7 +212,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                                 <button onClick={() => { setViewingProduct(product); setIsDetailOpen(true); }} className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:border-orange-200 active:scale-90 transition-all" title="Lihat Deskripsi">
                                                     <Eye className="w-4 h-4" />
                                                 </button>
-                                                <button onClick={() => handleEditClick(product)} className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-blue-600 hover:border-blue-200 active:scale-90 transition-all" title="Edit">
+                                                <button onClick={() => handleEditClick(product)} className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:border-orange-200 active:scale-90 transition-all" title="Edit">
                                                     <Edit3 className="w-4 h-4" />
                                                 </button>
                                                 <button onClick={() => handleDelete(product.id_barang)} disabled={isDeleting} className="w-10 h-10 bg-white shadow-sm border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-red-600 hover:border-red-200 active:scale-90 transition-all disabled:opacity-50" title="Hapus">
@@ -235,15 +235,15 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
 
                     <div className="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] border border-white/20 animate-in fade-in zoom-in duration-300">
                         <div className="flex items-center justify-between px-10 py-8 border-b border-gray-100 bg-gray-50/50 relative">
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-blue-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-orange-50 rounded-full blur-3xl -mr-16 -mt-16 opacity-50"></div>
                             <div className="relative z-10">
                                 <div className="flex items-center gap-2 mb-2">
-                                    <Edit3 className="w-4 h-4 text-blue-600" />
-                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-[0.25em]">Master Data Inventory</span>
+                                    <Edit3 className="w-4 h-4 text-orange-600" />
+                                    <span className="text-[10px] font-black text-orange-600 uppercase tracking-[0.25em]">Master Data Inventory</span>
                                 </div>
                                 <h3 className="text-2xl font-black text-gray-900 tracking-tight leading-none">Edit Produk</h3>
                             </div>
-                            <button onClick={() => setIsEditOpen(false)} className="w-12 h-12 bg-white text-gray-400 hover:text-blue-600 hover:border-blue-100 border border-transparent rounded-2xl shadow-sm flex items-center justify-center transition-all active:scale-90 relative z-10">
+                            <button onClick={() => setIsEditOpen(false)} className="w-12 h-12 bg-white text-gray-400 hover:text-orange-600 hover:border-orange-100 border border-transparent rounded-2xl shadow-sm flex items-center justify-center transition-all active:scale-90 relative z-10">
                                 <X className="w-6 h-6" />
                             </button>
                         </div>
@@ -253,7 +253,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="col-span-1 md:col-span-2 space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Layers className="w-3 h-3" /> Klasifikasi Kategori</label>
-                                        <select required value={formData.nama_kategori} onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner appearance-none cursor-pointer">
+                                        <select required value={formData.nama_kategori} onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner appearance-none cursor-pointer">
                                             <option value="" disabled>Pilih Kategori Produk</option>
                                             {categories.map((c: any) => (
                                                 <option key={c.id_kategori_barang} value={c.nama_kategori}>{c.nama_kategori}</option>
@@ -262,22 +262,22 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                     </div>
                                     <div className="col-span-1 md:col-span-2 space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Package className="w-3 h-3" /> Nama Lengkap Produk Material</label>
-                                        <input type="text" required value={formData.nama_barang} onChange={(e) => setFormData({ ...formData, nama_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner" />
+                                        <input type="text" required value={formData.nama_barang} onChange={(e) => setFormData({ ...formData, nama_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner" />
                                     </div>
 
                                     {/* DB Extra Fields */}
                                     <div className="col-span-1 md:col-span-2 space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1">Deskripsi & Spesifikasi Produk</label>
-                                        <textarea rows={3} required value={formData.deskripsi_barang} onChange={(e) => setFormData({ ...formData, deskripsi_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner"></textarea>
+                                        <textarea rows={3} required value={formData.deskripsi_barang} onChange={(e) => setFormData({ ...formData, deskripsi_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner"></textarea>
                                     </div>
 
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><DollarSign className="w-3 h-3" /> Harga Jual Satuan (Rp)</label>
-                                        <input type="number" required value={formData.harga_barang} onChange={(e) => setFormData({ ...formData, harga_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner" />
+                                        <input type="number" required value={formData.harga_barang} onChange={(e) => setFormData({ ...formData, harga_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner" />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Archive className="w-3 h-3" /> Unit Pengukuran</label>
-                                        <select required value={formData.satuan_barang} onChange={(e) => setFormData({ ...formData, satuan_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner appearance-none cursor-pointer">
+                                        <select required value={formData.satuan_barang} onChange={(e) => setFormData({ ...formData, satuan_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner appearance-none cursor-pointer">
                                             <option value="" disabled>Pilih Satuan</option>
                                             {units.map((u: any) => (
                                                 <option key={u.id_satuan_barang} value={u.satuan_barang}>{u.satuan_barang}</option>
@@ -286,20 +286,20 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                     </div>
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Layers className="w-3 h-3" /> Stok Gudang Saat Ini</label>
-                                        <input type="number" required value={formData.stok_barang} onChange={(e) => setFormData({ ...formData, stok_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner" />
+                                        <input type="number" required value={formData.stok_barang} onChange={(e) => setFormData({ ...formData, stok_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner" />
                                     </div>
 
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Weight className="w-3 h-3" /> Berat Satuan</label>
-                                        <input type="number" step="0.01" required value={formData.berat_barang} onChange={(e) => setFormData({ ...formData, berat_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner" />
+                                        <input type="number" step="0.01" required value={formData.berat_barang} onChange={(e) => setFormData({ ...formData, berat_barang: e.target.value })} className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner" />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Ruler className="w-3 h-3" /> Dimensi (P×L×T)</label>
-                                        <input type="text" value={formData.dimensi_barang} onChange={(e) => setFormData({ ...formData, dimensi_barang: e.target.value })} placeholder="Contoh: 100x50x30" className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner" />
+                                        <input type="text" value={formData.dimensi_barang} onChange={(e) => setFormData({ ...formData, dimensi_barang: e.target.value })} placeholder="Contoh: 100x50x30" className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner" />
                                     </div>
                                     <div className="space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Tag className="w-3 h-3" /> Merk Barang</label>
-                                        <input type="text" value={formData.merk_barang} onChange={(e) => setFormData({ ...formData, merk_barang: e.target.value })} placeholder="Contoh: Holcim, Toto" className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 focus:bg-white transition-all shadow-inner" />
+                                        <input type="text" value={formData.merk_barang} onChange={(e) => setFormData({ ...formData, merk_barang: e.target.value })} placeholder="Contoh: Holcim, Toto" className="block w-full px-6 py-4 bg-gray-50 border border-gray-100 rounded-2xl text-sm font-bold text-gray-900 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500 focus:bg-white transition-all shadow-inner" />
                                     </div>
 
                                     {/* Multi-Supplier Selection Grid */}
@@ -311,7 +311,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                             {formData.id_suppliers.length > 0 && (
                                                 <div className="flex flex-wrap gap-1">
                                                     {suppliers.filter((s: any) => formData.id_suppliers.includes(s.id_supplier)).map((s: any) => (
-                                                        <span key={s.id_supplier} className="px-2 py-0.5 bg-blue-600 text-white text-[8px] font-black rounded-full uppercase tracking-tighter">
+                                                        <span key={s.id_supplier} className="px-2 py-0.5 bg-orange-600 text-white text-[8px] font-black rounded-full uppercase tracking-tighter">
                                                             {s.nama_perusahaan_supplier}
                                                         </span>
                                                     ))}
@@ -324,14 +324,14 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                                     key={s.id_supplier}
                                                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${
                                                         formData.id_suppliers.includes(s.id_supplier)
-                                                        ? 'bg-blue-50 border-blue-500 shadow-sm' 
+                                                        ? 'bg-orange-50 border-orange-500 shadow-sm' 
                                                         : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
                                                     }`}
                                                 >
                                                     <div className="relative flex items-center justify-center">
                                                         <input 
                                                             type="checkbox"
-                                                            className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-blue-600 checked:border-blue-600 transition-all cursor-pointer"
+                                                            className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-orange-600 checked:border-orange-600 transition-all cursor-pointer"
                                                             checked={formData.id_suppliers.includes(s.id_supplier)}
                                                             onChange={(e) => {
                                                                 const checked = e.target.checked;
@@ -346,7 +346,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                                         <Plus className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                                                     </div>
                                                     <div className="flex flex-col text-left">
-                                                        <span className="text-[11px] font-black text-gray-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{s.nama_perusahaan_supplier}</span>
+                                                        <span className="text-[11px] font-black text-gray-900 group-hover:text-orange-600 transition-colors uppercase tracking-tight">{s.nama_perusahaan_supplier}</span>
                                                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{s.nama_supplier}</span>
                                                     </div>
                                                 </label>
@@ -356,7 +356,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                     <div className="col-span-1 md:col-span-2 space-y-2">
                                         <label className="flex items-center gap-2 text-[10px] font-black text-gray-400 uppercase tracking-widest ml-1"><Camera className="w-3 h-3" /> Foto Barang</label>
                                         <div
-                                            className="relative w-full border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden cursor-pointer hover:border-blue-400 transition-colors"
+                                            className="relative w-full border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
                                             onClick={() => fileInputRef.current?.click()}
                                         >
                                             {photoPreview ? (
@@ -384,7 +384,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                             <button onClick={() => setIsEditOpen(false)} type="button" className="w-full sm:w-auto px-8 py-4 text-sm font-black text-gray-400 uppercase tracking-widest hover:text-gray-600 transition-colors">
                                 Batalkan
                             </button>
-                            <button type="submit" form="editForm" disabled={isUploadingPhoto} className="w-full sm:w-auto px-10 py-4 bg-blue-600 rounded-full text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-xl shadow-blue-600/20 hover:bg-blue-700 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3">
+                            <button type="submit" form="editForm" disabled={isUploadingPhoto} className="w-full sm:w-auto px-10 py-4 bg-orange-600 rounded-full text-[10px] font-black text-white uppercase tracking-[0.2em] shadow-xl shadow-orange-600/20 hover:bg-orange-700 active:scale-95 disabled:opacity-50 flex items-center justify-center gap-3">
                                 <Save className="w-4 h-4" /> {isUploadingPhoto ? 'Mengunggah...' : 'Simpan Perubahan'}
                             </button>
                         </div>
@@ -490,8 +490,8 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                         <div className="flex flex-wrap gap-2">
                                             {viewingProduct.barang_supplier && viewingProduct.barang_supplier.length > 0 ? (
                                                 viewingProduct.barang_supplier.map((bs: any) => (
-                                                    <span key={bs.id_supplier} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-blue-100">
-                                                        {bs.supplier.nama_perusahaan_supplier}
+                                                    <span key={bs.id_supplier} className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-lg text-[10px] font-black uppercase tracking-widest border border-orange-100">
+                                                        {bs.supplier?.nama_perusahaan_supplier || `Supplier #${bs.id_supplier}`}
                                                     </span>
                                                 ))
                                             ) : (

@@ -122,18 +122,18 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                 </div>
                 <div className="flex gap-3 w-full md:w-auto">
                     <div className="relative flex-1 md:flex-none group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors"/>
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors"/>
                         <input 
                             type="text" 
                             placeholder="Cari kategori..." 
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-full md:w-64 font-bold text-sm text-gray-800 transition-all shadow-sm" 
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-full md:w-64 font-bold text-sm text-gray-800 transition-all shadow-sm" 
                         />
                     </div>
                     <button 
                         onClick={() => { resetForm(); setIsAddOpen(true); }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-orange-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
                     >
                         <Plus className="w-4 h-4" /> Kategori Baru &rarr;
                     </button>
@@ -163,7 +163,7 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                                     </td>
                                     <td className="px-8 py-5">
                                         <div className="flex items-center gap-4">
-                                            <div className="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                                            <div className="w-12 h-12 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center border border-orange-100 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-sm">
                                                 <Tags className="w-6 h-6" />
                                             </div>
                                             <div>
@@ -201,7 +201,7 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                     <div className="bg-white rounded-[40px] w-full max-w-lg shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] text-left">
                         <div className="flex items-center justify-between px-10 py-8 border-b border-gray-50 bg-gray-50/30">
                             <div className="flex items-center gap-4">
-                                <div className="p-3.5 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                                <div className="p-3.5 bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-600/20">
                                     <Tags className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -218,7 +218,7 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                             <form id="addFormCat" onSubmit={handleAddSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Nama Kategori</label>
-                                    <input type="text" required value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder="Contoh: Perkakas Listrik" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                    <input type="text" required value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder="Contoh: Perkakas Listrik" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                 </div>
                             </form>
                         </div>
@@ -229,7 +229,7 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                             </button>
                             <button 
                                 type="submit" form="addFormCat" disabled={isSubmitting}
-                                className="px-10 py-3.5 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
+                                className="px-10 py-3.5 bg-orange-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-orange-600/20 hover:bg-orange-700 transition-all active:scale-[0.98] flex items-center justify-center gap-3 disabled:opacity-50"
                             >
                                 Simpan Kategori <ChevronRight className="w-4 h-4" />
                             </button>
@@ -262,7 +262,7 @@ export default function KaryawanKategoriManager({ initialCategories }: { initial
                             <form id="editFormCat" onSubmit={handleEditSubmit} className="space-y-6">
                                 <div>
                                     <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Nama Kategori</label>
-                                    <input type="text" required value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder="Contoh: Perkakas Listrik" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                    <input type="text" required value={namaKategori} onChange={(e) => setNamaKategori(e.target.value)} placeholder="Contoh: Perkakas Listrik" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                 </div>
                             </form>
                         </div>

@@ -129,7 +129,7 @@ export default function PresensiKaryawanPage() {
                 <div className="bg-white rounded-[40px] p-10 border border-gray-100 shadow-xl flex flex-col h-full group">
                     <div className="flex items-center justify-between mb-8">
                         <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                            <div className="w-12 h-12 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center border border-orange-100 group-hover:bg-orange-600 group-hover:text-white transition-all shadow-sm">
                                 <ShieldCheck className="w-6 h-6" />
                             </div>
                             <div>
@@ -139,7 +139,7 @@ export default function PresensiKaryawanPage() {
                         </div>
                         <button 
                             onClick={fetchStatus}
-                            className="p-3 bg-gray-50 hover:bg-blue-50 text-gray-400 hover:text-blue-600 rounded-xl transition-all"
+                            className="p-3 bg-gray-50 hover:bg-orange-50 text-gray-400 hover:text-orange-600 rounded-xl transition-all"
                         >
                             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                         </button>
@@ -171,8 +171,8 @@ export default function PresensiKaryawanPage() {
                         </div>
 
                         {/* Visual Decorative */}
-                        <div className="absolute top-0 right-0 w-32 h-32 bg-blue-100/50 rounded-full blur-3xl -mr-16 -mt-16 group-hover/status:scale-150 transition-transform duration-1000"></div>
-                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-blue-50/50 rounded-full blur-3xl -ml-16 -mb-16 group-hover/status:scale-150 transition-transform duration-1000"></div>
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-100/50 rounded-full blur-3xl -mr-16 -mt-16 group-hover/status:scale-150 transition-transform duration-1000"></div>
+                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-orange-50/50 rounded-full blur-3xl -ml-16 -mb-16 group-hover/status:scale-150 transition-transform duration-1000"></div>
                     </div>
                     
                     {!presensiStatus?.onLeave ? (
@@ -181,7 +181,7 @@ export default function PresensiKaryawanPage() {
                                 <button 
                                     disabled={submitting || loading}
                                     onClick={handlePresensi}
-                                    className="w-full bg-blue-600 hover:bg-blue-700 text-white py-5 rounded-full font-black text-[12px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-lg shadow-blue-600/20 active:scale-95 transition-all outline-none disabled:opacity-60"
+                                    className="w-full bg-orange-600 hover:bg-orange-700 text-white py-5 rounded-full font-black text-[12px] uppercase tracking-[0.2em] flex items-center justify-center gap-3 shadow-lg shadow-orange-600/20 active:scale-95 transition-all outline-none disabled:opacity-60"
                                 >
                                     {submitting ? <RefreshCw className="w-5 h-5 animate-spin"/> : <LogIn className="w-5 h-5"/>}
                                     Rekam Absen Masuk &rarr;
@@ -211,7 +211,7 @@ export default function PresensiKaryawanPage() {
                     )}
                     
                     <div className="mt-8 flex items-center justify-center gap-3 px-6 py-4 bg-gray-50 rounded-2xl border border-gray-100 group/info hover:bg-white hover:shadow-md transition-all">
-                        <MapPin className="w-4 h-4 text-blue-500 group-hover/info:animate-bounce"/>
+                        <MapPin className="w-4 h-4 text-orange-500 group-hover/info:animate-bounce"/>
                         <p className="text-[10px] font-bold text-gray-400 group-hover/info:text-gray-600 uppercase tracking-tight transition-colors">AREA TOKO TB. LUMBUNG JAYA · STASIUN TERHUBUNG</p>
                     </div>
                 </div>

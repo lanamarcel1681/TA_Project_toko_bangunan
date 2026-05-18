@@ -513,7 +513,7 @@ export default function PembelianSupplierOwnerPage() {
                                                         </a>
                                                         <button
                                                             onClick={() => { setSelectedTransaksi(trx); setIsDetailOpen(true); }}
-                                                            className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm"
+                                                            className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-all shadow-sm"
                                                             title="Lihat Detail"
                                                         >
                                                             <FileText className="w-4 h-4" />

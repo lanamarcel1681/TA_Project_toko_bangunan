@@ -98,7 +98,7 @@ export default function RiwayatPenjualanKaryawanPage() {
             {/* Header Section */}
             <div className="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="text-left">
-                    <Link href="/dashboard/karyawan/transaksi/penjualan" className="flex items-center gap-2 text-blue-600 font-black text-[10px] uppercase tracking-widest mb-4 hover:gap-3 transition-all">
+                    <Link href="/dashboard/karyawan/transaksi/penjualan" className="flex items-center gap-2 text-orange-600 font-black text-[10px] uppercase tracking-widest mb-4 hover:gap-3 transition-all">
                         <ArrowLeft className="w-4 h-4" /> Kembali Ke Monitoring
                     </Link>
                     <h1 className="text-4xl font-black text-gray-900 tracking-tight leading-none mb-3">Riwayat Penjualan</h1>
@@ -106,13 +106,13 @@ export default function RiwayatPenjualanKaryawanPage() {
                 </div>
 
                 <div className="relative group w-full md:w-80">
-                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
+                    <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-orange-600 transition-colors">
                         <Search className="w-5 h-5" />
                     </span>
                     <input 
                         type="text" 
                         placeholder="Cari Invoice / Nama..."
-                        className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-3xl outline-none focus:border-blue-500 focus:shadow-xl focus:shadow-blue-500/5 transition-all font-bold text-sm"
+                        className="w-full pl-14 pr-6 py-4 bg-white border border-gray-100 rounded-3xl outline-none focus:border-orange-500 focus:shadow-xl focus:shadow-orange-500/5 transition-all font-bold text-sm"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
@@ -121,7 +121,7 @@ export default function RiwayatPenjualanKaryawanPage() {
 
             {loading ? (
                 <div className="py-40 flex flex-col items-center justify-center gap-4 text-gray-400">
-                    <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+                    <div className="w-12 h-12 border-4 border-orange-100 border-t-orange-600 rounded-full animate-spin"></div>
                     <p className="font-extrabold text-[10px] uppercase tracking-widest">Memuat Riwayat Transaksi...</p>
                 </div>
             ) : filteredHistory.length === 0 ? (
@@ -132,18 +132,18 @@ export default function RiwayatPenjualanKaryawanPage() {
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     {filteredHistory.map((item) => (
-                        <div key={item.id} className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-blue-200">
+                        <div key={item.id} className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative group overflow-hidden transition-all hover:border-orange-200">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-gray-50/50 -mr-16 -mt-16 rounded-full group-hover:scale-110 transition-transform duration-700"></div>
 
                             <div className="relative">
                                 <div className="flex items-center justify-between mb-8">
                                     <div className="flex items-center gap-4">
-                                        <div className="p-4 bg-gray-50 text-gray-400 rounded-2xl border border-gray-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                        <div className="p-4 bg-gray-50 text-gray-400 rounded-2xl border border-gray-100 group-hover:bg-orange-600 group-hover:text-white transition-all">
                                             <ShoppingCart className="w-6 h-6" />
                                         </div>
                                         <div className="text-left">
                                             <h3 className="text-xl font-black text-gray-900 leading-tight mb-1">{item.id}</h3>
-                                            <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest">
+                                            <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest">
                                                 {item.date}
                                             </p>
                                         </div>
@@ -159,7 +159,7 @@ export default function RiwayatPenjualanKaryawanPage() {
                                     <div>
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1 leading-none ml-1">Pelanggan</p>
                                         <div className="flex items-center gap-3">
-                                            <User className="w-4 h-4 text-blue-600" />
+                                            <User className="w-4 h-4 text-orange-600" />
                                             <p className="text-sm font-black text-gray-800">{item.customer}</p>
                                         </div>
                                     </div>
@@ -183,7 +183,7 @@ export default function RiwayatPenjualanKaryawanPage() {
                                     </div>
                                     <button 
                                         onClick={() => generateInvoicePDF(item)} 
-                                        className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border border-transparent hover:border-blue-100 shadow-sm"
+                                        className="flex items-center gap-2 px-4 py-2 bg-gray-50 text-gray-400 hover:text-orange-600 hover:bg-orange-50 rounded-xl transition-all font-black text-[10px] uppercase tracking-widest border border-transparent hover:border-orange-100 shadow-sm"
                                     >
                                         <Printer className="w-4 h-4" /> Cetak Ulang
                                     </button>

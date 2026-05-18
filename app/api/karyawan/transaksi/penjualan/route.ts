@@ -143,6 +143,15 @@ export async function PATCH(request: NextRequest) {
                 }
             });
 
+            // Update payment to Lunas if it was Cash (Belum Bayar)
+            await prisma.pembayaran.updateMany({
+                where: { 
+                    id_transaksipenjualan: transaction.id_transaksipenjualan,
+                    status_pembayaran: 'Belum Bayar'
+                },
+                data: { status_pembayaran: 'Diverifikasi (Lunas)' }
+            });
+
             // Send Email — Nota Transaksi Lengkap
             const { sendEmail, EmailTemplates } = await import('@/lib/mail');
 

@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// GET all barang
 export async function GET() {
   try {
     const barang = await prisma.barang.findMany({
@@ -47,11 +46,11 @@ export async function GET() {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { 
-      nama_kategori, 
-      nama_barang, 
-      harga_barang, 
-      satuan_barang, 
+    const {
+      nama_kategori,
+      nama_barang,
+      harga_barang,
+      satuan_barang,
       stok_barang,
       deskripsi_barang,
       berat_barang,
@@ -65,7 +64,7 @@ export async function POST(request: Request) {
     // Validate required inputs
     if (!nama_barang || !harga_barang || !stok_barang || !nama_kategori || !satuan_barang) {
       return NextResponse.json(
-        { error: "Nama barang, harga, stok, kategori, dan satuan wajib diisi" }, 
+        { error: "Nama barang, harga, stok, kategori, dan satuan wajib diisi" },
         { status: 400 }
       );
     }

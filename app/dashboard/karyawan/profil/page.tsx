@@ -159,7 +159,7 @@ export default function ProfilKaryawanSayaPage() {
         return (
             <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto flex items-center justify-center min-h-[60vh]">
                 <div className="flex flex-col items-center gap-4 text-gray-400">
-                    <Loader2 className="w-10 h-10 animate-spin text-blue-500" />
+                    <Loader2 className="w-10 h-10 animate-spin text-orange-500" />
                     <p className="font-semibold text-sm">Memuat profil...</p>
                 </div>
             </div>
@@ -190,12 +190,12 @@ export default function ProfilKaryawanSayaPage() {
 
             <div className="bg-white rounded-[40px] p-12 border border-gray-100 shadow-xl flex flex-col items-center relative overflow-hidden group">
                 {/* Decorative */}
-                <div className="absolute -top-20 -right-20 w-64 h-64 bg-blue-50/50 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
-                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-blue-50/30 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
+                <div className="absolute -top-20 -right-20 w-64 h-64 bg-orange-50/50 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
+                <div className="absolute -bottom-20 -left-20 w-64 h-64 bg-orange-50/30 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-1000" />
 
                 {/* Avatar */}
                 <div className="relative mb-8 text-center">
-                    <div className={`w-40 h-40 rounded-[48px] flex items-center justify-center text-5xl font-black shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500 mx-auto overflow-hidden ${displayAvatar ? '' : 'bg-gradient-to-br from-blue-600 to-blue-700 text-white'}`}>
+                    <div className={`w-40 h-40 rounded-[48px] flex items-center justify-center text-5xl font-black shadow-2xl rotate-3 group-hover:rotate-0 transition-transform duration-500 mx-auto overflow-hidden ${displayAvatar ? '' : 'bg-gradient-to-br from-orange-600 to-orange-700 text-white'}`}>
                         {displayAvatar
                             ? <img src={displayAvatar} alt="Foto Profil" className="w-full h-full object-cover" />
                             : initials
@@ -207,7 +207,7 @@ export default function ProfilKaryawanSayaPage() {
                         onClick={() => isEditMode && fileInputRef.current?.click()}
                         disabled={!isEditMode || isUploadingPhoto}
                         className={`absolute -bottom-2 -right-2 p-4 bg-white rounded-2xl border border-gray-100 shadow-xl transition-all active:scale-95 ${isEditMode
-                                ? 'text-blue-600 hover:bg-blue-600 hover:text-white cursor-pointer scale-100'
+                                ? 'text-orange-600 hover:bg-orange-600 hover:text-white cursor-pointer scale-100'
                                 : 'text-gray-300 cursor-not-allowed scale-90 opacity-50'
                             }`}
                         title={isEditMode ? 'Ganti foto profil' : 'Aktifkan mode edit untuk mengganti foto'}
@@ -237,15 +237,15 @@ export default function ProfilKaryawanSayaPage() {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     readOnly={!isEditMode}
-                                    className={`bg-transparent text-center text-3xl font-black text-gray-900 tracking-tight outline-none w-full min-w-[250px] transition-colors ${isEditMode ? 'focus:text-blue-600 cursor-text' : 'cursor-default'
+                                    className={`bg-transparent text-center text-3xl font-black text-gray-900 tracking-tight outline-none w-full min-w-[250px] transition-colors ${isEditMode ? 'focus:text-orange-600 cursor-text' : 'cursor-default'
                                         }`}
                                     placeholder="Nama Karyawan"
                                 />
-                                <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 bg-blue-500 rounded-full transition-all duration-300 ${isEditMode ? 'w-full' : 'w-0'}`} />
+                                <div className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 bg-orange-500 rounded-full transition-all duration-300 ${isEditMode ? 'w-full' : 'w-0'}`} />
                             </div>
-                            {isEditMode && <Pencil className="w-5 h-5 text-blue-400 shrink-0" />}
+                            {isEditMode && <Pencil className="w-5 h-5 text-orange-400 shrink-0" />}
                         </div>
-                        <span className="px-3 py-1 bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest rounded-lg border border-blue-100">
+                        <span className="px-3 py-1 bg-orange-50 text-orange-600 text-[10px] font-black uppercase tracking-widest rounded-lg border border-orange-100">
                             Verified Employee
                         </span>
                     </div>
@@ -275,17 +275,17 @@ export default function ProfilKaryawanSayaPage() {
 
                     {/* Phone — Editable */}
                     <div className={`flex items-center gap-6 p-6 rounded-3xl border transition-all relative ${isEditMode
-                            ? 'bg-white border-blue-200 shadow-md cursor-text'
+                            ? 'bg-white border-orange-200 shadow-md cursor-text'
                             : 'bg-gray-50/50 border-transparent cursor-default'
                         }`}>
-                        <div className={`p-4 rounded-2xl shadow-sm transition-all ${isEditMode ? 'bg-blue-600 text-white' : 'bg-white text-blue-600'}`}>
+                        <div className={`p-4 rounded-2xl shadow-sm transition-all ${isEditMode ? 'bg-orange-600 text-white' : 'bg-white text-orange-600'}`}>
                             <Phone className="w-6 h-6" />
                         </div>
                         <div className="flex-1">
                             <div className="flex items-center justify-between mb-1.5">
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">NOMOR TELEPON</p>
                                 {isEditMode && (
-                                    <span className="flex items-center gap-1 text-[8px] font-black text-blue-300 uppercase tracking-widest bg-blue-50 px-2 py-0.5 rounded-md border border-blue-100">
+                                    <span className="flex items-center gap-1 text-[8px] font-black text-orange-300 uppercase tracking-widest bg-orange-50 px-2 py-0.5 rounded-md border border-orange-100">
                                         <Pencil className="w-2 h-2" /> EDITABLE
                                     </span>
                                 )}
@@ -296,11 +296,11 @@ export default function ProfilKaryawanSayaPage() {
                                 value={phone}
                                 onChange={(e) => setPhone(e.target.value)}
                                 readOnly={!isEditMode}
-                                className={`w-full bg-transparent font-black text-gray-800 text-lg tracking-tight leading-none outline-none transition-colors ${isEditMode ? 'focus:text-blue-600' : 'cursor-default'}`}
+                                className={`w-full bg-transparent font-black text-gray-800 text-lg tracking-tight leading-none outline-none transition-colors ${isEditMode ? 'focus:text-orange-600' : 'cursor-default'}`}
                                 placeholder="Nomor telepon..."
                             />
                         </div>
-                        {isEditMode && <Pencil className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-400 pointer-events-none" />}
+                        {isEditMode && <Pencil className="absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 text-orange-400 pointer-events-none" />}
                     </div>
 
                     {/* Jabatan — Read Only */}
@@ -339,7 +339,7 @@ export default function ProfilKaryawanSayaPage() {
                 {/* Footer Actions */}
                 <div className="w-full mt-12 pt-10 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
                     <div className="flex items-center gap-3 px-6 py-3 bg-gray-50 rounded-2xl border border-gray-100">
-                        <ShieldCheck className="w-5 h-5 text-blue-600" />
+                        <ShieldCheck className="w-5 h-5 text-orange-600" />
                         <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">KEAMANAN AKUN TERJAMIN</span>
                     </div>
 
@@ -357,7 +357,7 @@ export default function ProfilKaryawanSayaPage() {
                                 <button
                                     id="btn-edit-profil"
                                     onClick={handleEnterEdit}
-                                    className="flex items-center gap-2 px-8 py-4 bg-blue-50 hover:bg-blue-100 text-blue-600 font-black text-[10px] uppercase tracking-[0.15em] rounded-full border border-blue-100 transition-all active:scale-95"
+                                    className="flex items-center gap-2 px-8 py-4 bg-orange-50 hover:bg-orange-100 text-orange-600 font-black text-[10px] uppercase tracking-[0.15em] rounded-full border border-orange-100 transition-all active:scale-95"
                                 >
                                     <Edit3 className="w-4 h-4" />
                                     Edit Profil
@@ -380,7 +380,7 @@ export default function ProfilKaryawanSayaPage() {
                             onClick={handleSave}
                             disabled={!isEditMode || isSaving || isUploadingPhoto}
                             className={`flex items-center gap-3 px-10 py-4 rounded-full font-black text-[10px] uppercase tracking-[0.15em] transition-all shadow-xl active:scale-95 ${isEditMode && !isSaving && !isUploadingPhoto
-                                    ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-blue-600/20 cursor-pointer'
+                                    ? 'bg-orange-600 text-white hover:bg-orange-700 shadow-orange-600/20 cursor-pointer'
                                     : 'bg-gray-100 text-gray-300 shadow-none cursor-not-allowed'
                                 }`}
                         >

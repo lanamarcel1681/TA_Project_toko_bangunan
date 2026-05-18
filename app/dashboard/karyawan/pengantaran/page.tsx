@@ -125,7 +125,7 @@ export default function ManajemenPengantaranPage() {
                 {/* Aktivitas Pengantaran Aktif */}
                 {loading ? (
                     <div className="col-span-full py-20 flex flex-col items-center justify-center gap-4 text-gray-400">
-                        <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin"></div>
+                        <div className="w-12 h-12 border-4 border-orange-100 border-t-orange-600 rounded-full animate-spin"></div>
                         <p className="font-extrabold text-[10px] uppercase tracking-widest">Sedang memproses data tugas...</p>
                     </div>
                 ) : missions.length === 0 ? (
@@ -135,13 +135,13 @@ export default function ManajemenPengantaranPage() {
                     </div>
                 ) : (
                     missions.map(mission => (
-                        <div key={mission.id} className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative overflow-hidden group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-500">
+                        <div key={mission.id} className="bg-white rounded-[40px] p-10 shadow-xl border border-gray-100 relative overflow-hidden group hover:shadow-2xl hover:shadow-orange-500/10 transition-all duration-500">
                             <div className="flex items-center justify-between mb-8">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-2xl flex items-center justify-center border border-blue-100 group-hover:bg-blue-600 group-hover:text-white transition-all">
+                                    <div className="w-10 h-10 bg-orange-50 text-orange-600 rounded-2xl flex items-center justify-center border border-orange-100 group-hover:bg-orange-600 group-hover:text-white transition-all">
                                         <Truck className="w-5 h-5" />
                                     </div>
-                                    <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest bg-blue-50/50 px-3 py-1.5 rounded-full border border-blue-100">{mission.id}</span>
+                                    <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest bg-orange-50/50 px-3 py-1.5 rounded-full border border-orange-100">{mission.id}</span>
                                 </div>
                                 <span className="text-[10px] font-black text-gray-300 font-mono">AKTIF</span>
                             </div>
@@ -149,7 +149,7 @@ export default function ManajemenPengantaranPage() {
                             <div className="mb-6">
                                 <div className="flex justify-between items-start mb-1.5 ml-1">
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Penerima Barang</p>
-                                    <p className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md leading-none uppercase">{mission.driver}</p>
+                                    <p className="text-[10px] font-black text-orange-600 bg-orange-50 px-2 py-0.5 rounded-md leading-none uppercase">{mission.driver}</p>
                                 </div>
                                 <div className="flex items-center gap-3">
                                     <h3 className="text-xl font-black text-gray-900 leading-tight">{mission.customer}</h3>
@@ -172,7 +172,7 @@ export default function ManajemenPengantaranPage() {
                             <div className="mb-8 p-6 bg-gray-50/50 rounded-3xl border border-gray-100 flex items-center gap-6">
                                 <div className="flex items-center gap-4">
                                     <div className="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center border border-gray-100">
-                                        <Timer className="w-5 h-5 text-blue-600" />
+                                        <Timer className="w-5 h-5 text-orange-600" />
                                     </div>
                                     <div>
                                         <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Durasi Perjalanan</p>
@@ -212,7 +212,7 @@ export default function ManajemenPengantaranPage() {
 
                 {/* Penggabungan Pengiriman Suggestion */}
                 {proposals.length > 0 && proposals.map(proposal => (
-                    <div key={proposal.id} className="bg-blue-600 rounded-[40px] p-10 shadow-2xl shadow-blue-600/30 relative overflow-hidden group">
+                    <div key={proposal.id} className="bg-orange-600 rounded-[40px] p-10 shadow-2xl shadow-orange-600/30 relative overflow-hidden group">
                         <div className="absolute -top-10 -right-10 w-40 h-40 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
 
                         <div className="flex items-center justify-between mb-8">
@@ -226,13 +226,13 @@ export default function ManajemenPengantaranPage() {
                         </div>
 
                         <div className="mb-8 text-white text-left">
-                            <p className="text-blue-100 text-[10px] font-black uppercase tracking-widest mb-1.5 ml-1 leading-none">Rute Berdekatan Terdeteksi</p>
+                            <p className="text-orange-100 text-[10px] font-black uppercase tracking-widest mb-1.5 ml-1 leading-none">Rute Berdekatan Terdeteksi</p>
                             <h3 className="text-xl font-black leading-tight mb-4">{proposal.title}</h3>
                             <div className="space-y-3">
                                 {proposal.orders.map((order: any, idx: number) => (
                                     <div key={idx} className="bg-white/10 p-4 rounded-2xl border border-white/10 flex items-center justify-between group/item hover:bg-white/20 transition-all cursor-default">
                                         <div className="text-left">
-                                            <p className="text-[10px] font-black uppercase tracking-tight text-blue-200">{order.id} — {order.name}</p>
+                                            <p className="text-[10px] font-black uppercase tracking-tight text-orange-200">{order.id} — {order.name}</p>
                                             <p className="text-xs font-bold text-white mt-0.5">{order.addr}</p>
                                         </div>
                                         <ChevronRight className="w-4 h-4 text-white/40 group-hover/item:text-white transition-all" />
@@ -251,7 +251,7 @@ export default function ManajemenPengantaranPage() {
                         ) : (
                             <button
                                 onClick={() => handleSetujui(proposal)}
-                                className="w-full bg-white text-blue-600 py-4 rounded-full flex justify-center items-center gap-3 font-black text-[10px] uppercase tracking-[0.15em] shadow-xl hover:bg-blue-50 active:scale-95 transition-all outline-none"
+                                className="w-full bg-white text-orange-600 py-4 rounded-full flex justify-center items-center gap-3 font-black text-[10px] uppercase tracking-[0.15em] shadow-xl hover:bg-orange-50 active:scale-95 transition-all outline-none"
                             >
                                 <Combine className="w-4 h-4" /> Setujui Penggabungan &rarr;
                             </button>
@@ -263,7 +263,7 @@ export default function ManajemenPengantaranPage() {
             {showConfirmModal && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300 text-center">
                     <div className="bg-white rounded-[32px] p-10 max-w-sm w-full shadow-2xl flex flex-col items-center animate-in zoom-in-95 duration-300">
-                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmType === 'APPROVE_ROUTE' ? 'bg-blue-50 text-blue-600' : 'bg-green-50 text-green-500'}`}>
+                        <div className={`w-20 h-20 rounded-3xl flex items-center justify-center mb-6 rotate-12 group hover:rotate-0 transition-transform ${confirmType === 'APPROVE_ROUTE' ? 'bg-orange-50 text-orange-600' : 'bg-green-50 text-green-500'}`}>
                             {confirmType === 'APPROVE_ROUTE' ? <Combine className="w-10 h-10" /> : <CheckCircle className="w-10 h-10" />}
                         </div>
                         <h3 className="text-2xl font-black text-gray-900 mb-3 tracking-tight">
@@ -279,7 +279,7 @@ export default function ManajemenPengantaranPage() {
                             <button
                                 onClick={executeAction}
                                 disabled={isActionLoading}
-                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmType === 'APPROVE_ROUTE' ? 'bg-blue-600 shadow-blue-600/20 hover:bg-blue-700' : 'bg-green-600 shadow-green-600/20 hover:bg-green-700'}`}
+                                className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmType === 'APPROVE_ROUTE' ? 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700' : 'bg-green-600 shadow-green-600/20 hover:bg-green-700'}`}
                             >
                                 {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (confirmType === 'APPROVE_ROUTE' ? 'Ya, Setujui Rute' : 'Ya, Sudah Selesai')}
                             </button>

@@ -258,7 +258,7 @@ export default function PersetujuanBarangPage() {
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Est. Harga Beli</p>
-                                    <p className="font-black text-blue-600 text-xl">Rp {selectedItem.harga_beli_perkiraan.toLocaleString()}</p>
+                                    <p className="font-black text-orange-600 text-xl">Rp {selectedItem.harga_beli_perkiraan.toLocaleString()}</p>
                                 </div>
                                 <div className="space-y-1">
                                     <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest">Est. Harga Jual</p>
@@ -273,10 +273,10 @@ export default function PersetujuanBarangPage() {
                                 </div>
                             </div>
 
-                            <div className="flex items-center gap-4 bg-blue-50/50 p-4 rounded-2xl border border-blue-100/50">
-                                <User className="w-5 h-5 text-blue-500" />
+                            <div className="flex items-center gap-4 bg-orange-50/50 p-4 rounded-2xl border border-orange-100/50">
+                                <User className="w-5 h-5 text-orange-500" />
                                 <div className="text-[10px] font-black text-gray-500 uppercase tracking-widest">
-                                    Diusulkan oleh <span className="text-blue-600">{selectedItem.pegawai.nama_pegawai}</span> pada {new Date(selectedItem.tanggal_usulan).toLocaleDateString('id-ID')}
+                                    Diusulkan oleh <span className="text-orange-600">{selectedItem.pegawai.nama_pegawai}</span> pada {new Date(selectedItem.tanggal_usulan).toLocaleDateString('id-ID')}
                                 </div>
                             </div>
                         </div>

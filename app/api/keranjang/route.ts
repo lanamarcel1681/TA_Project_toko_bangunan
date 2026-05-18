@@ -10,10 +10,10 @@ export async function GET(request: NextRequest) {
         if (!sessionCookie) {
             return NextResponse.json({ items: [], totalItems: 0 });
         }
-        
+
         const user = await decrypt(sessionCookie.value);
         if (!user) return NextResponse.json({ items: [], totalItems: 0 });
-        
+
         if (user.role !== 'customer') {
             return NextResponse.json({ items: [], totalItems: 0 });
         }
@@ -38,10 +38,10 @@ export async function POST(request: NextRequest) {
         if (!sessionCookie) {
             return NextResponse.json({ error: 'Silakan login terlebih dahulu' }, { status: 401 });
         }
-        
+
         const user = await decrypt(sessionCookie.value);
         if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        
+
         if (user.role !== 'customer') {
             return NextResponse.json({ error: 'Hanya pembeli yang dapat menambah ke keranjang' }, { status: 403 });
         }
@@ -52,7 +52,6 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Data tidak valid' }, { status: 400 });
         }
 
-        // Cek apakah barang sudah ada di keranjang
         const existingItem = await prisma.keranjang.findFirst({
             where: {
                 id_pembeli: user.id,
@@ -88,10 +87,10 @@ export async function PATCH(request: NextRequest) {
         if (!sessionCookie) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
-        
+
         const user = await decrypt(sessionCookie.value);
         if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        
+
         const { cartId, quantity } = await request.json();
 
         if (!cartId || quantity <= 0) {
@@ -99,9 +98,9 @@ export async function PATCH(request: NextRequest) {
         }
 
         const updated = await prisma.keranjang.update({
-            where: { 
+            where: {
                 id_keranjang: cartId,
-                id_pembeli: user.id // Ensure security
+                id_pembeli: user.id
             },
             data: { jumlah_barang: quantity }
         });
@@ -119,10 +118,10 @@ export async function DELETE(request: NextRequest) {
         if (!sessionCookie) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
-        
+
         const user = await decrypt(sessionCookie.value);
         if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        
+
         const { searchParams } = new URL(request.url);
         const cartId = parseInt(searchParams.get('id') || '');
 
@@ -131,9 +130,9 @@ export async function DELETE(request: NextRequest) {
         }
 
         await prisma.keranjang.delete({
-            where: { 
+            where: {
                 id_keranjang: cartId,
-                id_pembeli: user.id // Safety check
+                id_pembeli: user.id
             }
         });
 

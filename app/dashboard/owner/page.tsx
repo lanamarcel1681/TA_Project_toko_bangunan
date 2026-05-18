@@ -38,9 +38,9 @@ export default function OwnerDashboard() {
 
     // Icons mapping
     const icons = [TrendingUp, ShoppingCart, Package, Users];
-    const colors = ['text-orange-600', 'text-blue-600', 'text-emerald-600', 'text-violet-600'];
-    const bgs = ['bg-orange-50', 'bg-blue-50', 'bg-emerald-50', 'bg-violet-50'];
-    const borders = ['border-orange-100', 'border-blue-100', 'border-emerald-100', 'border-violet-100'];
+    const colors = ['text-orange-600', 'text-orange-600', 'text-emerald-600', 'text-violet-600'];
+    const bgs = ['bg-orange-50', 'bg-orange-50', 'bg-emerald-50', 'bg-violet-50'];
+    const borders = ['border-orange-100', 'border-orange-100', 'border-emerald-100', 'border-violet-100'];
 
     if (loading && !data) {
         return (

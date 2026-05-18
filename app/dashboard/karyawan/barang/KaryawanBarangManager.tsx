@@ -203,16 +203,16 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                 </div>
                 <div className="flex gap-3">
                     <div className="relative group">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-blue-500 transition-colors" />
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors" />
                         <input
                             type="text"
                             placeholder="Cari data barang..."
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-blue-500 outline-none w-64 font-bold text-sm text-gray-800 transition-all shadow-sm"
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-64 font-bold text-sm text-gray-800 transition-all shadow-sm"
                         />
                     </div>
                     <button
                         onClick={() => { resetForm(); setIsAddOpen(true); }}
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-blue-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
+                        className="bg-orange-600 hover:bg-orange-700 text-white px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] shadow-lg shadow-orange-600/20 active:scale-95 transition-all outline-none whitespace-nowrap"
                     >
                         <Plus className="w-4 h-4" /> Tambah Barang &rarr;
                     </button>
@@ -243,13 +243,13 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     <tr key={product.id_barang} className="hover:bg-gray-50/50 transition-all group">
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-3">
-                                                <div className={`w-2 h-2 rounded-full ${isKritis ? 'bg-red-500' : 'bg-blue-500'}`}></div>
+                                                <div className={`w-2 h-2 rounded-full ${isKritis ? 'bg-red-500' : 'bg-orange-500'}`}></div>
                                                 <span className="text-sm font-black text-gray-400 font-mono tracking-tighter">#{product.id_barang}</span>
                                             </div>
                                         </td>
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-4">
-                                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all shadow-sm ${isKritis ? 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-600 group-hover:text-white' : 'bg-blue-50 text-blue-600 border-blue-100 group-hover:bg-blue-600 group-hover:text-white'}`}>
+                                                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border transition-all shadow-sm ${isKritis ? 'bg-red-50 text-red-600 border-red-100 group-hover:bg-red-600 group-hover:text-white' : 'bg-orange-50 text-orange-600 border-orange-100 group-hover:bg-orange-600 group-hover:text-white'}`}>
                                                     <Package className="w-6 h-6" />
                                                 </div>
                                                 <div>
@@ -273,7 +273,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                         </td>
                                         <td className="px-8 py-5 text-right">
                                             <div className="flex justify-end gap-2">
-                                                <button onClick={() => { setViewingProduct(product); setIsDetailOpen(true); }} className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all shadow-sm" title="Detail">
+                                                <button onClick={() => { setViewingProduct(product); setIsDetailOpen(true); }} className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-all shadow-sm" title="Detail">
                                                     <Eye className="w-4 h-4" />
                                                 </button>
                                                 <button onClick={() => handleEditClick(product)} className="w-10 h-10 bg-white border border-gray-100 rounded-xl flex items-center justify-center text-gray-400 hover:text-orange-600 hover:bg-orange-50 transition-all shadow-sm" title="Edit">
@@ -299,7 +299,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                     <div className="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] text-left">
                         <div className="flex items-center justify-between px-10 py-8 border-b border-gray-50 bg-gray-50/30">
                             <div className="flex items-center gap-4">
-                                <div className="p-3.5 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                                <div className="p-3.5 bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-600/20">
                                     <Package className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -317,7 +317,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Kategori Produk</label>
-                                        <select required value={formData.nama_kategori} onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
+                                        <select required value={formData.nama_kategori} onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
                                             <option value="" disabled>Pilih Kategori Barang</option>
                                             {categories.map((c: any) => (
                                                 <option key={c.id_kategori_barang} value={c.nama_kategori}>{c.nama_kategori}</option>
@@ -326,19 +326,19 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Nama Barang Lengkap</label>
-                                        <input type="text" required value={formData.nama_barang} onChange={(e) => setFormData({ ...formData, nama_barang: e.target.value })} placeholder="Masukkan nama produk material" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="text" required value={formData.nama_barang} onChange={(e) => setFormData({ ...formData, nama_barang: e.target.value })} placeholder="Masukkan nama produk material" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Deskripsi</label>
-                                        <textarea rows={3} required value={formData.deskripsi_barang} onChange={(e) => setFormData({ ...formData, deskripsi_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800"></textarea>
+                                        <textarea rows={3} required value={formData.deskripsi_barang} onChange={(e) => setFormData({ ...formData, deskripsi_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"></textarea>
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Harga Jual (Rp)</label>
-                                        <input type="number" required value={formData.harga_barang} onChange={(e) => setFormData({ ...formData, harga_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="number" required value={formData.harga_barang} onChange={(e) => setFormData({ ...formData, harga_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Satuan</label>
-                                        <select required value={formData.satuan_barang} onChange={(e) => setFormData({ ...formData, satuan_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
+                                        <select required value={formData.satuan_barang} onChange={(e) => setFormData({ ...formData, satuan_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
                                             <option value="" disabled>Pilih Satuan</option>
                                             {units.map((u: any) => (
                                                 <option key={u.id_satuan_barang} value={u.satuan_barang}>{u.satuan_barang}</option>
@@ -347,25 +347,25 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Stok Inventaris</label>
-                                        <input type="number" required value={formData.stok_barang} onChange={(e) => setFormData({ ...formData, stok_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="number" required value={formData.stok_barang} onChange={(e) => setFormData({ ...formData, stok_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
 
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Berat Satuan</label>
-                                        <input type="number" step="0.01" required value={formData.berat_barang} onChange={(e) => setFormData({ ...formData, berat_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="number" step="0.01" required value={formData.berat_barang} onChange={(e) => setFormData({ ...formData, berat_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Dimensi (P×L×T)</label>
-                                        <input type="text" value={formData.dimensi_barang} onChange={(e) => setFormData({ ...formData, dimensi_barang: e.target.value })} placeholder="Contoh: 100x50x30" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="text" value={formData.dimensi_barang} onChange={(e) => setFormData({ ...formData, dimensi_barang: e.target.value })} placeholder="Contoh: 100x50x30" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Merk Barang</label>
-                                        <input type="text" value={formData.merk_barang} onChange={(e) => setFormData({ ...formData, merk_barang: e.target.value })} placeholder="Contoh: Holcim, Toto, dll" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="text" value={formData.merk_barang} onChange={(e) => setFormData({ ...formData, merk_barang: e.target.value })} placeholder="Contoh: Holcim, Toto, dll" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Foto Barang</label>
                                         <div
-                                            className="relative w-full border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden cursor-pointer hover:border-blue-400 transition-colors"
+                                            className="relative w-full border-2 border-dashed border-gray-200 rounded-2xl overflow-hidden cursor-pointer hover:border-orange-400 transition-colors"
                                             onClick={() => fileInputRef.current?.click()}
                                         >
                                             {photoPreview ? (
@@ -396,14 +396,14 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                                     key={s.id_supplier}
                                                     className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${
                                                         formData.id_suppliers.includes(s.id_supplier)
-                                                        ? 'bg-blue-50 border-blue-500 shadow-sm' 
+                                                        ? 'bg-orange-50 border-orange-500 shadow-sm' 
                                                         : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
                                                     }`}
                                                 >
                                                     <div className="relative flex items-center justify-center">
                                                         <input 
                                                             type="checkbox"
-                                                            className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-blue-600 checked:border-blue-600 transition-all cursor-pointer"
+                                                            className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-orange-600 checked:border-orange-600 transition-all cursor-pointer"
                                                             checked={formData.id_suppliers.includes(s.id_supplier)}
                                                             onChange={(e) => {
                                                                 const checked = e.target.checked;
@@ -418,7 +418,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                                         <Plus className="absolute w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" />
                                                     </div>
                                                     <div className="flex flex-col text-left">
-                                                        <span className="text-[11px] font-black text-gray-900 group-hover:text-blue-600 transition-colors uppercase tracking-tight">{s.nama_perusahaan_supplier}</span>
+                                                        <span className="text-[11px] font-black text-gray-900 group-hover:text-orange-600 transition-colors uppercase tracking-tight">{s.nama_perusahaan_supplier}</span>
                                                         <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{s.nama_supplier}</span>
                                                     </div>
                                                 </label>
@@ -433,7 +433,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                             <button onClick={() => setIsAddOpen(false)} type="button" className="px-8 py-3.5 text-gray-500 font-bold text-[11px] uppercase tracking-widest bg-gray-100 rounded-full hover:bg-gray-200 transition-all">
                                 Batal
                             </button>
-                            <button type="submit" form="addFormKaryawan" disabled={isSubmitting} className="px-10 py-3.5 bg-blue-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-blue-600/20 hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-3">
+                            <button type="submit" form="addFormKaryawan" disabled={isSubmitting} className="px-10 py-3.5 bg-orange-600 text-white font-black text-[11px] uppercase tracking-widest rounded-full shadow-lg shadow-orange-600/20 hover:bg-orange-700 transition-all disabled:opacity-50 flex items-center justify-center gap-3">
                                 Simpan Barang <ChevronRight className="w-4 h-4" />
                             </button>
                         </div>
@@ -466,7 +466,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                 <div className="grid grid-cols-2 gap-6">
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Kategori Produk</label>
-                                        <select required value={formData.nama_kategori} onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
+                                        <select required value={formData.nama_kategori} onChange={(e) => setFormData({ ...formData, nama_kategori: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
                                             <option value="" disabled>Pilih Kategori Barang</option>
                                             {categories.map((c: any) => (
                                                 <option key={c.id_kategori_barang} value={c.nama_kategori}>{c.nama_kategori}</option>
@@ -475,19 +475,19 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Nama Barang Lengkap</label>
-                                        <input type="text" required value={formData.nama_barang} onChange={(e) => setFormData({ ...formData, nama_barang: e.target.value })} placeholder="Masukkan nama produk material" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="text" required value={formData.nama_barang} onChange={(e) => setFormData({ ...formData, nama_barang: e.target.value })} placeholder="Masukkan nama produk material" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Deskripsi</label>
-                                        <textarea rows={3} required value={formData.deskripsi_barang} onChange={(e) => setFormData({ ...formData, deskripsi_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800"></textarea>
+                                        <textarea rows={3} required value={formData.deskripsi_barang} onChange={(e) => setFormData({ ...formData, deskripsi_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800"></textarea>
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Harga Jual (Rp)</label>
-                                        <input type="number" required value={formData.harga_barang} onChange={(e) => setFormData({ ...formData, harga_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="number" required value={formData.harga_barang} onChange={(e) => setFormData({ ...formData, harga_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Satuan</label>
-                                        <select required value={formData.satuan_barang} onChange={(e) => setFormData({ ...formData, satuan_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
+                                        <select required value={formData.satuan_barang} onChange={(e) => setFormData({ ...formData, satuan_barang: e.target.value })} className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800 appearance-none cursor-pointer">
                                             <option value="" disabled>Pilih Satuan</option>
                                             {units.map((u: any) => (
                                                 <option key={u.id_satuan_barang} value={u.satuan_barang}>{u.satuan_barang}</option>
@@ -496,20 +496,20 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Stok Inventaris</label>
-                                        <input type="number" required value={formData.stok_barang} onChange={(e) => setFormData({ ...formData, stok_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="number" required value={formData.stok_barang} onChange={(e) => setFormData({ ...formData, stok_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
 
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Berat Satuan</label>
-                                        <input type="number" step="0.01" required value={formData.berat_barang} onChange={(e) => setFormData({ ...formData, berat_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="number" step="0.01" required value={formData.berat_barang} onChange={(e) => setFormData({ ...formData, berat_barang: e.target.value })} placeholder="0" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Dimensi (P×L×T)</label>
-                                        <input type="text" value={formData.dimensi_barang} onChange={(e) => setFormData({ ...formData, dimensi_barang: e.target.value })} placeholder="Contoh: 100x50x30" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="text" value={formData.dimensi_barang} onChange={(e) => setFormData({ ...formData, dimensi_barang: e.target.value })} placeholder="Contoh: 100x50x30" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2 sm:col-span-1">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Merk Barang</label>
-                                        <input type="text" value={formData.merk_barang} onChange={(e) => setFormData({ ...formData, merk_barang: e.target.value })} placeholder="Contoh: Holcim, Toto, dll" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-blue-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
+                                        <input type="text" value={formData.merk_barang} onChange={(e) => setFormData({ ...formData, merk_barang: e.target.value })} placeholder="Contoh: Holcim, Toto, dll" className="w-full px-5 py-4 bg-gray-50 border-2 border-gray-50 rounded-2xl focus:border-orange-500 focus:bg-white outline-none transition-all font-bold text-gray-800" />
                                     </div>
                                     <div className="col-span-2">
                                         <label className="block text-[11px] font-black text-gray-400 uppercase tracking-widest mb-3 ml-1">Foto Barang</label>
@@ -607,7 +607,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                     <div className="bg-white rounded-[40px] w-full max-w-2xl shadow-2xl relative z-10 overflow-hidden flex flex-col max-h-[90vh] text-left border border-white/20 animate-in fade-in zoom-in duration-300">
                         <div className="flex items-center justify-between px-10 py-8 border-b border-gray-50 bg-gray-50/30">
                             <div className="flex items-center gap-4">
-                                <div className="p-3.5 bg-blue-600 text-white rounded-2xl shadow-lg shadow-blue-600/20">
+                                <div className="p-3.5 bg-orange-600 text-white rounded-2xl shadow-lg shadow-orange-600/20">
                                     <Eye className="w-6 h-6" />
                                 </div>
                                 <div>
@@ -633,7 +633,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                             </div>
                                         )}
                                         <div className="absolute top-4 right-4 px-4 py-2 bg-white/90 backdrop-blur-sm rounded-full border border-gray-100 shadow-sm">
-                                            <span className="text-[10px] font-black text-blue-600 uppercase tracking-widest leading-none">ID #{viewingProduct.id_barang}</span>
+                                            <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest leading-none">ID #{viewingProduct.id_barang}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -646,7 +646,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     <div className="flex gap-10">
                                         <div>
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kategori</p>
-                                            <span className="inline-flex px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-wider border border-blue-100">
+                                            <span className="inline-flex px-3 py-1.5 bg-orange-50 text-orange-600 rounded-xl text-[10px] font-black uppercase tracking-wider border border-orange-100">
                                                 {viewingProduct.kategori?.nama_kategori}
                                             </span>
                                         </div>
@@ -661,7 +661,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                     <div>
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2 flex items-center gap-2"><DollarSign className="w-3 h-3" /> Harga Jual</p>
                                         <div className="flex items-baseline gap-2">
-                                            <p className="text-2xl font-black text-blue-600 tracking-tighter">Rp {viewingProduct.harga_barang?.toLocaleString('id-ID')}</p>
+                                            <p className="text-2xl font-black text-orange-600 tracking-tighter">Rp {viewingProduct.harga_barang?.toLocaleString('id-ID')}</p>
                                             <p className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">/ {viewingProduct.satuan?.satuan_barang}</p>
                                         </div>
                                     </div>
@@ -699,8 +699,8 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                         <div className="flex flex-wrap gap-2">
                                             {viewingProduct.barang_supplier && viewingProduct.barang_supplier.length > 0 ? (
                                                 viewingProduct.barang_supplier.map((bs: any) => (
-                                                    <span key={bs.id_supplier} className="px-3 py-1.5 bg-blue-50 text-blue-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-blue-100">
-                                                        {bs.supplier.nama_perusahaan_supplier}
+                                                    <span key={bs.id_supplier} className="px-3 py-1.5 bg-orange-50 text-orange-600 rounded-xl text-[10px] font-black uppercase tracking-widest border border-orange-100">
+                                                        {bs.supplier?.nama_perusahaan_supplier || `Supplier #${bs.id_supplier}`}
                                                     </span>
                                                 ))
                                             ) : (

@@ -3,7 +3,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// GET all transaksi pembelian
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -12,19 +11,19 @@ export async function GET(request: NextRequest) {
     const transaksi = await prisma.transaksiPembelianBarang.findMany({
       where: search
         ? {
-            OR: [
-              {
-                supplier: {
-                  nama_perusahaan_supplier: { contains: search },
-                },
+          OR: [
+            {
+              supplier: {
+                nama_perusahaan_supplier: { contains: search },
               },
-              {
-                supplier: {
-                  nama_supplier: { contains: search },
-                },
+            },
+            {
+              supplier: {
+                nama_supplier: { contains: search },
               },
-            ],
-          }
+            },
+          ],
+        }
         : {},
       include: {
         supplier: true,
@@ -50,7 +49,6 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// POST new transaksi pembelian
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -63,14 +61,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hitung total biaya
     const total_biaya = items.reduce(
       (sum: number, item: { jumlah: number; harga_satuan: number }) =>
         sum + item.jumlah * item.harga_satuan,
       0
     );
 
-    // Buat transaksi berserta detail
     const newTransaksi = await prisma.transaksiPembelianBarang.create({
       data: {
         id_supplier: parseInt(id_supplier),
@@ -104,7 +100,6 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Update stok barang
     for (const item of items) {
       await prisma.barang.update({
         where: { id_barang: parseInt(item.id_barang.toString()) },

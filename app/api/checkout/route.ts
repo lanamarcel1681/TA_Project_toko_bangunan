@@ -104,7 +104,7 @@ export async function POST(request: NextRequest) {
                     id_pembeli: user.id,
                     tanggal_penjualan: now,
                     ongkos_kirim: ongkosKirim,
-                    status_penjualan: 'Menunggu Verifikasi Pembayaran',
+                    status_penjualan: metodePembayaran === 'CASH' ? 'Siap Diambil' : 'Menunggu Verifikasi Pembayaran',
                     metode_pengantaran: metodePengiriman,
                 }
             });

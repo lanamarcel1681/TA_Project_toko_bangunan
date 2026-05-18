@@ -12,8 +12,6 @@ export async function POST(request: NextRequest) {
         if (!email.toLowerCase().endsWith('@gmail.com')) {
             return NextResponse.json({ error: 'Gagal! Hanya email @gmail.com yang diizinkan.' }, { status: 400 });
         }
-
-        // 1. Cek di tabel Pegawai (Untuk Owner / Karyawan)
         const pegawai = await prisma.pegawai.findUnique({
             where: { email_pegawai: email },
             include: { jabatan: true }
@@ -25,7 +23,6 @@ export async function POST(request: NextRequest) {
             }
 
             if (verifyPassword(password, pegawai.password_pegawai)) {
-                // Tentukan role berdasarkan id_jabatan, nama jabatan, atau konvensi (1=Owner, 2=Karyawan)
                 let role = 'karyawan';
                 if (pegawai.id_jabatan === 1 || pegawai.jabatan.nama_jabatan.toLowerCase().includes('pemilik')) {
                     role = 'owner';
@@ -46,15 +43,13 @@ export async function POST(request: NextRequest) {
                     httpOnly: true,
                     secure: process.env.NODE_ENV === 'production',
                     sameSite: 'lax',
-                    maxAge: 60 * 60 * 8, // 8 jam
+                    maxAge: 60 * 60 * 8,
                     path: '/',
                 });
 
                 return response;
             }
         }
-
-        // 2. Cek di tabel Pembeli (Untuk Pelanggan biasa)
         const pembeli = await prisma.pembeli.findUnique({
             where: { email_pembeli: email }
         });
@@ -83,8 +78,6 @@ export async function POST(request: NextRequest) {
                 return response;
             }
         }
-
-        // 3. Jika tidak ketemu di keduanya atau password salah
         return NextResponse.json({ error: 'Email atau password salah' }, { status: 401 });
 
     } catch (error) {
