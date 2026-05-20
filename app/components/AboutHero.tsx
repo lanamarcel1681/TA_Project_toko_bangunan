@@ -5,7 +5,7 @@ export default function AboutHero() {
                 <div className="text-center">
                     <h2 className="text-base font-semibold text-orange-600 tracking-wide uppercase">Tentang Kami</h2>
                     <p className="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">Sejarah & Komitmen Kami</p>
-                    <p className="max-w-xl mt-5 mx-auto text-xl text-gray-500">Membangun kepercayaan pelanggan melalui kualitas dan pelayanan terbaik sejak 2024.</p>
+                    <p className="max-w-xl mt-5 mx-auto text-xl text-gray-500">Membangun kepercayaan pelanggan melalui kualitas dan pelayanan terbaik sejak 2020.</p>
                 </div>
 
                 <div className="mt-12">

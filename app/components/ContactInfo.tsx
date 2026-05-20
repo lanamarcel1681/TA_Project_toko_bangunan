@@ -33,7 +33,7 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Telepon:</p>
-                                    <p className="mt-1">+62 812-2777-1234</p>
+                                    <p className="mt-1">+62 811-2638-898</p>
                                 </div>
                             </div>
 
@@ -45,7 +45,7 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Email:</p>
-                                    <p className="mt-1">Lumbungjaya@gmail.com</p>
+                                    <p className="mt-1">tblumbungjaya03@gmail.com</p>
                                 </div>
                             </div>
 

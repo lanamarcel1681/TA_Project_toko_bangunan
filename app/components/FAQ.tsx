@@ -6,19 +6,19 @@ export default function FAQ() {
         },
         {
             question: "Metode pembayaran apa saja yang tersedia?",
-            answer: "Kami menerima pembayaran via Transfer Bank (BCA, Mandiri, BRI), E-Wallet (OVO, GoPay), dan Bayar di Tempat (COD) untuk wilayah tertentu."
+            answer: "Kami menerima pembayaran via Transfer Bank dan Qris untuk metode pengiriman delivery atau ambil di toko, dan cash untuk ambil di toko."
         },
         {
             question: "Apakah bisa dikirim di hari yang sama?",
-            answer: "Untuk pesanan yang dikonfirmasi sebelum jam 12.00 WIB, kami usahakan dikirim di hari yang sama. Pengiriman menggunakan armada kami sendiri untuk material berat."
+            answer: "Untuk pesanan yang dikonfirmasi sebelum jam 16.00 WIB, kami usahakan dikirim di hari yang sama. Pengiriman menggunakan armada kami sendiri untuk material berat."
         },
         {
             question: "Apakah ada garansi untuk barang yang rusak?",
-            answer: "Ya, kami memberikan garansi tukar baru jika barang yang diterima dalam kondisi rusak atau tidak sesuai. Mohon sertakan video unboxing saat mengajukan klaim."
+            answer: "Ya, kami memberikan garansi tukar baru jika barang yang diterima dalam kondisi rusak atau tidak sesuai. Mohon lampirkan bukti berupa foto saat mengajukan klaim."
         },
         {
             question: "Apakah melayani pembelian grosir?",
-            answer: "Tentu, kami melayani pembelian dalam jumlah besar untuk proyek atau toko bangunan lainnya dengan harga khusus. Hubungi sales kami untuk penawaran terbaik."
+            answer: "Tentu, kami melayani pembelian dalam jumlah besar untuk proyek atau toko bangunan lainnya dengan harga khusus."
         }
     ];
 

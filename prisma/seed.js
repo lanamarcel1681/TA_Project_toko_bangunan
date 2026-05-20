@@ -22,28 +22,28 @@ async function main() {
   // 3. Buat Akun Owner
   // Kita gunakan upsert agar jika di-run berulang kali tidak menyebabkan error constraint email
   const owner = await prisma.pegawai.upsert({
-    where: { email_pegawai: 'owner@toko.com' },
+    where: { email_pegawai: 'owner@gmail.com' },
     update: {},
     create: {
       id_jabatan: jabatanOwner.id_jabatan,
       nama_pegawai: 'Ahmad Owner',
       tanggal_lahir: '1980-01-01',
       nomor_telepon: '081234567890',
-      email_pegawai: 'owner@toko.com',
+      email_pegawai: 'owner@gmail.com',
       password_pegawai: 'owner123', // NOTE: Di aplikasi nyata, sebaiknya Anda melakukan proses hashing (seperti bcrypt) pada password ini
     },
   });
 
   // 4. Buat Akun Karyawan
   const karyawan = await prisma.pegawai.upsert({
-    where: { email_pegawai: 'karyawan@toko.com' },
+    where: { email_pegawai: 'karyawan@gmail.com' },
     update: {},
     create: {
       id_jabatan: jabatanKaryawan.id_jabatan,
       nama_pegawai: 'Siti Karyawan',
       tanggal_lahir: '1995-05-05',
       nomor_telepon: '089876543210',
-      email_pegawai: 'karyawan@toko.com',
+      email_pegawai: 'karyawan@gmail.com',
       password_pegawai: 'karyawan123', // NOTE: Di aplikasi nyata, sebaiknya Anda melakukan proses hashing (seperti bcrypt) pada password ini
     },
   });
