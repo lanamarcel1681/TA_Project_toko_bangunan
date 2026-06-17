@@ -16,17 +16,12 @@ export async function GET() {
             prevMonthSalesData,
             totalTransactions,
             totalProducts,
-            activeCustomers,
+            totalCustomers,
             lowStockCount
         ] = await Promise.all([
-            // Total Sales This Month
+            // Total Sales All Time
             prisma.detailTransaksiPenjualanBarang.aggregate({
-                _sum: { total_harga: true },
-                where: {
-                    transaksi: {
-                        tanggal_penjualan: { gte: startOfMonth }
-                    }
-                }
+                _sum: { total_harga: true }
             }),
             // Total Sales Last Month (for trend)
             prisma.detailTransaksiPenjualanBarang.aggregate({
@@ -40,25 +35,20 @@ export async function GET() {
                     }
                 }
             }),
-            // Total Transactions This Month
-            prisma.transaksiPenjualanBarang.count({
-                where: { tanggal_penjualan: { gte: startOfMonth } }
-            }),
+            // Total Transactions All Time
+            prisma.transaksiPenjualanBarang.count(),
             // Total Products
             prisma.barang.count(),
-            // Active Customers (Unique buyers this month)
-            prisma.transaksiPenjualanBarang.groupBy({
-                by: ['id_pembeli'],
-                where: { tanggal_penjualan: { gte: startOfMonth } },
-                _count: true
-            }),
+            // Total Customers
+            prisma.pembeli.count(),
             // Low Stock Count (Karyawan)
             prisma.$queryRaw`SELECT COUNT(*) as count FROM Barang WHERE stok_barang <= minimum_barang` as Promise<any>
         ]);
 
-        const thisMonthSales = thisMonthSalesData._sum.total_harga || 0;
-        const prevMonthSales = prevMonthSalesData._sum.total_harga || 0;
-        const salesTrend = prevMonthSales === 0 ? 100 : ((thisMonthSales - prevMonthSales) / prevMonthSales) * 100;
+        const totalSales = thisMonthSalesData._sum.total_harga || 0;
+        // Kita bisa tetap mempertahankan perhitungan prevMonthSales jika dibutuhkan untuk trend bulanan
+        // Namun karena sekarang menggunakan Total Keseluruhan, kita tidak perlu membandingkan trend keseluruhan dengan bulan lalu.
+        const salesTrend = 0;
 
         // 2. Activities & Stock Items
         const [recentSales, recentPurchases, lowStockAlerts, stockItems] = await Promise.all([
@@ -115,10 +105,10 @@ export async function GET() {
         return NextResponse.json({
             owner: {
                 stats: [
-                    { label: 'Total Penjualan', value: formatRp(thisMonthSales), sub: 'Bulan ini', trend: salesTrend.toFixed(1) },
-                    { label: 'Total Transaksi', value: totalTransactions.toLocaleString('id-ID'), sub: 'Bulan ini', trend: '0' },
+                    { label: 'Total Penjualan', value: formatRp(totalSales), sub: 'Keseluruhan', trend: '0' },
+                    { label: 'Total Transaksi', value: totalTransactions.toLocaleString('id-ID'), sub: 'Keseluruhan', trend: '0' },
                     { label: 'Total Produk', value: totalProducts.toLocaleString('id-ID'), sub: 'Produk aktif', trend: '0' },
-                    { label: 'Pelanggan Aktif', value: activeCustomers.length.toLocaleString('id-ID'), sub: 'Bulan ini', trend: '0' },
+                    { label: 'Total Pelanggan', value: totalCustomers.toLocaleString('id-ID'), sub: 'Terdaftar', trend: '0' },
                 ],
                 activities
             },

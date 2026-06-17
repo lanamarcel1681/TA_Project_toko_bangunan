@@ -31,7 +31,7 @@ export default function WhatsAppFAB() {
         };
     }, []);
 
-    const whatsappNumber = "6281913792626"; // Tanpa tanda + atau spasi
+    const whatsappNumber = "628112638898"; // Tanpa tanda + atau spasi
     const message = "Halo TB. Lumbung Jaya, saya ingin bertanya mengenai produk...";
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

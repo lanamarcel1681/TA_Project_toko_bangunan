@@ -8,8 +8,8 @@ export default function OwnerDashboard() {
     const [loading, setLoading] = useState(true);
     const [userName, setUserName] = useState('Pemilik');
 
-    const fetchStats = async () => {
-        setLoading(true);
+    const fetchStats = async (showLoader = true) => {
+        if (showLoader) setLoading(true);
         try {
             const res = await fetch('/api/dashboard/stats');
             const result = await res.json();
@@ -17,7 +17,7 @@ export default function OwnerDashboard() {
         } catch (error) {
             console.error(error);
         } finally {
-            setLoading(false);
+            if (showLoader) setLoading(false);
         }
     };
 
@@ -30,7 +30,16 @@ export default function OwnerDashboard() {
                 }
             })
             .catch(e => console.error(e));
-        fetchStats();
+        
+        // Initial fetch
+        fetchStats(true);
+
+        // Real-time polling every 5 seconds
+        const intervalId = setInterval(() => {
+            fetchStats(false);
+        }, 5000);
+
+        return () => clearInterval(intervalId);
     }, []);
 
     const now = new Date();
@@ -65,7 +74,7 @@ export default function OwnerDashboard() {
                     <p className="text-gray-500 font-medium mt-3">Ringkasan performa operasional dan metrik utama toko bangunan Anda hari ini.</p>
                 </div>
                 <button 
-                    onClick={fetchStats}
+                    onClick={() => fetchStats(true)}
                     className="p-4 bg-white border border-gray-100 rounded-2xl text-gray-400 hover:text-orange-600 hover:border-orange-100 transition-all shadow-sm active:scale-95"
                 >
                     <RefreshCw className={`w-5 h-5 ${loading ? 'animate-spin' : ''}`} />
