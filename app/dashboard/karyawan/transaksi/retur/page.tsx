@@ -197,9 +197,9 @@ export default function ReturPembelianPage() {
                                         <td className="px-8 py-8">
                                             <div className="flex items-center gap-2 mb-2">
                                                 <p className="font-black text-gray-900 text-base leading-none">{item.customer}</p>
-                                                <a 
-                                                    href={`https://wa.me/${item.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
-                                                    target="_blank" 
+                                                <a
+                                                    href={`https://wa.me/${item.phone?.replace(/^0/, '62').replace(/^\+/, '')}`}
+                                                    target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center justify-center p-1 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors"
                                                     title="Hubungi via WhatsApp"
@@ -240,7 +240,7 @@ export default function ReturPembelianPage() {
                                                         onClick={() => handleAction(item.type, item.id, 'APPROVE', item.amount)}
                                                         className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 font-black text-[9px] uppercase tracking-[0.15em] transition-all shadow-lg shadow-indigo-600/20 active:scale-95"
                                                     >
-                                                        Setujui Retur &rarr;
+                                                        Setujui Retur
                                                     </button>
                                                 )}
 
@@ -251,7 +251,7 @@ export default function ReturPembelianPage() {
                                                         className="bg-orange-600 hover:bg-orange-700 text-white px-6 py-3 rounded-full flex items-center justify-center gap-2 font-black text-[9px] uppercase tracking-[0.15em] transition-all shadow-lg shadow-orange-600/20 active:scale-95 disabled:opacity-50"
                                                     >
                                                         <RefreshCcw className={`w-3.5 h-3.5 ${uploading ? 'animate-spin' : ''}`} />
-                                                        {uploading ? 'UPLOADING...' : 'Input Bukti TF &rarr;'}
+                                                        {uploading ? 'UPLOADING...' : 'Input Bukti TF'}
                                                     </button>
                                                 )}
 

@@ -78,6 +78,12 @@ export default function PresensiKaryawanPage() {
 
     const handleIzinSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+
+        if (!izinForm.tanggal_mulai || !izinForm.tanggal_selesai || !izinForm.jenis_izin || !izinForm.keterangan.trim()) {
+            showToast('Semua kolom pengajuan izin harus diisi!', 'error');
+            return;
+        }
+
         setSubmitting(true);
         try {
             const res = await fetch('/api/izin', {

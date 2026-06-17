@@ -2,8 +2,10 @@
 import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, ShoppingBag, ChevronRight, Package, Clock, PackageOpen, FileImage, ArrowLeft, MessageSquare, ImageIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useToast } from '../components/Toast';
 
 export default function HistoryTransaksiPage() {
+    const { showToast } = useToast();
     const [purchaseStatus, setPurchaseStatus] = useState('Semua');
     const [transactions, setTransactions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
@@ -91,8 +93,14 @@ export default function HistoryTransaksiPage() {
 
     const handleCancel = async () => {
         setCancelBankError('');
-        if (!cancelReason) return alert("Harap isi alasan pembatalan");
-        if (!cancelBankInfo) return alert("Harap isi info rekening refund");
+        if (!cancelReason) {
+            showToast("Harap isi alasan pembatalan", 'error');
+            return;
+        }
+        if (!cancelBankInfo) {
+            showToast("Harap isi info rekening refund", 'error');
+            return;
+        }
 
         // Validasi format rekening
         const normalized = cancelBankInfo.replace(/ – /g, ' - ');
@@ -116,17 +124,17 @@ export default function HistoryTransaksiPage() {
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
+                showToast(data.message, 'success');
                 setShowCancelModal(false);
                 setCancelReason('');
                 setCancelBankInfo('');
                 setCancelBankError('');
                 fetchHistory();
             } else {
-                alert(data.error);
+                showToast(data.error, 'error');
             }
         } catch (error) {
-            alert("Gagal memproses pembatalan");
+            showToast("Gagal memproses pembatalan", 'error');
         } finally {
             setProcessing(false);
         }
@@ -135,7 +143,10 @@ export default function HistoryTransaksiPage() {
     const handleReturn = async () => {
         setBankError('');
 
-        if (!returnReason || !returnPhoto || !bankInfo) return alert("Harap lengkapi semua data retur");
+        if (!returnReason || !returnPhoto || !bankInfo) {
+            showToast("Harap lengkapi semua data retur", 'error');
+            return;
+        }
 
         // Validasi format: NamaBank - NomorRek - NamaPemilik (menerima "-" atau "–")
         const normalized = bankInfo.replace(/ – /g, ' - ');
@@ -165,15 +176,15 @@ export default function HistoryTransaksiPage() {
             });
             const data = await res.json();
             if (data.success) {
-                alert(data.message);
+                showToast(data.message, 'success');
                 setShowReturnModal(false);
                 setBankInfo(''); setBankError('');
                 fetchHistory();
             } else {
-                alert(data.error);
+                showToast(data.error, 'error');
             }
         } catch (error) {
-            alert("Gagal memproses pengajuan retur");
+            showToast("Gagal memproses pengajuan retur", 'error');
         } finally {
             setProcessing(false);
         }
@@ -196,7 +207,7 @@ export default function HistoryTransaksiPage() {
                 setReturnPhoto(data.url);
             }
         } catch (error) {
-            alert("Gagal mengunggah foto");
+            showToast("Gagal mengunggah foto", 'error');
         }
     };
 

@@ -2,7 +2,7 @@
 
 import { useState, useRef } from 'react';
 import Link from 'next/link';
-import { Package, ShieldCheck, AlertTriangle, Eye, Edit3, Trash2, LayoutGrid, Save, X, Plus, Tag, Layers, DollarSign, Archive, Weight, Ruler, Camera, Upload, Building2, ArrowRight } from 'lucide-react';
+import { Package, ShieldCheck, AlertTriangle, Eye, Edit3, Trash2, LayoutGrid, Save, X, Plus, Tag, Layers, DollarSign, Archive, Weight, Ruler, Camera, Upload, Building2, ArrowRight, Search } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '@/app/components/Toast';
 
@@ -10,6 +10,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
     const router = useRouter();
     const { showToast } = useToast();
     const [products, setProducts] = useState(initialProducts);
+    const [searchQuery, setSearchQuery] = useState("");
     const [isEditOpen, setIsEditOpen] = useState(false);
     const [isDetailOpen, setIsDetailOpen] = useState(false);
     const [viewingProduct, setViewingProduct] = useState<any>(null);
@@ -143,8 +144,35 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
         }
     };
 
+    const filteredProducts = products.filter(product => {
+        const query = searchQuery.toLowerCase();
+        const matchesName = product.nama_barang?.toLowerCase().includes(query);
+        const matchesKategori = product.kategori?.nama_kategori?.toLowerCase().includes(query);
+        const matchesSupplier = product.barang_supplier?.some((bs: any) =>
+            bs.supplier?.nama_perusahaan_supplier?.toLowerCase().includes(query) ||
+            bs.supplier?.nama_supplier?.toLowerCase().includes(query)
+        );
+        return matchesName || matchesKategori || matchesSupplier;
+    });
+
     return (
         <>
+            {/* Search Bar */}
+            <div className="mb-8 group">
+                <div className="relative w-full shadow-lg shadow-gray-200/40 rounded-full overflow-hidden border border-gray-100 group-hover:border-orange-200 transition-all duration-300">
+                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
+                        <Search className="h-5 w-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
+                    </div>
+                    <input
+                        type="text"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="block w-full pl-14 pr-6 py-5 bg-white placeholder-gray-400 focus:outline-none sm:text-sm font-medium text-gray-900"
+                        placeholder="Cari berdasarkan Nama Produk, Kategori, Perusahaan, atau Nama Supplier..."
+                    />
+                </div>
+            </div>
+
             <div className="bg-white rounded-[40px] shadow-2xl shadow-gray-200/50 border border-gray-100 overflow-hidden relative group/table">
                 <div className="absolute top-0 right-0 w-64 h-64 bg-orange-50/20 -mr-32 -mt-32 rounded-full blur-3xl opacity-0 group-hover/table:opacity-100 transition-opacity duration-1000"></div>
 
@@ -162,11 +190,11 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {products.length === 0 ? (
+                            {filteredProducts.length === 0 ? (
                                 <tr>
-                                    <td colSpan={7} className="px-8 py-10 text-center text-gray-400 font-bold">Belum ada produk terdaftar.</td>
+                                    <td colSpan={7} className="px-8 py-10 text-center text-gray-400 font-bold">Tidak ada produk yang cocok dengan pencarian Anda.</td>
                                 </tr>
-                            ) : products.map((product, i) => {
+                            ) : filteredProducts.map((product, i) => {
                                 const isMenipis = product.status_barang === "Menipis";
                                 const isHabis = product.status_barang === "Habis";
                                 const isAman = !isMenipis && !isHabis;
@@ -320,16 +348,15 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             {suppliers.map((s: any) => (
-                                                <label 
+                                                <label
                                                     key={s.id_supplier}
-                                                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${
-                                                        formData.id_suppliers.includes(s.id_supplier)
-                                                        ? 'bg-orange-50 border-orange-500 shadow-sm' 
-                                                        : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
-                                                    }`}
+                                                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${formData.id_suppliers.includes(s.id_supplier)
+                                                            ? 'bg-orange-50 border-orange-500 shadow-sm'
+                                                            : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
+                                                        }`}
                                                 >
                                                     <div className="relative flex items-center justify-center">
-                                                        <input 
+                                                        <input
                                                             type="checkbox"
                                                             className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-orange-600 checked:border-orange-600 transition-all cursor-pointer"
                                                             checked={formData.id_suppliers.includes(s.id_supplier)}
@@ -337,7 +364,7 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                                                                 const checked = e.target.checked;
                                                                 setFormData(prev => ({
                                                                     ...prev,
-                                                                    id_suppliers: checked 
+                                                                    id_suppliers: checked
                                                                         ? [...prev.id_suppliers, s.id_supplier]
                                                                         : prev.id_suppliers.filter(id => id !== s.id_supplier)
                                                                 }));
@@ -532,16 +559,16 @@ export default function OwnerBarangTable({ initialProducts, categories = [], uni
                         <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
                             Tindakan ini tidak dapat dibatalkan. Seluruh data produk dan keterkaitannya akan dihapus permanen.
                         </p>
-                        
+
                         <div className="flex flex-col w-full gap-3">
-                            <button 
+                            <button
                                 onClick={confirmDelete}
                                 disabled={isDeleting}
                                 className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95 disabled:opacity-50"
                             >
                                 {isDeleting ? 'Menghapus...' : 'Ya, Hapus Permanen'}
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowDeleteConfirm(false);
                                     setItemToDelete(null);

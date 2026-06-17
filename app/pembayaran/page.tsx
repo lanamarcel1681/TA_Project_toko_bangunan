@@ -49,15 +49,13 @@ export default function PembayaranPage() {
     const [pakaiProteksi, setPakaiProteksi] = useState(false);
     const [pakaiAsuransi, setPakaiAsuransi] = useState(false);
     const [selectedPayment, setSelectedPayment] = useState<string>('CASH');
-    // Timer QRIS
-    const [qrisTimeLeft, setQrisTimeLeft] = useState(300); // 5 minutes
-    const [isQrisExpired, setIsQrisExpired] = useState(false);
+
     const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const bankAccount = {
-        number: '137-00-1111-2222',
-        owner: 'TB. Lumbung Jaya',
+        number: '137-000-707-1323',
+        owner: 'TB. Lumbung Jaya (Maria Sumiyati)',
         bank: 'MANDIRI'
     };
 
@@ -90,30 +88,6 @@ export default function PembayaranPage() {
     }, []);
 
     // Dynamic Pricing based on cartItems
-    // Logic Timer QRIS
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (selectedPayment === 'QRIS' && qrisTimeLeft > 0 && !isQrisExpired) {
-            timer = setInterval(() => {
-                setQrisTimeLeft((prev) => prev - 1);
-            }, 1000);
-        } else if (qrisTimeLeft === 0) {
-            setIsQrisExpired(true);
-        }
-        return () => clearInterval(timer);
-    }, [selectedPayment, qrisTimeLeft, isQrisExpired]);
-
-    // Format time mm:ss
-    const formatTime = (seconds: number) => {
-        const mins = Math.floor(seconds / 60);
-        const secs = seconds % 60;
-        return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    };
-
-    const resetQrisTimer = () => {
-        setQrisTimeLeft(300);
-        setIsQrisExpired(false);
-    };
 
     const isWholesale = cartItems.some(item => item.jumlah_barang > 10);
     const totalQty = cartItems.reduce((sum, item) => sum + item.jumlah_barang, 0);
@@ -124,27 +98,14 @@ export default function PembayaranPage() {
     let discountLabel = "";
     let baseDiscountRate = 0;
 
-    if (isWholesale) {
+    if (subtotalOriginal > 10000000) {
         baseDiscountRate = 0.02;
-        discountLabel = "Diskon Grosir";
-    } else if (subtotalOriginal > 1000000) {
-        baseDiscountRate = 0.10;
-        discountLabel = "Diskon Retail (10%)";
+        discountLabel = isWholesale ? "Diskon Grosir (2%)" : "Diskon Retail (2%)";
     }
 
-    // Calculate total discount by iterating items
-    const discountAmount = cartItems.reduce((sum, item) => {
-        let itemRate = baseDiscountRate;
-        if (item.jumlah_barang > 50) {
-            itemRate += 0.05; // Additional 5% for items > 50
-        }
-        return sum + (item.barang.harga_barang * item.jumlah_barang * itemRate);
-    }, 0);
-
+    // Calculate total discount
+    const discountAmount = subtotalOriginal * baseDiscountRate;
     const hargaBarang = subtotalOriginal - discountAmount;
-
-    const hasSpecialBulk = cartItems.some(item => item.jumlah_barang > 50);
-    const finalDiscountLabel = hasSpecialBulk ? `${discountLabel} + Tambahan 5% (Grosir > 50)` : discountLabel;
 
     // Stock check helper
     const isStockInsufficient = cartItems.some(item => item.jumlah_barang > item.barang.stok_barang);
@@ -177,14 +138,14 @@ export default function PembayaranPage() {
         if (metodePengiriman === 'Diambil Sendiri ke Toko') return 0;
         if (!defaultAddress) return 0;
 
-        if (!isInsideDIY(defaultAddress.kabupaten)) return 250000; // Still show 250k but will block checkout
+        if (!isInsideDIY(defaultAddress.kabupaten)) return 150000;
 
         const distUnder10 = isUnder10km(defaultAddress.kabupaten, defaultAddress.kecamatan);
 
-        if (hargaBarang >= 1500000 && distUnder10) {
+        if (distUnder10) {
             return 0;
         } else {
-            return 250000;
+            return 150000;
         }
     };
 
@@ -334,8 +295,8 @@ export default function PembayaranPage() {
                                             <span className="font-semibold">Jl. Sampaan - Berbah, Berbah, Tegaltirto, Berbah, Sleman Regency, Special Region of Yogyakarta 55573</span>
                                         </p>
                                         <ul className="list-disc list-inside space-y-1">
-                                            <li><span className="font-medium text-green-700">GRATIS Ongkir:</span> Belanja ≥ Rp 1.500.000 <b>dan</b> Jarak &lt; 10 km dari toko.</li>
-                                            <li><span className="font-medium text-gray-700">Ongkir Rp 250.000:</span> Belanja &lt; Rp 1.500.000 <b>atau</b> Jarak ≥ 10 km dari toko.</li>
+                                            <li><span className="font-medium text-green-700">GRATIS Ongkir:</span> Jarak &lt; 10 km dari toko.</li>
+                                            <li><span className="font-medium text-gray-700">Ongkir Rp 150.000:</span> Jarak ≥ 10 km dari toko.</li>
                                             <li><span className="font-medium text-red-700">Hanya area DIY:</span> Kami hanya melayani pengiriman di wilayah Yogyakarta.</li>
                                         </ul>
                                     </div>
@@ -503,71 +464,7 @@ export default function PembayaranPage() {
                                 </label>
                             )}
 
-                            {/* QRIS */}
-                            <label className={`flex flex-col p-5 border-b border-gray-100 cursor-pointer transition-all ${selectedPayment === 'QRIS' ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-8 bg-white border border-gray-200 rounded flex items-center justify-center p-1 shadow-sm font-black text-[10px] text-blue-900 italic shrink-0">QRIS</div>
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-900 tracking-tight leading-none mb-1 text-left">QRIS (Gopay/OVO/Dana)</p>
-                                            <p className="text-[10px] text-gray-500 font-medium tracking-wide text-left">Bayar instan via scan kode QR</p>
-                                        </div>
-                                    </div>
-                                    <input type="radio" name="payment" value="QRIS" checked={selectedPayment === 'QRIS'} onChange={() => setSelectedPayment('QRIS')} className="w-4 h-4 text-orange-600 focus:ring-orange-500" />
-                                </div>
 
-                                {selectedPayment === 'QRIS' && (
-                                    <div className="mt-3 p-4 bg-white rounded-2xl border border-orange-100 shadow-sm flex flex-col items-center justify-center animate-in fade-in slide-in-from-top-2 duration-300 relative overflow-hidden">
-                                        {/* Status Header */}
-                                        <div className="flex items-center justify-between w-full mb-4 px-2">
-                                            <p className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none">SCAN QR CODE</p>
-                                            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-md ${qrisTimeLeft < 60 ? 'bg-red-50 text-red-600 animate-pulse' : 'bg-orange-50 text-orange-600'}`}>
-                                                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                <span className="text-xs font-black tabular-nums">{formatTime(qrisTimeLeft)}</span>
-                                            </div>
-                                        </div>
-
-                                        {/* QR Area */}
-                                        <div className="relative group">
-                                            <img
-                                                src="https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg"
-                                                alt="QRIS Code"
-                                                className={`w-40 h-40 object-contain mb-2 transition-all duration-500 ${isQrisExpired ? 'filter blur-sm grayscale opacity-30' : ''}`}
-                                            />
-
-                                            {isQrisExpired && (
-                                                <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center bg-white/60 backdrop-blur-[2px] rounded-xl">
-                                                    <div className="bg-red-100 p-2 rounded-full mb-2">
-                                                        <svg className="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                                                    </div>
-                                                    <p className="text-[10px] font-black text-red-600 uppercase tracking-tighter leading-tight mb-2">WAKTU PEMBAYARAN HABIS</p>
-                                                    <button
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            resetQrisTimer();
-                                                        }}
-                                                        className="px-3 py-1.5 bg-orange-600 text-white text-[10px] font-bold rounded-lg shadow-sm hover:bg-orange-700 transition-all active:scale-95"
-                                                    >
-                                                        MINTA QR BARU
-                                                    </button>
-                                                </div>
-                                            )}
-                                        </div>
-
-                                        <p className="text-xs font-bold text-gray-700 mt-2">TB. Lumbung Jaya</p>
-
-                                        {/* Progress Bar */}
-                                        {!isQrisExpired && (
-                                            <div className="w-full h-1 bg-gray-100 rounded-full mt-4 overflow-hidden">
-                                                <div
-                                                    className={`h-full transition-all duration-1000 ease-linear ${qrisTimeLeft < 60 ? 'bg-red-500' : 'bg-orange-500'}`}
-                                                    style={{ width: `${(qrisTimeLeft / 300) * 100}%` }}
-                                                ></div>
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </label>
 
                             <label className={`flex flex-col p-5 cursor-pointer transition-all ${selectedPayment === 'Mandiri' ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
                                 <div className="flex items-center justify-between mb-2">
@@ -622,7 +519,7 @@ export default function PembayaranPage() {
                                 </div>
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-green-600 font-medium">
-                                        <p>{finalDiscountLabel}</p>
+                                        <p>{discountLabel}</p>
                                         <p>-Rp{discountAmount.toLocaleString('id-ID')}</p>
                                     </div>
                                 )}
@@ -695,8 +592,8 @@ export default function PembayaranPage() {
 
                             <button
                                 onClick={handleCheckout}
-                                disabled={submitting || (selectedPayment === 'QRIS' && isQrisExpired) || isStockInsufficient}
-                                className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-2 ${submitting || (selectedPayment === 'QRIS' && isQrisExpired) || isStockInsufficient
+                                disabled={submitting || isStockInsufficient}
+                                className={`w-full py-4 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 flex items-center justify-center space-x-2 ${submitting || isStockInsufficient
                                     ? 'bg-gray-400 cursor-not-allowed shadow-none'
                                     : 'bg-orange-600 hover:bg-orange-700 shadow-orange-200'
                                     }`}
@@ -713,7 +610,7 @@ export default function PembayaranPage() {
                                     <span>
                                         {isStockInsufficient
                                             ? 'Stok Tidak Mencukupi'
-                                            : (selectedPayment === 'QRIS' && isQrisExpired ? 'Waktu Pembayaran Habis' : 'Selesaikan Pembayaran')}
+                                            : 'Selesaikan Pembayaran'}
                                     </span>
                                 )}
                             </button>

@@ -9,6 +9,18 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
     const router = useRouter();
     const { showToast } = useToast();
     const [products, setProducts] = useState(initialProducts);
+    const [searchQuery, setSearchQuery] = useState("");
+
+    const filteredProducts = products.filter(product => {
+        const query = searchQuery.toLowerCase();
+        const matchesName = product.nama_barang?.toLowerCase().includes(query);
+        const matchesKategori = product.kategori?.nama_kategori?.toLowerCase().includes(query);
+        const matchesSupplier = product.barang_supplier?.some((bs: any) =>
+            bs.supplier?.nama_perusahaan_supplier?.toLowerCase().includes(query) ||
+            bs.supplier?.nama_supplier?.toLowerCase().includes(query)
+        );
+        return matchesName || matchesKategori || matchesSupplier;
+    });
 
     // Modal states
     const [isAddOpen, setIsAddOpen] = useState(false);
@@ -206,8 +218,10 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5 group-focus-within:text-orange-500 transition-colors" />
                         <input
                             type="text"
-                            placeholder="Cari data barang..."
-                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-64 font-bold text-sm text-gray-800 transition-all shadow-sm"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Cari Nama, Kategori, Perusahaan, atau Nama Supplier..."
+                            className="pl-12 pr-6 py-3 bg-white border border-gray-200 rounded-full focus:border-orange-500 outline-none w-80 font-bold text-sm text-gray-800 transition-all shadow-sm"
                         />
                     </div>
                     <button
@@ -233,11 +247,11 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
-                            {products.length === 0 ? (
+                            {filteredProducts.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} className="px-8 py-10 text-center text-gray-400 font-bold">Belum ada produk terdaftar.</td>
+                                    <td colSpan={6} className="px-8 py-10 text-center text-gray-400 font-bold">Tidak ada produk yang cocok dengan pencarian Anda.</td>
                                 </tr>
-                            ) : products.map((product) => {
+                            ) : filteredProducts.map((product) => {
                                 const isKritis = product.status_barang === "Menipis" || product.status_barang === "Habis";
                                 return (
                                     <tr key={product.id_barang} className="hover:bg-gray-50/50 transition-all group">
@@ -392,16 +406,15 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                         </label>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             {suppliers.map((s: any) => (
-                                                <label 
+                                                <label
                                                     key={s.id_supplier}
-                                                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${
-                                                        formData.id_suppliers.includes(s.id_supplier)
-                                                        ? 'bg-orange-50 border-orange-500 shadow-sm' 
-                                                        : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
-                                                    }`}
+                                                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${formData.id_suppliers.includes(s.id_supplier)
+                                                            ? 'bg-orange-50 border-orange-500 shadow-sm'
+                                                            : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
+                                                        }`}
                                                 >
                                                     <div className="relative flex items-center justify-center">
-                                                        <input 
+                                                        <input
                                                             type="checkbox"
                                                             className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-orange-600 checked:border-orange-600 transition-all cursor-pointer"
                                                             checked={formData.id_suppliers.includes(s.id_supplier)}
@@ -409,7 +422,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                                                 const checked = e.target.checked;
                                                                 setFormData(prev => ({
                                                                     ...prev,
-                                                                    id_suppliers: checked 
+                                                                    id_suppliers: checked
                                                                         ? [...prev.id_suppliers, s.id_supplier]
                                                                         : prev.id_suppliers.filter(id => id !== s.id_supplier)
                                                                 }));
@@ -552,16 +565,15 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                         </div>
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                             {suppliers.map((s: any) => (
-                                                <label 
+                                                <label
                                                     key={s.id_supplier}
-                                                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${
-                                                        formData.id_suppliers.includes(s.id_supplier)
-                                                        ? 'bg-orange-50 border-orange-500 shadow-sm' 
-                                                        : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
-                                                    }`}
+                                                    className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all cursor-pointer group ${formData.id_suppliers.includes(s.id_supplier)
+                                                            ? 'bg-orange-50 border-orange-500 shadow-sm'
+                                                            : 'bg-gray-50 border-transparent hover:border-gray-200 shadow-inner'
+                                                        }`}
                                                 >
                                                     <div className="relative flex items-center justify-center">
-                                                        <input 
+                                                        <input
                                                             type="checkbox"
                                                             className="peer appearance-none w-5 h-5 border-2 border-gray-300 rounded-lg checked:bg-orange-600 checked:border-orange-600 transition-all cursor-pointer"
                                                             checked={formData.id_suppliers.includes(s.id_supplier)}
@@ -569,7 +581,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                                                 const checked = e.target.checked;
                                                                 setFormData(prev => ({
                                                                     ...prev,
-                                                                    id_suppliers: checked 
+                                                                    id_suppliers: checked
                                                                         ? [...prev.id_suppliers, s.id_supplier]
                                                                         : prev.id_suppliers.filter(id => id !== s.id_supplier)
                                                                 }));
@@ -708,7 +720,7 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                                             )}
                                         </div>
                                     </div>
-                                    
+
                                     <div className="pt-2">
                                         <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">Deskripsi Produk & Spesifikasi Teknik</p>
                                         <div className="bg-gray-50 p-6 rounded-3xl border border-gray-100 shadow-inner">
@@ -741,15 +753,15 @@ export default function KaryawanBarangManager({ initialProducts, categories, uni
                         <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
                             Data produk akan dihapus secara permanen dari sistem gudang.
                         </p>
-                        
+
                         <div className="flex flex-col w-full gap-3">
-                            <button 
+                            <button
                                 onClick={confirmDelete}
                                 className="w-full py-4 bg-red-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-red-600/20 hover:bg-red-700 transition-all active:scale-95"
                             >
                                 Ya, Hapus Permanen
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowDeleteConfirm(false);
                                     setItemToDelete(null);

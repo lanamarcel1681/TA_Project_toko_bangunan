@@ -18,7 +18,7 @@ interface AuditItem {
     nama_barang: string;
     kategori: string;
     stok_sistem: number;
-    stok_fisik: number;
+    stok_fisik: number | string;
     keterangan: string;
     satuan: string;
 }
@@ -72,7 +72,7 @@ export default function StockOpnameKaryawanPage() {
                 nama_barang: b.nama_barang,
                 kategori: b.kategori?.nama_kategori || 'Tanpa Kategori',
                 stok_sistem: b.stok_barang,
-                stok_fisik: 0,
+                stok_fisik: '',
                 keterangan: '',
                 satuan: b.satuan?.satuan_barang || 'Unit'
             }));
@@ -105,8 +105,14 @@ export default function StockOpnameKaryawanPage() {
     }, []);
 
     const handlePhysicalStockChange = (id: number, val: string) => {
-        const parsed = parseInt(val) || 0;
-        const clamped = Math.max(0, parsed);
+        if (val === '') {
+            setItems(prev => prev.map(item =>
+                item.id_barang === id ? { ...item, stok_fisik: '' } : item
+            ));
+            return;
+        }
+        const parsed = parseInt(val);
+        const clamped = isNaN(parsed) ? 0 : Math.max(0, parsed);
         setItems(prev => prev.map(item =>
             item.id_barang === id ? { ...item, stok_fisik: clamped } : item
         ));
@@ -129,7 +135,7 @@ export default function StockOpnameKaryawanPage() {
                 body: JSON.stringify({
                     items: items.map(it => ({
                         id_barang: it.id_barang,
-                        stok_fisik: it.stok_fisik,
+                        stok_fisik: Number(it.stok_fisik) || 0,
                         keterangan_temuan: it.keterangan
                     }))
                 })
@@ -154,6 +160,9 @@ export default function StockOpnameKaryawanPage() {
     const filteredItems = items.filter(item =>
         item.nama_barang.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const hasEmptyField = items.some(item => item.stok_fisik === '' || item.keterangan.trim() === '');
+    const isSubmitDisabled = items.length === 0 || isSubmitting || submitted || hasEmptyField;
 
     return (
         <div className="p-4 md:p-8 w-full max-w-[1400px] mx-auto pb-20 text-left relative">
@@ -195,8 +204,8 @@ export default function StockOpnameKaryawanPage() {
                     </div>
                     <button
                         onClick={handleSubmit}
-                        disabled={items.length === 0 || isSubmitting || submitted}
-                        className={`px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] transition-all outline-none whitespace-nowrap shadow-lg ${items.length === 0 || isSubmitting || submitted
+                        disabled={isSubmitDisabled}
+                        className={`px-8 py-3 rounded-full flex items-center gap-3 font-black text-[10px] uppercase tracking-[0.1em] transition-all outline-none whitespace-nowrap shadow-lg ${isSubmitDisabled
                             ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none'
                             : 'bg-orange-600 hover:bg-orange-700 text-white shadow-orange-600/20 active:scale-95'
                             }`}

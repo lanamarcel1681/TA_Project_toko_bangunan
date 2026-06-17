@@ -32,7 +32,7 @@ export default async function BarangPage() {
 
     // Calculate sumamry data
     const totalProduk = products.length;
-    
+
     // Status depends on logic from DB (Tersedia, Menipis, Habis) or we strictly follow the strings.
     const stokAman = products.filter(p => !["Menipis", "Habis"].includes(p.status_barang) || p.status_barang === "Tersedia").length;
     const stokMenipis = products.filter(p => p.status_barang === "Menipis").length;
@@ -93,15 +93,7 @@ export default async function BarangPage() {
                 </div>
             </div>
 
-            {/* Search Bar */}
-            <div className="mb-8 group">
-                <div className="relative w-full shadow-lg shadow-gray-200/40 rounded-full overflow-hidden border border-gray-100 group-hover:border-orange-200 transition-all duration-300">
-                    <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                        <Search className="h-5 w-5 text-gray-400 group-hover:text-orange-500 transition-colors" />
-                    </div>
-                    <input type="text" className="block w-full pl-14 pr-6 py-5 bg-white placeholder-gray-400 focus:outline-none sm:text-sm font-medium text-gray-900" placeholder="Cari berdasarkan Nama Produk bangunan..." />
-                </div>
-            </div>
+
 
             {/* Produk Table Component */}
             <OwnerBarangTable initialProducts={products} categories={categories} units={units} suppliers={suppliers} />

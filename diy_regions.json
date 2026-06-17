@@ -1,0 +1,831 @@
+[
+  {
+    "name": "KABUPATEN KULON PROGO",
+    "kecamatan": [
+      {
+        "name": "TEMON",
+        "kelurahan": [
+          "JANGKARAN",
+          "SINDUTAN",
+          "PALIHAN",
+          "GLAGAH",
+          "KALI DENGEN",
+          "PLUMBON",
+          "KEDUNDANG",
+          "KALIGINTUNG",
+          "TEMON WETAN",
+          "TEMON KULON",
+          "KEBONREJO",
+          "JANTEN",
+          "KARANG WULUH"
+        ]
+      },
+      {
+        "name": "WATES",
+        "kelurahan": [
+          "KARANG WUNI",
+          "SOGAN",
+          "KULWARU",
+          "NGESTIHARJO",
+          "TRIHARJO",
+          "BENDUNGAN",
+          "GIRI PENI",
+          "WATES"
+        ]
+      },
+      {
+        "name": "PANJATAN",
+        "kelurahan": [
+          "GARONGAN",
+          "KANOMAN",
+          "DEPOK",
+          "BOJONG",
+          "TAYUBAN",
+          "GOTAKAN",
+          "PANJATAN",
+          "KREMBANGAN"
+        ]
+      },
+      {
+        "name": "GALUR",
+        "kelurahan": [
+          "KARANG SEWU",
+          "BANARAN",
+          "KRANGGAN",
+          "NOMPOREJO",
+          "BROSOT",
+          "PANDOWAN",
+          "TIRTA RAHAYU"
+        ]
+      },
+      {
+        "name": "LENDAH",
+        "kelurahan": [
+          "WAHYUHARJO",
+          "BUMIREJO",
+          "JATIREJO",
+          "SIDOREJO",
+          "GULUREJO",
+          "NGENTAKREJO"
+        ]
+      },
+      {
+        "name": "SENTOLO",
+        "kelurahan": [
+          "DEMANGREJO",
+          "SRIKAYANGAN",
+          "TUKSONO",
+          "SALAMREJO",
+          "SUKORENO",
+          "KALIAGUNG",
+          "SENTOLO",
+          "BANGUNCIPTO"
+        ]
+      },
+      {
+        "name": "PENGASIH",
+        "kelurahan": [
+          "TAWANGSARI",
+          "KARANGSARI",
+          "KEDUNGSARI",
+          "MARGOSARI",
+          "PENGASIH",
+          "SENDANGSARI",
+          "SIDOMULYO"
+        ]
+      },
+      {
+        "name": "KOKAP",
+        "kelurahan": [
+          "HARGOMULYO",
+          "HARGOREJO",
+          "HARGOWILIS",
+          "KALIREJO",
+          "HARGOTIRTO"
+        ]
+      },
+      {
+        "name": "GIRIMULYO",
+        "kelurahan": [
+          "JATIMULYO",
+          "GIRIPURWO",
+          "PENDOWOREJO",
+          "PURWOSARI"
+        ]
+      },
+      {
+        "name": "NANGGULAN",
+        "kelurahan": [
+          "BANYUROTO",
+          "DONOMULYO",
+          "WIJIMULYO",
+          "TANJUNGHARJO",
+          "JATI SARONO",
+          "KEMBANG"
+        ]
+      },
+      {
+        "name": "KALIBAWANG",
+        "kelurahan": [
+          "BANJARARUM",
+          "BANJARASRI",
+          "BANJARHARJO",
+          "BANJAROYO"
+        ]
+      },
+      {
+        "name": "SAMIGALUH",
+        "kelurahan": [
+          "KEBON HARJO",
+          "BANJARSARI",
+          "PURWOHARJO",
+          "SIDOHARJO",
+          "GERBOSARI",
+          "NGARGOSARI",
+          "PAGERHARJO"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "KABUPATEN BANTUL",
+    "kecamatan": [
+      {
+        "name": "SRANDAKAN",
+        "kelurahan": [
+          "PONCOSARI",
+          "TRIMURTI"
+        ]
+      },
+      {
+        "name": "SANDEN",
+        "kelurahan": [
+          "GADINGSARI",
+          "GADINGHARJO",
+          "SRIGADING",
+          "MURTIGADING"
+        ]
+      },
+      {
+        "name": "KRETEK",
+        "kelurahan": [
+          "TIRTOHARGO",
+          "PARANGTRITIS",
+          "DONOTIRTO",
+          "TIRTOSARI",
+          "TIRTOMULYO"
+        ]
+      },
+      {
+        "name": "PUNDONG",
+        "kelurahan": [
+          "SELOHARJO",
+          "PANJANGREJO",
+          "SRIHARDONO"
+        ]
+      },
+      {
+        "name": "BAMBANG LIPURO",
+        "kelurahan": [
+          "SIDOMULYO",
+          "MULYODADI",
+          "SUMBERMULYO"
+        ]
+      },
+      {
+        "name": "PANDAK",
+        "kelurahan": [
+          "CATURHARJO",
+          "TRIHARJO",
+          "GILANGHARJO",
+          "WIJIREJO"
+        ]
+      },
+      {
+        "name": "BANTUL",
+        "kelurahan": [
+          "PALBAPANG",
+          "RINGIN HARJO",
+          "BANTUL",
+          "TRIRENGGO",
+          "SABDODADI"
+        ]
+      },
+      {
+        "name": "JETIS",
+        "kelurahan": [
+          "PATALAN",
+          "CANDEN",
+          "SUMBER AGUNG",
+          "TRIMULYO"
+        ]
+      },
+      {
+        "name": "IMOGIRI",
+        "kelurahan": [
+          "SELOPAMIORO",
+          "SRIHARJO",
+          "KEBON AGUNG",
+          "KARANG TENGAH",
+          "GIRIREJO",
+          "KARANGTALUN",
+          "IMOGIRI",
+          "WUKIRSARI"
+        ]
+      },
+      {
+        "name": "DLINGO",
+        "kelurahan": [
+          "MANGUNAN",
+          "DLINGO",
+          "JATIMULYO",
+          "TERONG"
+        ]
+      },
+      {
+        "name": "PLERET",
+        "kelurahan": [
+          "WONOKROMO",
+          "SEGOROYOSO",
+          "BAWURAN",
+          "WONOLELO"
+        ]
+      },
+      {
+        "name": "PIYUNGAN",
+        "kelurahan": [
+          "SITIMULYO",
+          "SRIMULYO",
+          "SRIMARTANI"
+        ]
+      },
+      {
+        "name": "BANGUNTAPAN",
+        "kelurahan": [
+          "TAMANAN",
+          "JAGALAN",
+          "SINGOSAREN",
+          "WIROKERTEN",
+          "JAMBIDAN",
+          "POTORONO",
+          "BATURETNO",
+          "BANGUNTAPAN"
+        ]
+      },
+      {
+        "name": "SEWON",
+        "kelurahan": [
+          "PENDOWOHARJO",
+          "TIMBULHARJO",
+          "BANGUNHARJO",
+          "PANGGUNGHARJO"
+        ]
+      },
+      {
+        "name": "KASIHAN",
+        "kelurahan": [
+          "BANGUNJIWO",
+          "TIRTONIRMOLO",
+          "TAMANTIRTO",
+          "NGESTIHARJO"
+        ]
+      },
+      {
+        "name": "PAJANGAN",
+        "kelurahan": [
+          "TRIWIDADI",
+          "SENDANGSARI",
+          "GUWOSARI"
+        ]
+      },
+      {
+        "name": "SEDAYU",
+        "kelurahan": [
+          "ARGODADI",
+          "ARGOREJO",
+          "ARGOSARI",
+          "ARGOMULYO"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "KABUPATEN GUNUNG KIDUL",
+    "kecamatan": [
+      {
+        "name": "PANGGANG",
+        "kelurahan": [
+          "GIRIHARJO",
+          "GIRIWUNGU",
+          "GIRIMULYO",
+          "GIRIKARTO",
+          "GIRISEKAR",
+          "GIRISUKO"
+        ]
+      },
+      {
+        "name": "PURWOSARI",
+        "kelurahan": [
+          "GIRIJATI",
+          "GIRIASIH",
+          "GIRICAHYO",
+          "GIRIPURWO",
+          "GIRITIRTO"
+        ]
+      },
+      {
+        "name": "PALIYAN",
+        "kelurahan": [
+          "KARANG DUWET",
+          "KARANG ASEM",
+          "MULUSAN",
+          "GIRING",
+          "SODO",
+          "PAMPANG",
+          "GROGOL"
+        ]
+      },
+      {
+        "name": "SAPTO SARI",
+        "kelurahan": [
+          "KRAMBIL SAWIT",
+          "KANIGORO",
+          "PLANJAN",
+          "MONGGOL",
+          "NGLORA",
+          "JETIS"
+        ]
+      },
+      {
+        "name": "TEPUS",
+        "kelurahan": [
+          "SIDOHARJO",
+          "PURWODADI",
+          "GIRIPANGGUNG"
+        ]
+      },
+      {
+        "name": "TANJUNGSARI",
+        "kelurahan": [
+          "KEMADANG",
+          "KEMIRI",
+          "BANJAREJO",
+          "NGESTIREJO",
+          "HARGOSARI"
+        ]
+      },
+      {
+        "name": "RONGKOP",
+        "kelurahan": [
+          "MELIKAN",
+          "BOHOL",
+          "PRINGOMBO",
+          "BOTODAYAKAN",
+          "PETIR",
+          "SEMUGIH",
+          "KARANGWUNI",
+          "PUCANGANOM"
+        ]
+      },
+      {
+        "name": "GIRISUBO",
+        "kelurahan": [
+          "BALONG",
+          "JEPITU",
+          "KARANGAWEN",
+          "TILENG",
+          "NGLINDUR",
+          "SONGBANYU"
+        ]
+      },
+      {
+        "name": "SEMANU",
+        "kelurahan": [
+          "PACAREJO",
+          "CANDIREJO",
+          "DADAPAYU",
+          "NGEPOSARI",
+          "SEMANU"
+        ]
+      },
+      {
+        "name": "PONJONG",
+        "kelurahan": [
+          "GOMBANG",
+          "SIDOREJO",
+          "BEDOYO",
+          "KARANG ASEM",
+          "PONJONG",
+          "GENJAHAN",
+          "SUMBER GIRI",
+          "TAMBAKROMO",
+          "SAWAHAN",
+          "UMBUL REJO"
+        ]
+      },
+      {
+        "name": "KARANGMOJO",
+        "kelurahan": [
+          "BENDUNGAN",
+          "BEJIHARJO",
+          "WILADEG",
+          "KELOR",
+          "NGIPAK",
+          "KARANGMOJO",
+          "GEDANG REJO",
+          "NGAWIS",
+          "JATI AYU"
+        ]
+      },
+      {
+        "name": "WONOSARI",
+        "kelurahan": [
+          "MULO",
+          "WARENG",
+          "PULUTAN",
+          "SIRAMAN",
+          "KARANG REJEK",
+          "BALEHARJO",
+          "SELANG",
+          "WONOSARI",
+          "PIYAMAN",
+          "KARANG TENGAH",
+          "GARI"
+        ]
+      },
+      {
+        "name": "PLAYEN",
+        "kelurahan": [
+          "BANYUSOCO",
+          "PLEMBUTAN",
+          "BLEBERAN",
+          "GETAS",
+          "DENGOK",
+          "PLAYEN",
+          "NGAWU",
+          "BANDUNG",
+          "LOGANDENG",
+          "GADING",
+          "BANARAN",
+          "NGLERI"
+        ]
+      },
+      {
+        "name": "PATUK",
+        "kelurahan": [
+          "SEMOYO",
+          "PENGKOK",
+          "BEJI",
+          "NGLEGI",
+          "PUTAT",
+          "SALAM",
+          "PATUK",
+          "NGORO ORO",
+          "NGLANGGERAN",
+          "TERBAH"
+        ]
+      },
+      {
+        "name": "GEDANG SARI",
+        "kelurahan": [
+          "NGALANG",
+          "HARGO MULYO",
+          "TEGALREJO",
+          "WATU GAJAH",
+          "SAMPANG"
+        ]
+      },
+      {
+        "name": "NGLIPAR",
+        "kelurahan": [
+          "KEDUNG KERIS",
+          "NGLIPAR",
+          "PENGKOL",
+          "KEDUNGPOH",
+          "KATONGAN",
+          "PILANG REJO",
+          "NATAH"
+        ]
+      },
+      {
+        "name": "NGAWEN",
+        "kelurahan": [
+          "WATU SIGAR",
+          "BEJI",
+          "KAMPUNG",
+          "JURANG JERO",
+          "SAMBIREJO",
+          "TANCEP"
+        ]
+      },
+      {
+        "name": "SEMIN",
+        "kelurahan": [
+          "KALITEKUK",
+          "KEMEJING",
+          "SEMIN",
+          "PUNDUNG SARI",
+          "KARANG SARI",
+          "REJOSARI",
+          "BULUREJO",
+          "SUMBERREJO",
+          "CANDI REJO"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "KABUPATEN SLEMAN",
+    "kecamatan": [
+      {
+        "name": "MOYUDAN",
+        "kelurahan": [
+          "SUMBERRAHAYU",
+          "SUMBERSARI",
+          "SUMBER AGUNG",
+          "SUMBERARUM"
+        ]
+      },
+      {
+        "name": "MINGGIR",
+        "kelurahan": [
+          "SENDANG MULYO",
+          "SENDANG ARUM",
+          "SENDANG REJO",
+          "SENDANGSARI",
+          "SENDANGAGUNG"
+        ]
+      },
+      {
+        "name": "SEYEGAN",
+        "kelurahan": [
+          "MARGOLUWIH",
+          "MARGODADI",
+          "MARGOMULYO",
+          "MARGOAGUNG",
+          "MARGOKATON"
+        ]
+      },
+      {
+        "name": "GODEAN",
+        "kelurahan": [
+          "SIDOREJO",
+          "SIDOLUHUR",
+          "SIDOMULYO",
+          "SIDOAGUNG",
+          "SIDOKARTO",
+          "SIDOARUM",
+          "SIDOMOYO"
+        ]
+      },
+      {
+        "name": "GAMPING",
+        "kelurahan": [
+          "BALECATUR",
+          "AMBARKETAWANG",
+          "BANYURADEN",
+          "NOGOTIRTO",
+          "TRIHANGGO"
+        ]
+      },
+      {
+        "name": "MLATI",
+        "kelurahan": [
+          "TIRTOADI",
+          "SUMBERADI",
+          "TLOGOADI",
+          "SENDANGADI",
+          "SINDUADI"
+        ]
+      },
+      {
+        "name": "DEPOK",
+        "kelurahan": [
+          "CATUR TUNGGAL",
+          "MAGUWOHARJO",
+          "CONDONG CATUR"
+        ]
+      },
+      {
+        "name": "BERBAH",
+        "kelurahan": [
+          "SENDANG TIRTO",
+          "TEGAL TIRTO",
+          "JOGO TIRTO",
+          "KALI TIRTO"
+        ]
+      },
+      {
+        "name": "PRAMBANAN",
+        "kelurahan": [
+          "SUMBER HARJO",
+          "WUKIR HARJO",
+          "GAYAM HARJO",
+          "SAMBI REJO",
+          "MADU REJO",
+          "BOKO HARJO"
+        ]
+      },
+      {
+        "name": "KALASAN",
+        "kelurahan": [
+          "PURWO MARTANI",
+          "TIRTO MARTANI",
+          "TAMAN MARTANI",
+          "SELO MARTANI"
+        ]
+      },
+      {
+        "name": "NGEMPLAK",
+        "kelurahan": [
+          "WEDOMARTANI",
+          "UMBULMARTANI",
+          "WIDODO MARTANI",
+          "BIMO MARTANI",
+          "SINDUMARTANI"
+        ]
+      },
+      {
+        "name": "NGAGLIK",
+        "kelurahan": [
+          "SARI HARJO",
+          "SINDUHARJO",
+          "MINOMARTANI",
+          "SUKO HARJO",
+          "SARDONOHARJO",
+          "DONOHARJO"
+        ]
+      },
+      {
+        "name": "SLEMAN",
+        "kelurahan": [
+          "CATUR HARJO",
+          "TRIHARJO",
+          "TRIDADI",
+          "PANDOWO HARJO",
+          "TRI MULYO"
+        ]
+      },
+      {
+        "name": "TEMPEL",
+        "kelurahan": [
+          "BANYU REJO",
+          "TAMBAK REJO",
+          "SUMBER REJO",
+          "PONDOK REJO",
+          "MORO REJO",
+          "MARGO REJO",
+          "LUMBUNG REJO",
+          "MERDIKO REJO"
+        ]
+      },
+      {
+        "name": "TURI",
+        "kelurahan": [
+          "BANGUN KERTO",
+          "DONOKERTO",
+          "GIRI KERTO",
+          "WONO KERTO"
+        ]
+      },
+      {
+        "name": "PAKEM",
+        "kelurahan": [
+          "PURWO BINANGUN",
+          "CANDI BINANGUN",
+          "HARJO BINANGUN",
+          "PAKEM BINANGUN",
+          "HARGO BINANGUN"
+        ]
+      },
+      {
+        "name": "CANGKRINGAN",
+        "kelurahan": [
+          "WUKIR SARI",
+          "ARGO MULYO",
+          "GLAGAH HARJO",
+          "KEPUH HARJO",
+          "UMBUL HARJO"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "KOTA YOGYAKARTA",
+    "kecamatan": [
+      {
+        "name": "MANTRIJERON",
+        "kelurahan": [
+          "GEDONGKIWO",
+          "SURYODININGRATAN",
+          "MANTRIJERON"
+        ]
+      },
+      {
+        "name": "KRATON",
+        "kelurahan": [
+          "PATEHAN",
+          "PANEMBAHAN",
+          "KADIPATEN"
+        ]
+      },
+      {
+        "name": "MERGANGSAN",
+        "kelurahan": [
+          "BRONTOKUSUMAN",
+          "KEPARAKAN",
+          "WIROGUNAN"
+        ]
+      },
+      {
+        "name": "UMBULHARJO",
+        "kelurahan": [
+          "GIWANGAN",
+          "SOROSUTAN",
+          "PANDEYAN",
+          "WARUNGBOTO",
+          "TAHUNAN",
+          "MUJA MUJU",
+          "SEMAKI"
+        ]
+      },
+      {
+        "name": "KOTAGEDE",
+        "kelurahan": [
+          "PRENGGAN",
+          "PURBAYAN",
+          "REJOWINANGUN"
+        ]
+      },
+      {
+        "name": "GONDOKUSUMAN",
+        "kelurahan": [
+          "BACIRO",
+          "DEMANGAN",
+          "KLITREN",
+          "KOTABARU",
+          "TERBAN"
+        ]
+      },
+      {
+        "name": "DANUREJAN",
+        "kelurahan": [
+          "SURYATMAJAN",
+          "TEGAL PANGGUNG",
+          "BAUSASRAN"
+        ]
+      },
+      {
+        "name": "PAKUALAMAN",
+        "kelurahan": [
+          "PURWO KINANTI"
+        ]
+      },
+      {
+        "name": "GONDOMANAN",
+        "kelurahan": [
+          "PRAWIRODIRJAN",
+          "NGUPASAN"
+        ]
+      },
+      {
+        "name": "NGAMPILAN",
+        "kelurahan": [
+          "NOTOPRAJAN",
+          "NGAMPILAN"
+        ]
+      },
+      {
+        "name": "WIROBRAJAN",
+        "kelurahan": [
+          "PATANGPULUHAN",
+          "WIROBRAJAN",
+          "PAKUNCEN"
+        ]
+      },
+      {
+        "name": "GEDONG TENGEN",
+        "kelurahan": [
+          "PRINGGOKUSUMAN",
+          "SOSROMENDURAN"
+        ]
+      },
+      {
+        "name": "JETIS",
+        "kelurahan": [
+          "BUMIJO",
+          "GOWONGAN",
+          "COKRODININGRATAN"
+        ]
+      },
+      {
+        "name": "TEGALREJO",
+        "kelurahan": [
+          "TEGALREJO",
+          "KRICAK",
+          "KARANGWARU"
+        ]
+      }
+    ]
+  }
+]

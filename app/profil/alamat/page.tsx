@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Mail, MapPin, ShoppingBag, Plus, Star, Edit, Trash2, ChevronRight, ArrowLeft, X, CheckCircle, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { useToast } from '../../components/Toast';
+import { dataWilayah } from './dataWilayah';
 
 interface Address {
     id: number;
@@ -66,16 +67,32 @@ export default function AlamatPembeliPage() {
         status_default: false
     });
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const availableKecamatans = dataWilayah.find(k => k.name === formData.kabupaten)?.kecamatan || [];
+    const availableKelurahans = availableKecamatans.find(k => k.name === formData.kecamatan)?.kelurahan || [];
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value, type } = e.target;
         if (type === 'checkbox') {
             setFormData(prev => ({ ...prev, [name]: (e.target as HTMLInputElement).checked }));
+        } else if (name === 'kabupaten') {
+            setFormData(prev => ({ ...prev, kabupaten: value, kecamatan: '', kelurahan: '', kode_pos: '' }));
+        } else if (name === 'kecamatan') {
+            setFormData(prev => ({ ...prev, kecamatan: value, kelurahan: '', kode_pos: '' }));
+        } else if (name === 'kelurahan') {
+            const selectedKelObj = availableKelurahans.find((k: any) => k.name === value);
+            const kodepos = selectedKelObj ? (selectedKelObj.kodepos?.toString() || '') : '';
+            setFormData(prev => ({ ...prev, kelurahan: value, kode_pos: kodepos }));
         } else {
             setFormData(prev => ({ ...prev, [name]: value }));
         }
     };
 
     const handleSave = async () => {
+        if (!formData.nama_jalan?.trim() || !formData.kabupaten || !formData.kecamatan || !formData.kelurahan || !String(formData.kode_pos).trim() || !formData.deskripsi_alamat?.trim()) {
+            showToast('Semua field alamat harus diisi!', 'error');
+            return;
+        }
+
         try {
             const isFirst = addresses.length === 0;
             const updatedData = { ...formData, status_default: isFirst ? true : formData.status_default };
@@ -103,7 +120,8 @@ export default function AlamatPembeliPage() {
 
                 showToast(editingId ? 'Alamat berhasil diperbarui!' : 'Alamat baru berhasil ditambahkan!', 'success');
             } else {
-                showToast('Gagal menyimpan alamat', 'error');
+                const errorData = await res.json().catch(() => ({}));
+                showToast(errorData.error || 'Gagal menyimpan alamat', 'error');
             }
         } catch (e) {
             console.error(e);
@@ -320,17 +338,32 @@ export default function AlamatPembeliPage() {
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kabupaten/Kota</label>
-                                    <input name="kabupaten" value={formData.kabupaten} onChange={handleInputChange} type="text" placeholder="Contoh: Sleman" className="w-full bg-gray-50 border-gray-100 text-gray-900 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-sm p-4 border transition-all outline-none font-medium" />
+                                    <select name="kabupaten" value={formData.kabupaten} onChange={handleInputChange} className="w-full bg-gray-50 border-gray-100 text-gray-900 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-sm p-4 border transition-all outline-none font-medium appearance-none">
+                                        <option value="">Pilih Kabupaten/Kota</option>
+                                        {dataWilayah.map(kab => (
+                                            <option key={kab.name} value={kab.name}>{kab.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kecamatan</label>
-                                    <input name="kecamatan" value={formData.kecamatan} onChange={handleInputChange} type="text" placeholder="Contoh: Depok" className="w-full bg-gray-50 border-gray-100 text-gray-900 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-sm p-4 border transition-all outline-none font-medium" />
+                                    <select name="kecamatan" value={formData.kecamatan} onChange={handleInputChange} disabled={!formData.kabupaten} className="w-full bg-gray-50 border-gray-100 text-gray-900 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-sm p-4 border transition-all outline-none font-medium appearance-none disabled:opacity-50">
+                                        <option value="">Pilih Kecamatan</option>
+                                        {availableKecamatans.map(kec => (
+                                            <option key={kec.name} value={kec.name}>{kec.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kelurahan</label>
-                                    <input name="kelurahan" value={formData.kelurahan} onChange={handleInputChange} type="text" placeholder="Contoh: Caturtunggal" className="w-full bg-gray-50 border-gray-100 text-gray-900 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-sm p-4 border transition-all outline-none font-medium" />
+                                    <select name="kelurahan" value={formData.kelurahan} onChange={handleInputChange} disabled={!formData.kecamatan} className="w-full bg-gray-50 border-gray-100 text-gray-900 rounded-xl focus:ring-4 focus:ring-orange-500/10 focus:border-orange-500 text-sm p-4 border transition-all outline-none font-medium appearance-none disabled:opacity-50">
+                                        <option value="">Pilih Kelurahan</option>
+                                        {availableKelurahans.map((kel: any) => (
+                                            <option key={kel.name} value={kel.name}>{kel.name}</option>
+                                        ))}
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Kode Pos</label>

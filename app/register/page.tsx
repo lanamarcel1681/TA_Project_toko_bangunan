@@ -23,6 +23,12 @@ export default function RegisterPage() {
         const email = (form.elements.namedItem('email') as HTMLInputElement).value;
         const password = (form.elements.namedItem('password') as HTMLInputElement).value;
 
+        if (password.length < 8) {
+            setError('Password minimal harus 8 karakter');
+            setLoading(false);
+            return;
+        }
+
         try {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
