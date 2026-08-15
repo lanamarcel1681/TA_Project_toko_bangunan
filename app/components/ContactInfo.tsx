@@ -57,8 +57,7 @@ export default function ContactInfo() {
                                 </div>
                                 <div className="ml-3 text-base text-gray-500">
                                     <p className="font-medium text-gray-900">Jam Operasional:</p>
-                                    <p className="mt-1">Senin - Jumat: 08:00 - 17:00</p>
-                                    <p>Sabtu: 08:00 - 17:00</p>
+                                    <p className="mt-1">Senin - Sabtu: 08:00 - 17:00 WIB</p>
                                     <p>Minggu: Tutup</p>
                                 </div>
                             </div>

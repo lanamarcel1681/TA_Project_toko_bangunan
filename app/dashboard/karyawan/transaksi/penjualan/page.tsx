@@ -24,6 +24,7 @@ export default function TransaksiPenjualanKaryawanPage() {
     const [confirmAction, setConfirmAction] = useState<'ASSIGN_DRIVER' | 'CONFIRM_PICKUP' | null>(null);
     const [confirmTarget, setConfirmTarget] = useState<any>(null);
     const [isActionLoading, setIsActionLoading] = useState(false);
+    const [batasWaktuPengantaran, setBatasWaktuPengantaran] = useState<string>('16:00');
 
     const [assignment, setAssignment] = useState({
         driverId: '',
@@ -144,9 +145,22 @@ export default function TransaksiPenjualanKaryawanPage() {
         }
     };
 
+    const fetchPengaturan = async () => {
+        try {
+            const res = await fetch('/api/pengaturan');
+            const data = await res.json();
+            if (data.success && data.data) {
+                setBatasWaktuPengantaran(data.data.batas_waktu_pengantaran);
+            }
+        } catch (error) {
+            console.error("Fetch Pengaturan Error:", error);
+        }
+    };
+
     useEffect(() => {
         fetchMonitoringData();
         fetchEmployees();
+        fetchPengaturan();
     }, []);
 
     const openAssignmentModal = (id: string) => {
@@ -155,12 +169,15 @@ export default function TransaksiPenjualanKaryawanPage() {
         // AUTO-FILL LOGIC
         const now = new Date();
         const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
 
         let defaultDate = new Date();
         let defaultTime = now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 
-        // Jika sudah jam 4 sore (16:00) ke atas, arahkan ke BESOK jam 9 Pagi
-        if (currentHour >= 16) {
+        const [batasJam, batasMenit] = batasWaktuPengantaran.split(':').map(Number);
+
+        // Jika sudah melewati batas waktu, arahkan ke BESOK jam 9 Pagi
+        if (currentHour > batasJam || (currentHour === batasJam && currentMinute >= batasMenit)) {
             defaultDate.setDate(now.getDate() + 1);
             defaultTime = "09:00";
         }
@@ -179,16 +196,25 @@ export default function TransaksiPenjualanKaryawanPage() {
     const handleAssign = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // CONSTRAINT: Tidak bisa kirim dihari yang sama kalau belum jam 4 sore
         const today = new Date();
         const selectedDate = new Date(assignment.date);
         today.setHours(0, 0, 0, 0);
         selectedDate.setHours(0, 0, 0, 0);
 
+        // CONSTRAINT: Tidak bisa assign ke hari kemarin
+        if (selectedDate.getTime() < today.getTime()) {
+            showToast('Tidak dapat menugaskan pengiriman untuk tanggal yang sudah lewat.', 'error');
+            return;
+        }
+
+        // CONSTRAINT: Tidak bisa kirim dihari yang sama kalau sudah lewat batas waktu
         if (selectedDate.getTime() === today.getTime()) {
             const currentHour = new Date().getHours();
-            if (currentHour < 16) {
-                showToast('Penugasan hari yang sama hanya diperbolehkan setelah pukul 16:00.', 'error');
+            const currentMinute = new Date().getMinutes();
+            const [batasJam, batasMenit] = batasWaktuPengantaran.split(':').map(Number);
+            
+            if (currentHour > batasJam || (currentHour === batasJam && currentMinute >= batasMenit)) {
+                showToast(`Penugasan hari yang sama tidak diperbolehkan setelah pukul ${batasWaktuPengantaran}.`, 'error');
                 return;
             }
         }
@@ -301,10 +327,10 @@ export default function TransaksiPenjualanKaryawanPage() {
                                                 <div>
                                                     <h3 className="text-xl font-black text-gray-900 leading-tight mb-1">{delivery.id}</h3>
                                                     <p className="text-[10px] font-black text-orange-500 uppercase tracking-widest flex items-center gap-2">
-                                                        {delivery.customer} 
-                                                        <a 
-                                                            href={`https://wa.me/${delivery.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
-                                                            target="_blank" 
+                                                        {delivery.customer}
+                                                        <a
+                                                            href={`https://wa.me/${delivery.phone?.replace(/^0/, '62').replace(/^\+/, '')}`}
+                                                            target="_blank"
                                                             rel="noopener noreferrer"
                                                             className="inline-flex items-center justify-center p-1 bg-green-100 text-green-600 rounded-full hover:bg-green-200 transition-colors ml-1"
                                                             title="Hubungi via WhatsApp"
@@ -374,10 +400,10 @@ export default function TransaksiPenjualanKaryawanPage() {
                                         <div className="text-left">
                                             <h3 className="text-xl font-black text-gray-900 leading-tight mb-1">{pickup.id}</h3>
                                             <p className="text-[10px] font-black text-green-600 uppercase tracking-widest flex items-center gap-2">
-                                                {pickup.customer} 
-                                                <a 
-                                                    href={`https://wa.me/${pickup.phone?.replace(/^0/, '62').replace(/^\+/, '')}`} 
-                                                    target="_blank" 
+                                                {pickup.customer}
+                                                <a
+                                                    href={`https://wa.me/${pickup.phone?.replace(/^0/, '62').replace(/^\+/, '')}`}
+                                                    target="_blank"
                                                     rel="noopener noreferrer"
                                                     className="inline-flex items-center justify-center p-1 bg-green-100 text-green-700 rounded-full hover:bg-green-200 transition-colors ml-1"
                                                     title="Hubungi via WhatsApp"
@@ -471,9 +497,14 @@ export default function TransaksiPenjualanKaryawanPage() {
                                                 <span className="absolute left-6 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within/input:text-orange-600 transition-colors pointer-events-none"><Calendar className="w-5 h-5" /></span>
                                                 <input
                                                     type="date" required
+                                                    min={new Date().toISOString().split('T')[0]}
                                                     className="w-full pl-14 pr-6 py-5 bg-gray-50 border-2 border-gray-50 rounded-[28px] focus:border-orange-500 focus:bg-white outline-none transition-all font-black text-gray-800 shadow-inner"
                                                     value={assignment.date}
                                                     onChange={e => setAssignment({ ...assignment, date: e.target.value })}
+                                                    onInvalid={(e) => {
+                                                        e.preventDefault();
+                                                        showToast('Tanggal penugasan tidak valid atau sudah lewat.', 'error');
+                                                    }}
                                                 />
                                             </div>
                                         </div>
@@ -523,20 +554,20 @@ export default function TransaksiPenjualanKaryawanPage() {
                             {confirmAction === 'ASSIGN_DRIVER' ? 'Konfirmasi Driver?' : 'Konfirmasi Ambil?'}
                         </h3>
                         <p className="text-gray-500 text-sm mb-8 leading-relaxed font-medium">
-                            {confirmAction === 'ASSIGN_DRIVER' 
-                                ? `Yakin ingin menugaskan driver untuk pesanan ${confirmTarget}? Pastikan jadwal dan personel sudah benar.` 
+                            {confirmAction === 'ASSIGN_DRIVER'
+                                ? `Yakin ingin menugaskan driver untuk pesanan ${confirmTarget}? Pastikan jadwal dan personel sudah benar.`
                                 : `Konfirmasi bahwa barang untuk pesanan ${confirmTarget} sudah benar-benar diserahkan kepada pelanggan.`}
                         </p>
-                        
+
                         <div className="flex flex-col w-full gap-3">
-                            <button 
+                            <button
                                 onClick={executeAction}
                                 disabled={isActionLoading}
                                 className={`w-full py-4 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl transition-all active:scale-95 disabled:opacity-50 ${confirmAction === 'ASSIGN_DRIVER' ? 'bg-orange-600 shadow-orange-600/20 hover:bg-orange-700' : 'bg-green-600 shadow-green-600/20 hover:bg-green-700'}`}
                             >
                                 {isActionLoading ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : (confirmAction === 'ASSIGN_DRIVER' ? 'Ya, Tugaskan' : 'Ya, Konfirmasi Penyerahan')}
                             </button>
-                            <button 
+                            <button
                                 onClick={() => {
                                     setShowConfirmModal(false);
                                     setConfirmAction(null);

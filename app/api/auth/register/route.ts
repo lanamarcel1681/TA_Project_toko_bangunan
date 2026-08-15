@@ -7,10 +7,10 @@ const prisma = new PrismaClient();
 export async function POST(request: NextRequest) {
     try {
         const body = await request.json();
-        const { name, email, password } = body;
+        const { name, email, password, otp } = body;
 
-        if (!name || !email || !password) {
-            return NextResponse.json({ error: 'Nama, Email, dan Password wajib diisi' }, { status: 400 });
+        if (!name || !email || !password || !otp) {
+            return NextResponse.json({ error: 'Nama, Email, Password, dan OTP wajib diisi' }, { status: 400 });
         }
 
         if (!email.toLowerCase().endsWith('@gmail.com')) {
@@ -29,6 +29,19 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Email sudah terdaftar. Gunakan email lain.' }, { status: 400 });
         }
 
+        const otpRecord = await prisma.otpVerification.findUnique({
+            where: { email },
+        });
+
+        if (!otpRecord || otpRecord.otp !== otp) {
+            return NextResponse.json({ error: 'Kode OTP tidak valid' }, { status: 400 });
+        }
+
+        if (otpRecord.expiresAt < new Date()) {
+            return NextResponse.json({ error: 'Kode OTP sudah kedaluwarsa' }, { status: 400 });
+        }
+
+
         const newPembeli = await prisma.pembeli.create({
             data: {
                 nama_pembeli: name,
@@ -37,6 +50,10 @@ export async function POST(request: NextRequest) {
                 nomor_telepon_pembeli: '-',
                 tanggal_lahir_pembeli: '-',
             }
+        });
+
+        await prisma.otpVerification.delete({
+            where: { email },
         });
 
         return NextResponse.json({ success: true, message: 'Registrasi berhasil' });

@@ -48,16 +48,13 @@ export default function PembayaranPage() {
     const [catatan, setCatatan] = useState('');
     const [pakaiProteksi, setPakaiProteksi] = useState(false);
     const [pakaiAsuransi, setPakaiAsuransi] = useState(false);
-    const [selectedPayment, setSelectedPayment] = useState<string>('CASH');
+    const [selectedPayment, setSelectedPayment] = useState<string>('');
+
+    const [pengaturan, setPengaturan] = useState<any>(null);
+    const [rekeningBankList, setRekeningBankList] = useState<any[]>([]);
 
     const [buktiPembayaran, setBuktiPembayaran] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-
-    const bankAccount = {
-        number: '137-000-707-1323',
-        owner: 'TB. Lumbung Jaya (Maria Sumiyati)',
-        bank: 'MANDIRI'
-    };
 
     useEffect(() => {
         const fetchData = async () => {
@@ -77,6 +74,19 @@ export default function PembayaranPage() {
                     const main = addrData.data.find((a: Address) => a.isMain) || addrData.data[0];
                     setDefaultAddress(main);
                 }
+                // Fetch Pengaturan
+                const pengRes = await fetch('/api/pengaturan');
+                const pengData = await pengRes.json();
+                if (pengData.success && pengData.data) {
+                    setPengaturan(pengData.data);
+                    if (pengData.data.rekening_bank) {
+                        try {
+                            setRekeningBankList(JSON.parse(pengData.data.rekening_bank));
+                        } catch (e) {
+                            console.error('Failed to parse rekening_bank');
+                        }
+                    }
+                }
             } catch (error) {
                 console.error("Failed to fetch data:", error);
             } finally {
@@ -88,6 +98,24 @@ export default function PembayaranPage() {
     }, []);
 
     // Dynamic Pricing based on cartItems
+
+    const isCashEnabled = pengaturan?.metode_cash ?? true;
+    const isTransferEnabled = pengaturan?.metode_transfer ?? true;
+    const isQrisEnabled = pengaturan?.metode_qris ?? true;
+
+    const showCash = metodePengiriman === 'Diambil Sendiri ke Toko' && isCashEnabled;
+
+    useEffect(() => {
+        if (!selectedPayment || (!showCash && selectedPayment === 'CASH')) {
+            if (isTransferEnabled && rekeningBankList.length > 0) {
+                setSelectedPayment(`Transfer ${rekeningBankList[0].bank}`);
+            } else if (isQrisEnabled) {
+                setSelectedPayment('QRIS');
+            } else if (showCash) {
+                setSelectedPayment('CASH');
+            }
+        }
+    }, [showCash, selectedPayment, isTransferEnabled, isQrisEnabled, rekeningBankList]);
 
     const isWholesale = cartItems.some(item => item.jumlah_barang > 10);
     const totalQty = cartItems.reduce((sum, item) => sum + item.jumlah_barang, 0);
@@ -446,10 +474,8 @@ export default function PembayaranPage() {
                         <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-0 overflow-hidden">
                             <div className="p-4 bg-gray-50 border-b border-gray-100">
                                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">PILIH METODE PEMBAYARAN</p>
-                            </div>
-
-                            {/* Tunai - Only for Pickup */}
-                            {metodePengiriman === 'Diambil Sendiri ke Toko' && (
+                                                      {/* Tunai - Only for Pickup */}
+                            {showCash && (
                                 <label className={`flex flex-col p-5 border-b border-gray-100 cursor-pointer transition-all ${selectedPayment === 'CASH' ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
                                     <div className="flex items-center justify-between mb-2">
                                         <div className="flex items-center gap-4">
@@ -466,41 +492,76 @@ export default function PembayaranPage() {
 
 
 
-                            <label className={`flex flex-col p-5 cursor-pointer transition-all ${selectedPayment === 'Mandiri' ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
-                                <div className="flex items-center justify-between mb-2">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-8 bg-white border border-gray-200 rounded flex items-center justify-center p-1 shadow-sm font-black text-[10px] text-blue-800 uppercase italic tracking-tighter shrink-0">MANDIRI</div>
-                                        <div>
-                                            <p className="text-sm font-bold text-gray-900 tracking-tight leading-none mb-1 text-left">Virtual Account Mandiri</p>
-                                            <p className="text-[10px] text-gray-500 font-medium tracking-wide italic text-left">Dicek secara otomatis</p>
-                                        </div>
-                                    </div>
-                                    <input type="radio" name="payment" value="Mandiri" checked={selectedPayment === 'Mandiri'} onChange={() => setSelectedPayment('Mandiri')} className="w-4 h-4 text-orange-600 focus:ring-orange-500" />
-                                </div>
-
-                                {selectedPayment === 'Mandiri' && (
-                                    <div className="mt-3 p-4 bg-white rounded-2xl border border-orange-100 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
-                                        <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mb-2 leading-none text-left">NOMOR REKENING TUJUAN</p>
-                                        <div className="flex items-center justify-between group">
-                                            <div className="text-left">
-                                                <p className="text-lg font-black text-gray-900 tracking-tighter leading-none mb-1.5">{bankAccount.number}</p>
-                                                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">{bankAccount.owner}</p>
+                            {/* Transfer Bank */}
+                            {isTransferEnabled && rekeningBankList.map((rek) => (
+                                <label key={rek.id} className={`flex flex-col p-5 border-b border-gray-100 cursor-pointer transition-all ${selectedPayment === `Transfer ${rek.bank}` ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-16 h-10 bg-white border border-gray-200 rounded flex items-center justify-center p-1 shadow-sm shrink-0">
+                                                {rek.logo ? (
+                                                    <img src={rek.logo} alt={rek.bank} className="max-h-full max-w-full object-contain" />
+                                                ) : (
+                                                    <span className="font-black text-[10px] text-blue-800 uppercase italic tracking-tighter">{rek.bank}</span>
+                                                )}
                                             </div>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    navigator.clipboard.writeText(bankAccount.number);
-                                                    alert('Nomor rekening disalin!');
-                                                }}
-                                                className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:bg-orange-600 hover:text-white px-3 py-2 rounded-lg border border-orange-100 transition-all active:scale-95"
-                                            >
-                                                Salin
-                                            </button>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900 tracking-tight leading-none mb-1 text-left">Transfer {rek.bank}</p>
+                                                <p className="text-[10px] text-gray-500 font-medium tracking-wide italic text-left">Dicek manual oleh admin</p>
+                                            </div>
                                         </div>
+                                        <input type="radio" name="payment" value={`Transfer ${rek.bank}`} checked={selectedPayment === `Transfer ${rek.bank}`} onChange={() => setSelectedPayment(`Transfer ${rek.bank}`)} className="w-4 h-4 text-orange-600 focus:ring-orange-500" />
                                     </div>
-                                )}
-                            </label>
-                        </div>
+
+                                    {selectedPayment === `Transfer ${rek.bank}` && (
+                                        <div className="mt-3 p-4 bg-white rounded-2xl border border-orange-100 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300">
+                                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mb-2 leading-none text-left">NOMOR REKENING TUJUAN</p>
+                                            <div className="flex items-center justify-between group">
+                                                <div className="text-left">
+                                                    <p className="text-lg font-black text-gray-900 tracking-tighter leading-none mb-1.5">{rek.nomor}</p>
+                                                    <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest">A.N. {rek.nama}</p>
+                                                </div>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        navigator.clipboard.writeText(rek.nomor);
+                                                        alert('Nomor rekening disalin!');
+                                                    }}
+                                                    className="text-[10px] font-black text-orange-600 uppercase tracking-widest hover:bg-orange-600 hover:text-white px-3 py-2 rounded-lg border border-orange-100 transition-all active:scale-95"
+                                                >
+                                                    Salin
+                                                </button>
+                                            </div>
+                                        </div>
+                                    )}
+                                </label>
+                            ))}
+
+                            {/* QRIS */}
+                            {isQrisEnabled && (
+                                <label className={`flex flex-col p-5 cursor-pointer transition-all ${selectedPayment === 'QRIS' ? 'bg-orange-50/50' : 'hover:bg-gray-50'}`}>
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-16 h-10 bg-white border border-gray-200 rounded flex items-center justify-center p-1 shadow-sm shrink-0">
+                                                <img src="https://upload.wikimedia.org/wikipedia/commons/a/a2/Logo_QRIS.svg" alt="QRIS" className="h-6 object-contain" />
+                                            </div>
+                                            <div>
+                                                <p className="text-sm font-bold text-gray-900 tracking-tight leading-none mb-1 text-left">Bayar dengan QRIS</p>
+                                                <p className="text-[10px] text-gray-500 font-medium tracking-wide italic text-left">Scan melalui aplikasi e-wallet / m-banking</p>
+                                            </div>
+                                        </div>
+                                        <input type="radio" name="payment" value="QRIS" checked={selectedPayment === 'QRIS'} onChange={() => setSelectedPayment('QRIS')} className="w-4 h-4 text-orange-600 focus:ring-orange-500" />
+                                    </div>
+
+                                    {selectedPayment === 'QRIS' && pengaturan?.foto_qris && (
+                                        <div className="mt-3 p-4 bg-white rounded-2xl border border-orange-100 shadow-sm animate-in fade-in slide-in-from-top-2 duration-300 flex flex-col items-center">
+                                            <p className="text-[9px] font-black text-gray-300 uppercase tracking-widest mb-3 leading-none text-center">SCAN BARCODE INI</p>
+                                            <img src={pengaturan.foto_qris} alt="QRIS Barcode" className="w-40 h-40 object-contain rounded-lg border border-gray-100 mb-2 shadow-sm" />
+                                            <p className="text-xs text-gray-500 text-center mt-2 font-medium">Pastikan nominal transfer sesuai dengan total tagihan</p>
+                                        </div>
+                                    )}
+                                </label>
+                            )}
+                        </div>      </div>
 
                         <div className="bg-white rounded-lg p-5 shadow-sm border border-gray-100">
                             <div className="flex justify-between items-center mb-4">
@@ -578,12 +639,16 @@ export default function PembayaranPage() {
                                                     <input id="file-upload" name="file-upload" type="file" accept="image/*" className="sr-only" onChange={(e) => {
                                                         const file = e.target.files?.[0];
                                                         if (file) {
+                                                            if (file.size > 5 * 1024 * 1024) {
+                                                                alert('Ukuran file terlalu besar. Maksimal 5MB.');
+                                                                return;
+                                                            }
                                                             setBuktiPembayaran(file);
                                                             setPreviewUrl(URL.createObjectURL(file));
                                                         }
                                                     }} />
                                                 </div>
-                                                <p className="text-xs text-gray-500">PNG, JPG max 10MB</p>
+                                                <p className="text-xs text-gray-500">PNG, JPG max 5MB</p>
                                             </div>
                                         </label>
                                     )}

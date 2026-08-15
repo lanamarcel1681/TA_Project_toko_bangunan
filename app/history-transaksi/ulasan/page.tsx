@@ -49,8 +49,8 @@ function UlasanPelangganContent() {
         if (!e.target.files || e.target.files.length === 0) return;
         const file = e.target.files[0];
 
-        if (file.size > 2 * 1024 * 1024) {
-            alert('Ukuran gambar maksimal 2 MB');
+        if (file.size > 5 * 1024 * 1024) {
+            alert('Ukuran foto maksimal 5MB.');
             return;
         }
 

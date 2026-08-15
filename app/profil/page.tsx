@@ -56,8 +56,8 @@ export default function UserProfile() {
 
         const file = e.target.files[0];
 
-        if (file.size > 1 * 1024 * 1024) {
-            showToast('Gagal: Ukuran gambar maksimal 1 MB', 'error');
+        if (file.size > 5 * 1024 * 1024) {
+            showToast("Ukuran gambar tidak boleh lebih dari 5MB.", 'error');
             return;
         }
 

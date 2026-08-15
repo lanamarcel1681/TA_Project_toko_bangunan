@@ -11,6 +11,11 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: 'Tidak ada file yang diunggah' }, { status: 400 });
         }
 
+        const maxSize = 5 * 1024 * 1024;
+        if (file.size > maxSize) {
+            return NextResponse.json({ error: 'Ukuran file terlalu besar. Maksimal 5MB.' }, { status: 400 });
+        }
+
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 

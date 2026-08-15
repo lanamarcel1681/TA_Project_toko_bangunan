@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useToast } from '../components/Toast';
 
@@ -10,10 +10,32 @@ export default function RegisterPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [showSuccessModal, setShowSuccessModal] = useState(false);
+    const [step, setStep] = useState(1);
+    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
+    const [otp, setOtp] = useState('');
+    const [timeLeft, setTimeLeft] = useState(300);
     const router = useRouter();
     const { showToast } = useToast();
 
-    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    useEffect(() => {
+        if (step !== 2) return;
+
+        if (timeLeft <= 0) return;
+
+        const timer = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [step, timeLeft]);
+
+    const formatTime = (seconds: number) => {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? '0' : ''}${s}`;
+    };
+
+    async function handleSendOtp(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError('');
         setLoading(true);
@@ -30,10 +52,68 @@ export default function RegisterPage() {
         }
 
         try {
+            const res = await fetch('/api/auth/register/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email }),
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                setFormData({ name, email, password });
+                showToast('OTP berhasil dikirim ke email Anda', 'success');
+                setStep(2);
+                setTimeLeft(300);
+            } else {
+                setError(data.error || 'Gagal mengirim OTP');
+            }
+        } catch (err) {
+            setError('Gagal menghubungi server');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleResendOtp() {
+        setError('');
+        setLoading(true);
+        try {
+            const res = await fetch('/api/auth/register/send-otp', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: formData.name, email: formData.email }),
+            });
+            const data = await res.json();
+
+            if (res.ok && data.success) {
+                showToast('OTP baru berhasil dikirim ke email Anda', 'success');
+                setTimeLeft(300);
+            } else {
+                setError(data.error || 'Gagal mengirim ulang OTP');
+            }
+        } catch (err) {
+            setError('Gagal menghubungi server');
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    async function handleVerifyOtp(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
+
+        if (!otp || otp.length < 6) {
+            setError('Masukkan OTP yang valid');
+            setLoading(false);
+            return;
+        }
+
+        try {
             const res = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password }),
+                body: JSON.stringify({ ...formData, otp }),
             });
 
             const data = await res.json();
@@ -104,47 +184,70 @@ export default function RegisterPage() {
                             </div>
                         )}
 
-                        <form onSubmit={handleSubmit} className="space-y-5">
+                        {step === 1 ? (
+                            <form onSubmit={handleSendOtp} className="space-y-5">
 
-                            {/* Nama Lengkap */}
-                            <div>
-                                <label htmlFor="name" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Nama Lengkap</label>
-                                <input type="text" id="name" name="name" className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 sm:text-sm bg-gray-50 focus:bg-white" placeholder="Masukkan nama lengkap Anda" required />
-                            </div>
+                                {/* Nama Lengkap */}
+                                <div>
+                                    <label htmlFor="name" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Nama Lengkap</label>
+                                    <input type="text" id="name" name="name" defaultValue={formData.name} className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 sm:text-sm bg-gray-50 focus:bg-white" placeholder="Masukkan nama lengkap Anda" required />
+                                </div>
 
-                            {/* Email */}
-                            <div>
-                                <label htmlFor="email" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Email</label>
-                                <input type="email" id="email" name="email" className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 sm:text-sm bg-gray-50 focus:bg-white" placeholder="Masukkan email aktif" required />
-                            </div>
+                                {/* Email */}
+                                <div>
+                                    <label htmlFor="email" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Email</label>
+                                    <input type="email" id="email" name="email" defaultValue={formData.email} className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 sm:text-sm bg-gray-50 focus:bg-white" placeholder="Masukkan email aktif (@gmail.com)" required />
+                                </div>
 
-                            {/* Password */}
-                            <div>
-                                <label htmlFor="password" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Password</label>
-                                <div className="relative">
-                                    <input type={showPassword ? 'text' : 'password'} id="password" name="password" className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 sm:text-sm bg-gray-50 focus:bg-white pr-10" placeholder="Buat password (min. 8 karakter)" required />
-                                    <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
-                                        {showPassword ? (
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
-                                            </svg>
-                                        ) : (
-                                            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                            </svg>
-                                        )}
+                                {/* Password */}
+                                <div>
+                                    <label htmlFor="password" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Password</label>
+                                    <div className="relative">
+                                        <input type={showPassword ? 'text' : 'password'} id="password" name="password" defaultValue={formData.password} className="w-full text-black px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 sm:text-sm bg-gray-50 focus:bg-white pr-10" placeholder="Buat password (min. 8 karakter)" required />
+                                        <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 focus:outline-none">
+                                            {showPassword ? (
+                                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                                                </svg>
+                                            ) : (
+                                                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                                </svg>
+                                            )}
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* Submit Button */}
+                                <div className="pt-2">
+                                    <button type="submit" disabled={loading} className="w-full flex justify-center py-3.5 px-4 rounded-lg text-sm font-bold text-white bg-orange-700 hover:bg-orange-800 focus:outline-none focus:ring-4 focus:ring-orange-500/30 transition-all shadow border border-transparent disabled:opacity-60 disabled:cursor-not-allowed">
+                                        {loading ? 'Memproses...' : 'Kirim OTP'}
                                     </button>
                                 </div>
-                            </div>
-
-                            {/* Submit Button */}
-                            <div className="pt-2">
-                                <button type="submit" disabled={loading} className="w-full flex justify-center py-3.5 px-4 rounded-lg text-sm font-bold text-white bg-orange-700 hover:bg-orange-800 focus:outline-none focus:ring-4 focus:ring-orange-500/30 transition-all shadow border border-transparent disabled:opacity-60 disabled:cursor-not-allowed">
-                                    {loading ? 'Memproses...' : 'Daftar Sekarang'}
-                                </button>
-                            </div>
-                        </form>
+                            </form>
+                        ) : (
+                            <form onSubmit={handleVerifyOtp} className="space-y-5">
+                                <div>
+                                    <label htmlFor="otp" className="block text-xs font-bold text-gray-700 tracking-wider uppercase mb-2">Kode OTP</label>
+                                    <input type="text" id="otp" name="otp" value={otp} onChange={(e) => setOtp(e.target.value)} maxLength={6} className="w-full text-black px-4 py-3 text-center tracking-widest text-xl rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-orange-500/50 focus:border-orange-500 transition-colors placeholder-gray-400 bg-gray-50 focus:bg-white" placeholder="------" required />
+                                    <p className="text-xs text-gray-500 mt-2 text-center">Kode OTP telah dikirim ke email <strong>{formData.email}</strong></p>
+                                </div>
+                                <div className="pt-2 flex flex-col gap-3">
+                                    <button type="submit" disabled={loading} className="w-full flex justify-center py-3.5 px-4 rounded-lg text-sm font-bold text-white bg-orange-700 hover:bg-orange-800 focus:outline-none focus:ring-4 focus:ring-orange-500/30 transition-all shadow border border-transparent disabled:opacity-60 disabled:cursor-not-allowed">
+                                        {loading ? 'Memverifikasi...' : 'Verifikasi & Daftar'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={handleResendOtp}
+                                        disabled={loading || timeLeft > 0}
+                                        className="w-full flex justify-center py-2 px-4 rounded-lg text-sm font-medium text-orange-700 hover:bg-orange-50 focus:outline-none transition-all border border-transparent disabled:opacity-60 disabled:cursor-not-allowed"
+                                    >
+                                        {timeLeft > 0 ? `Kirim Ulang OTP (${formatTime(timeLeft)})` : 'Kirim Ulang OTP Sekarang'}
+                                    </button>
+                                </div>
+                            </form>
+                        )}
 
                         {/* Login Link */}
                         <div className="text-center mt-6">

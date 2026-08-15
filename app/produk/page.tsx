@@ -8,7 +8,7 @@ import SidebarFilter from '../components/SidebarFilter';
 import ProductCard, { Product } from '../components/ProductCard';
 
 const sortOptions = [
-    { value: 'recommended', label: 'Direkomendasikan' },
+    { value: 'all-products', label: 'Semua Barang' },
     { value: 'price-asc', label: 'Harga Terendah' },
     { value: 'price-desc', label: 'Harga Tertinggi' },
 ];
@@ -18,11 +18,11 @@ function ProdukContent() {
     const [products, setProducts] = useState<Product[]>([]);
     const [categories, setCategories] = useState<string[]>(['Semua']);
     const [isLoading, setIsLoading] = useState(true);
-    
+
     const [selectedCategory, setSelectedCategory] = useState('Semua');
     const [selectedRating, setSelectedRating] = useState<number | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
-    const [sortBy, setSortBy] = useState('recommended');
+    const [sortBy, setSortBy] = useState('all-products');
     const [showAvailableOnly, setShowAvailableOnly] = useState(false);
 
     useEffect(() => {
@@ -71,15 +71,15 @@ function ProdukContent() {
         if (selectedRating !== null) {
             result = result.filter(p => (p.rating || 0) >= selectedRating);
         }
-        
+
         if (showAvailableOnly) {
             result = result.filter(p => p.stok_barang > 0);
         }
 
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase();
-            result = result.filter(p => 
-                p.nama_barang.toLowerCase().includes(q) || 
+            result = result.filter(p =>
+                p.nama_barang.toLowerCase().includes(q) ||
                 p.merk_barang?.toLowerCase().includes(q)
             );
         }
@@ -93,7 +93,7 @@ function ProdukContent() {
     return (
         <div className="bg-gray-50 text-gray-800 antialiased font-sans flex flex-col min-h-screen">
             <Navbar />
-            
+
             <main className="flex-grow max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
                 <div className="flex flex-col lg:flex-row gap-6">
 
@@ -151,9 +151,9 @@ function ProdukContent() {
                         ) : filtered.length > 0 ? (
                             <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {filtered.map(product => (
-                                    <ProductCard 
-                                        key={product.id_barang} 
-                                        product={product} 
+                                    <ProductCard
+                                        key={product.id_barang}
+                                        product={product}
                                     />
                                 ))}
                             </div>
@@ -164,7 +164,7 @@ function ProdukContent() {
                                 </svg>
                                 <p className="text-gray-500 text-lg font-medium">Produk tidak ditemukan</p>
                                 <p className="text-gray-400 text-sm mt-1">Coba gunakan kata kunci atau filter yang berbeda.</p>
-                                <button 
+                                <button
                                     onClick={() => { setSelectedCategory('Semua'); setSelectedRating(null); setSearchQuery(''); setShowAvailableOnly(false); }}
                                     className="mt-6 px-6 py-2 bg-orange-600 text-white font-bold rounded-lg hover:bg-orange-700 transition-colors"
                                 >

@@ -13,7 +13,7 @@ export default function Footer() {
                             <span className="ml-2 text-xl font-bold text-gray-100">TB. Lumbung <span className="text-orange-500">Jaya</span></span>
                         </Link>
                         <p className="text-gray-400 text-base">
-                            Menyediakan material bangunan berkualitas tinggi untuk mewujudkan hunian impian Anda. Terpercaya sejak 2024.
+                            Menyediakan material bangunan berkualitas tinggi untuk mewujudkan hunian impian Anda. Berdiri sejak 2020.
                         </p>
                         <div className="flex space-x-6">
                             <Link href="#" className="text-gray-400 hover:text-gray-300">

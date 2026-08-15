@@ -56,15 +56,21 @@ export async function GET(request: NextRequest) {
             };
         });
 
-        // Dynamic Proposals: Group missions by driver and find those with 2+ orders
+        // Dynamic Proposals: Group missions by driver AND date and find those with 2+ orders
         // Hanya buat proposal untuk driver yang sedang login (jika ada pegawaiId)
         const proposals: any[] = [];
-        const driverGroups: Record<number, any[]> = {};
+        const driverGroups: Record<string, any[]> = {};
 
         missions.forEach(m => {
             if (m.driverId) {
-                if (!driverGroups[m.driverId]) driverGroups[m.driverId] = [];
-                driverGroups[m.driverId].push(m);
+                let dateKey = 'unassigned-date';
+                if (m.departureTime) {
+                    const dateObj = new Date(m.departureTime);
+                    dateKey = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+                }
+                const groupKey = `${m.driverId}_${dateKey}`;
+                if (!driverGroups[groupKey]) driverGroups[groupKey] = [];
+                driverGroups[groupKey].push(m);
             }
         });
 
@@ -72,9 +78,16 @@ export async function GET(request: NextRequest) {
             // Jika pegawaiId ada, hanya buat proposal untuk driver yang bersangkutan
             if (pegawaiId && group[0]?.driverId !== pegawaiId) return;
             if (group.length >= 2) {
+                let dateStr = '';
+                if (group[0].departureTime) {
+                    const dateObj = new Date(group[0].departureTime);
+                    dateStr = ` (${dateObj.toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })})`;
+                }
+                
+                const uniqueId = group.map(m => m.id).join('-');
                 proposals.push({
-                    id: `PROP-${index + 1}`,
-                    title: `Penggabungan Rute ${group[0].driver}`,
+                    id: `PROP-${uniqueId}`,
+                    title: `Penggabungan Rute ${group[0].driver}${dateStr}`,
                     driver: group[0].driver,
                     orders: group.map(m => ({
                         id: m.id,
@@ -94,7 +107,38 @@ export async function GET(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
     try {
-        const { id, action } = await request.json();
+        const body = await request.json();
+        const { id, action, newDate, newTime } = body;
+
+        if (action === 'RESCHEDULE_DELIVERY') {
+            const ids = Array.isArray(id) ? id : [id];
+            
+            const transactions = await prisma.transaksiPenjualanBarang.findMany({
+                where: { no_transaksi: { in: ids } },
+                include: { pengiriman: true }
+            });
+
+            if (transactions.length === 0) {
+                return NextResponse.json({ error: 'Data pengiriman tidak ditemukan' }, { status: 404 });
+            }
+
+            const isoDate = new Date(`${newDate}T${newTime}:00`);
+
+            const operations = transactions.map(t => {
+                if (t.pengiriman.length > 0) {
+                    return prisma.pengiriman.update({
+                        where: { id_pengiriman: t.pengiriman[0].id_pengiriman },
+                        data: {
+                            tanggal_berangkat: isoDate
+                        }
+                    });
+                }
+            }).filter(Boolean) as any[];
+
+            await prisma.$transaction(operations);
+
+            return NextResponse.json({ success: true, message: 'Berhasil menjadwalkan ulang pengiriman' });
+        }
 
         if (action === 'COMPLETE_DELIVERY') {
             const now = new Date();

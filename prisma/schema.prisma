@@ -386,3 +386,26 @@ model UsulanBarangSupplier {
   @@id([id_usulan_barang, id_supplier])
   @@map("Usulan_Barang_Supplier")
 }
+
+model PengaturanToko {
+  id                      Int     @id @default(autoincrement())
+  batas_waktu_pengantaran String  @default("16:00") @db.VarChar(10)
+  metode_cash             Boolean @default(true)
+  metode_transfer         Boolean @default(true)
+  metode_qris             Boolean @default(true)
+  foto_qris               String? @db.VarChar(255)
+  rekening_bank           String? @db.Text
+  faq                     String? @db.Text
+
+  @@map("Pengaturan_Toko")
+}
+
+model OtpVerification {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  otp       String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@map("Otp_Verification")
+}

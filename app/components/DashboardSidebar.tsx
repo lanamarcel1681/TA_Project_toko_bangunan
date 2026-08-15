@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-    LayoutDashboard, BarChart3, PackageCheck, PackageSearch, Users, ShoppingCart, ShoppingBag, UserCog, SendToBack, Truck, CalendarCheck, Tags, LogOut, FileText
+    LayoutDashboard, BarChart3, PackageCheck, PackageSearch, Users, ShoppingCart, ShoppingBag, UserCog, SendToBack, Truck, CalendarCheck, Tags, LogOut, FileText, Settings
 } from 'lucide-react';
 import { useToast } from './Toast';
 
@@ -25,7 +25,8 @@ const ownerNav = [
     { href: '/dashboard/owner/barang/persetujuan', label: 'Persetujuan Barang', icon: PackageCheck },
     { href: '/dashboard/owner/stok', label: 'Manajemen Stok dan Opname', icon: PackageSearch },
     { href: '/dashboard/owner/karyawan', label: 'Daftar Karyawan', icon: Users },
-    { href: '/dashboard/owner/karyawan/presensi', label: 'Presensi & Izin', icon: CalendarCheck }
+    { href: '/dashboard/owner/karyawan/presensi', label: 'Presensi & Izin', icon: CalendarCheck },
+    { href: '/dashboard/owner/pengaturan', label: 'Pengaturan Toko', icon: Settings }
 ];
 
 const employeeNav = [

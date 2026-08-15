@@ -194,6 +194,11 @@ export default function HistoryTransaksiPage() {
         const file = e.target.files?.[0];
         if (!file) return;
 
+        if (file.size > 5 * 1024 * 1024) {
+            showToast("Ukuran file terlalu besar. Maksimal 5MB.", 'error');
+            return;
+        }
+
         const formData = new FormData();
         formData.append('file', file);
 
